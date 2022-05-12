@@ -7,7 +7,7 @@ var globalObject;
 
 function createScene() {
     scene = new THREE.Scene();
-    //scene.add(new THREE.AxisHelper(5));
+    scene.add(new THREE.AxisHelper(5));
 }
 
 function init() {
@@ -24,11 +24,15 @@ function init() {
     camera2 = createCamera(0,20,0)
     camera3 = createCamera(20,0,0)
 
-    createCube(0,0,0);
-    createCylinder(0,0,0);
-    createSphere(0,0,0);
-    createCone(0,0,0);
-    createTorus(0,0,0);
+    //createCube(0,0,0);
+    //createCylinder(0,0,0);
+    //createSphere(0,0,0);
+    //createCone(0,0,0);
+    //createTorus(0,0,0);
+
+    //create3DObject(0,0,0);
+
+    createArtCanvas(40, 40);
 
     renderer.render(scene, camera1);
 
@@ -44,6 +48,8 @@ function init() {
     }, 10000);
      */
 }
+
+
 
 function createCamera(x,y,z) {
     //TODO -> Alterar esta parte
@@ -64,6 +70,8 @@ function createCube(x,y,z) {
     const cube = new THREE.Mesh(geometry, material);
     scene.add(cube)
 }
+
+
 
 function createCylinder(x,y,z) {
     const geometry = new THREE.CylinderGeometry(5, 5, 20, 32 );
@@ -105,16 +113,75 @@ function createCanvas() {
 }
 
 function createCombinedObject1() {
-    //TODO
+    const object = 
 }
 
 function createCombinedObject2() {
     //TODO
 }
 
-function createCombinedObject2() {
+function createCombinedObject3() {
     //TODO
 }
+
+function create3DObject(x,y,z) {
+    const object = new THREE.Object3D();
+    const ballGeometry = new THREE.SphereGeometry(8, 8, 16);
+    const material = new THREE.MeshBasicMaterial({ color: 0x0000ff, wireframe: true });
+    const ball = new THREE.Mesh(ballGeometry, material);
+
+    object.position.x = -25;
+    object.position.y = -25;
+
+    object.add(ball);
+    scene.add(object);
+}
+
+function createArtCanvas(h, w) {
+    const object = new THREE.Object3D();
+    const objectMaterialWireframe = false;
+
+    //MAIN Canvas Part
+    const mainSpaceGeometry = new THREE.BoxGeometry(70,50,1);
+    const mainSpaceMaterial = new THREE.MeshBasicMaterial({ color: 0x0000ff, wireframe: objectMaterialWireframe });
+    const mainSpace = new THREE.Mesh(mainSpaceGeometry, mainSpaceMaterial);
+
+    //BORDERS
+    const borderMaterial = new THREE.MeshBasicMaterial({ color: 0xff00ff, wireframe: objectMaterialWireframe });
+    //Horizontal Borders
+    const hBorderGeometry = new THREE.CylinderGeometry(1,1,51, 20, 1, false, 0, Math.PI);
+    const hBorderL = new THREE.Mesh(hBorderGeometry, borderMaterial);
+    hBorderL.rotation.y = -1.5; hBorderL.position.x = -34.5;
+
+    const hBorderR = new THREE.Mesh(hBorderGeometry, borderMaterial);
+    hBorderR.rotation.y = -1.5; hBorderR.position.x = 34.5;
+    //Vertical Borders
+    const vBorderGeometry = new THREE.CylinderGeometry(1,1,71, 20, 1, false, 0, Math.PI);
+    const vBorderT = new THREE.Mesh(vBorderGeometry, borderMaterial);
+    vBorderT.rotateZ(THREE.Math.degToRad(270));
+    vBorderT.rotateY(THREE.Math.degToRad(270));
+    vBorderT.position.y = -24.5;
+
+    const vBorderB = new THREE.Mesh(vBorderGeometry, borderMaterial);
+    vBorderB.rotateZ(THREE.Math.degToRad(270));
+    vBorderB.rotateY(THREE.Math.degToRad(270));
+    vBorderB.position.y = -24.5;
+    vBorderB.position.y = 24.5;
+
+
+    object.position.x = 0;
+    object.position.y = 0;
+    object.position.z = 0;
+
+    object.add(hBorderL);
+    object.add(hBorderR);
+    object.add(vBorderT);
+    object.add(vBorderB);
+    object.add(mainSpace);
+    scene.add(object);
+}
+
+
 
 function detectKey(e) {
     console.log("PRESSED KEY:", e.key.toLowerCase())
