@@ -24,6 +24,9 @@ function init() {
     camera2 = createCamera(0,20,0)
     camera3 = createCamera(20,0,0)
 
+
+
+
     //createCube(0,0,0);
     //createCylinder(0,0,0);
     //createSphere(0,0,0);
@@ -32,10 +35,10 @@ function init() {
 
     //create3DObject(0,0,0);
 
-    createArtCanvas(40, 40);
+    //createArtCanvas(40, 40);
+    createComplexObject();
 
     renderer.render(scene, camera1);
-
 
     //JUST FOR TEST
     /*
@@ -112,8 +115,44 @@ function createCanvas() {
     scene.add(cube)
 }
 
-function createCombinedObject1() {
-    const object = 
+function createComplexObject() {
+
+    const object = new THREE.Object3D();
+    const baseGeometry = new THREE.CylinderGeometry( 8, 12, 5, 32 );
+    const baseMaterial = new THREE.MeshBasicMaterial({ color: 0x0000ff, wireframe: true });
+    const base = new THREE.Mesh(baseGeometry, baseMaterial);
+
+    object.rotateY(THREE.Math.degToRad(100));
+
+    //HAND BETWEEN BASE AND TOP ONE
+    const handObject = new THREE.Object3D();
+    const midHandGeometry = new THREE.BoxGeometry(3,20,3);
+    const midHandMaterial = new THREE.MeshBasicMaterial({ color: 0xff00ff, wireframe: true });
+    const midHand = new THREE.Mesh(midHandGeometry, midHandMaterial);
+
+    midHand.position.y+= 2.5+9;
+    handObject.rotateZ(THREE.Math.degToRad(30))     //ROTATION OF ALL HAND
+
+    //TOP HAND
+    const topHandObject = new THREE.Object3D();
+    const topHandGeometry = new THREE.BoxGeometry(3,10,3);
+    const topHandMaterial = new THREE.MeshBasicMaterial({ color: 0x00ffff, wireframe: true });
+    const topHand = new THREE.Mesh(topHandGeometry, topHandMaterial);
+
+    topHandObject.position.y+=22;
+    topHand.position.y+=3;
+    topHandObject.rotateZ(THREE.Math.degToRad(50));      //ROTATION OF TOP HAND
+
+
+    topHandObject.add(topHand);
+    handObject.add(topHandObject)
+    handObject.add(midHand); //vai pasar a ser outro objeto (talvez)
+
+    object.add(base);
+    object.add(handObject);
+
+
+    scene.add(object);
 }
 
 function createCombinedObject2() {
