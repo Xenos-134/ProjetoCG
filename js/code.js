@@ -298,16 +298,16 @@ function onKeyDown(e) {
             topHandGObject.rotateZ(THREE.Math.degToRad(+10));
             break;
         case "ArrowUp":
-            baseGObject.position.x+=5;
+            baseGObject.position.z-=5;
             break
         case "ArrowDown":
-            baseGObject.position.x-=5;
-            break
-        case "ArrowLeft":
             baseGObject.position.z+=5;
             break
+        case "ArrowLeft":
+            baseGObject.position.x-=5;
+            break
         case "ArrowRight":
-            baseGObject.position.z-=5;
+            baseGObject.position.x+=5;
             break
         case "KeyD":
         case "KeyC":
