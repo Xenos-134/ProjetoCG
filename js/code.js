@@ -3,7 +3,7 @@
 //*********************************************************
 var camera1, camera2, camera3, scene, renderer;
 var globalObject;
-
+var pressed = {}
 
 function createScene() {
     scene = new THREE.Scene();
@@ -15,8 +15,8 @@ function init() {
     renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(renderer.domElement);
 
-    window.addEventListener("keydown", detectKey);
-
+    window.addEventListener("keydown", onKeyDown);
+    window.addEventListener("keyup", onKeyUp);
 
 
     createScene();
@@ -220,20 +220,46 @@ function createArtCanvas(h, w) {
     scene.add(object);
 }
 
+function toggleWireframe() {
+    //TODO
+}
 
+function onKeyDown(e) {
+    //console.log("PRESSED KEY:", e.key.toLowerCase());
+    //console.log("KEY CODE:", e.code());
 
-function detectKey(e) {
-    console.log("PRESSED KEY:", e.key.toLowerCase())
-    switch (e.key.toLowerCase()) {
-        case "1":
+    switch (e.code) {
+        case "Digit1":
             renderer.render(scene, camera1);
             break;
-        case "2":
+        case "Digit2":
             renderer.render(scene, camera2);
             break;
-        case "3":
+        case "Digit3":
             renderer.render(scene, camera3);
             break;
+        case "Digit4":
+            toggleWireframe();
+            break;
+        case "KeyQ":
+        case "KeyW":
+        case "KeyA":
+        case "KeyS":
+        case "KeyZ":
+        case "KeyX":
+        case "ArrowUp":
+        case "ArrowDown":
+        case "ArrowLeft":
+        case "ArrowRight":
+        case "KeyD":
+        case "KeyC":
+            pressed[e.code] = true;
+            break;
     }
+    console.log(pressed);
+}
 
+function onKeyUp(e) {
+    if (pressed[e.code]) pressed[e.code] = false;
+    console.log(pressed);
 }
