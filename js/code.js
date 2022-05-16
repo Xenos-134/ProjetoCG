@@ -4,6 +4,15 @@
 var camera1, camera2, camera3, scene, renderer;
 var globalObject;
 
+var angleBase, angleMiddleHand, angleTopHand;
+
+
+
+function animate() {
+    requestAnimationFrame( animate );
+    renderer.render(scene, camera1);
+};
+
 
 function createScene() {
     scene = new THREE.Scene();
@@ -38,18 +47,7 @@ function init() {
     //createArtCanvas(40, 40);
     createComplexObject();
 
-    renderer.render(scene, camera1);
-
-    //JUST FOR TEST
-    /*
-    setTimeout(function(){
-        renderer.render(scene, camera2);
-    }, 5000);
-
-    setTimeout(function(){
-        renderer.render(scene, camera3);
-    }, 10000);
-     */
+    animate();
 }
 
 
@@ -116,11 +114,12 @@ function createCanvas() {
 }
 
 function createComplexObject() {
-
     const object = new THREE.Object3D();
     const baseGeometry = new THREE.CylinderGeometry( 8, 12, 5, 32 );
     const baseMaterial = new THREE.MeshBasicMaterial({ color: 0x0000ff, wireframe: true });
     const base = new THREE.Mesh(baseGeometry, baseMaterial);
+
+    angleBase = object;       // <======================
 
     object.rotateY(THREE.Math.degToRad(100));
 
@@ -233,6 +232,14 @@ function detectKey(e) {
             break;
         case "3":
             renderer.render(scene, camera3);
+            break;
+        case "e":
+            angleBase.rotateY(THREE.Math.degToRad(50));
+            console.log("rotate")
+            break;
+        case "q":
+            angleBase.rotateY(THREE.Math.degToRad(-50));
+            console.log("rotate")
             break;
     }
 
