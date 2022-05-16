@@ -1,22 +1,31 @@
 //*********************************************************
 //      Global Variables
 //*********************************************************
-var camera1, camera2, camera3, scene, renderer;
+var camera, camera1, camera2, camera3, scene, renderer;
 var globalObject;
+var pressed = {}
 
+var baseGObject, midHandGObject, topHandGObject;
 
 function createScene() {
     scene = new THREE.Scene();
     scene.add(new THREE.AxisHelper(5));
 }
 
+
+function animate() {
+    requestAnimationFrame( animate );
+    renderer.render( scene, camera ); // CHANGE TS
+};
+
+
 function init() {
     renderer = new THREE.WebGLRenderer({antialias: true});
     renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(renderer.domElement);
 
-    window.addEventListener("keydown", detectKey);
-
+    window.addEventListener("keydown", onKeyDown);
+    window.addEventListener("keyup", onKeyUp);
 
 
     createScene();
@@ -24,7 +33,7 @@ function init() {
     camera2 = createCamera(0,20,0)
     camera3 = createCamera(20,0,0)
 
-
+    camera = camera1;
 
 
     //createCube(0,0,0);
@@ -38,18 +47,7 @@ function init() {
     //createArtCanvas(40, 40);
     createComplexObject();
 
-    renderer.render(scene, camera1);
-
-    //JUST FOR TEST
-    /*
-    setTimeout(function(){
-        renderer.render(scene, camera2);
-    }, 5000);
-
-    setTimeout(function(){
-        renderer.render(scene, camera3);
-    }, 10000);
-     */
+    animate();
 }
 
 
@@ -152,6 +150,10 @@ function createComplexObject() {
     object.add(handObject);
 
 
+    baseGObject = object;
+    midHandGObject = handObject;
+    topHandGObject = topHandObject;
+
     scene.add(object);
 }
 
@@ -220,20 +222,68 @@ function createArtCanvas(h, w) {
     scene.add(object);
 }
 
+function toggleWireframe() {
+    //TODO
+}
 
+function onKeyDown(e) {
+    //console.log("PRESSED KEY:", e.key.toLowerCase());
+    //console.log("KEY CODE:", e.code());
 
-function detectKey(e) {
-    console.log("PRESSED KEY:", e.key.toLowerCase())
-    switch (e.key.toLowerCase()) {
-        case "1":
-            renderer.render(scene, camera1);
+    switch (e.code) {
+        case "Digit1":
+            camera = camera1;
             break;
-        case "2":
+        case "Digit2":
             renderer.render(scene, camera2);
+            camera = camera2;
             break;
-        case "3":
+        case "Digit3":
             renderer.render(scene, camera3);
+            camera = camera3;
+            break;
+        case "Digit4":
+            toggleWireframe();
+            break;
+        case "KeyQ":
+            baseGObject.rotateY(THREE.Math.degToRad(-10));
+            break;
+        case "KeyW":
+            baseGObject.rotateY(THREE.Math.degToRad(10));
+            break;
+        case "KeyA":
+            midHandGObject.rotateZ(THREE.Math.degToRad(-10));
+            break;
+        case "KeyS":
+            midHandGObject.rotateZ(THREE.Math.degToRad(10));
+            break;
+        case "KeyZ":
+            topHandGObject.rotateZ(THREE.Math.degToRad(-10));
+            break;
+        case "KeyX":
+            topHandGObject.rotateZ(THREE.Math.degToRad(+10));
+            break;
+        case "ArrowUp":
+            baseGObject.position.x+=5;
+            break
+        case "ArrowDown":
+            baseGObject.position.x-=5;
+            break
+        case "ArrowLeft":
+            baseGObject.position.z+=5;
+            break
+        case "ArrowRight":
+            baseGObject.position.z-=5;
+            break
+        case "KeyD":
+        case "KeyC":
+            pressed[e.code] = true;
             break;
     }
+    console.log(pressed);
+}
 
+function onKeyUp(e) {
+    if (pressed[e.code]) pressed[e.code] = false;
+    console.log(pressed);
 }
