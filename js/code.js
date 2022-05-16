@@ -1,14 +1,23 @@
 //*********************************************************
 //      Global Variables
 //*********************************************************
-var camera1, camera2, camera3, scene, renderer;
+var camera, camera1, camera2, camera3, scene, renderer;
 var globalObject;
 var pressed = {}
+
+var baseGObject, midHandGObject, topHandGObject;
 
 function createScene() {
     scene = new THREE.Scene();
     scene.add(new THREE.AxesHelper(5));
 }
+
+
+function animate() {
+    requestAnimationFrame( animate );
+    renderer.render( scene, camera ); // CHANGE TS
+};
+
 
 function init() {
     renderer = new THREE.WebGLRenderer({antialias: true});
@@ -24,7 +33,7 @@ function init() {
     camera2 = createCamera(0,20,0)
     camera3 = createCamera(20,0,0)
 
-
+    camera = camera1;
 
 
     //createCube(0,0,0);
@@ -39,18 +48,7 @@ function init() {
     //createArtCanvas(40, 40);
     createComplexObject();
 
-    renderer.render(scene, camera1);
-
-    //JUST FOR TEST
-    /*
-    setTimeout(function(){
-        renderer.render(scene, camera2);
-    }, 5000);
-
-    setTimeout(function(){
-        renderer.render(scene, camera3);
-    }, 10000);
-     */
+    animate();
 }
 
 
@@ -186,6 +184,10 @@ function createComplexObject() {
     object.add(handObject);
 
 
+    baseGObject = object;
+    midHandGObject = handObject;
+    topHandGObject = topHandObject;
+
     scene.add(object);
 }
 
@@ -264,27 +266,49 @@ function onKeyDown(e) {
 
     switch (e.code) {
         case "Digit1":
-            renderer.render(scene, camera1);
+            camera = camera1;
             break;
         case "Digit2":
             renderer.render(scene, camera2);
+            camera = camera2;
             break;
         case "Digit3":
             renderer.render(scene, camera3);
+            camera = camera3;
             break;
         case "Digit4":
             toggleWireframe();
             break;
         case "KeyQ":
+            baseGObject.rotateY(THREE.Math.degToRad(-10));
+            break;
         case "KeyW":
+            baseGObject.rotateY(THREE.Math.degToRad(10));
+            break;
         case "KeyA":
+            midHandGObject.rotateZ(THREE.Math.degToRad(-10));
+            break;
         case "KeyS":
+            midHandGObject.rotateZ(THREE.Math.degToRad(10));
+            break;
         case "KeyZ":
+            topHandGObject.rotateZ(THREE.Math.degToRad(-10));
+            break;
         case "KeyX":
+            topHandGObject.rotateZ(THREE.Math.degToRad(+10));
+            break;
         case "ArrowUp":
+            baseGObject.position.x+=5;
+            break
         case "ArrowDown":
+            baseGObject.position.x-=5;
+            break
         case "ArrowLeft":
+            baseGObject.position.z+=5;
+            break
         case "ArrowRight":
+            baseGObject.position.z-=5;
+            break
         case "KeyD":
         case "KeyC":
             pressed[e.code] = true;
