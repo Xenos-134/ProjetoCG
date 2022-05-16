@@ -2,8 +2,11 @@
 //      Global Variables
 //*********************************************************
 var camera, camera1, camera2, camera3, scene, renderer;
-var globalObject;
-var pressed = {}
+var createdObjects = [];
+var pressedButtons = []
+
+const unitStep = 1;
+const angleStep = 5;
 
 var baseGObject, midHandGObject, topHandGObject;
 
@@ -15,6 +18,9 @@ function createScene() {
 
 function animate() {
     requestAnimationFrame( animate );
+    //baseGObject.rotateY(THREE.Math.degToRad(-3));
+    //baseGObject.rotateZ(THREE.Math.degToRad(-3));
+    pressedButtons.forEach(code => detectPressedKey(code));
     renderer.render( scene, camera ); // CHANGE TS
 };
 
@@ -143,6 +149,7 @@ function createSpiral(x, y, z, r, l) {
     const geometry = new THREE.TubeGeometry(path, 64/(2*Math.PI)*l, r/10/l*(4*Math.PI));
     const material = new THREE.MeshBasicMaterial({ color: 0xffffff, wireframe: true });
     const spiral = new THREE.Mesh(geometry, material);
+    addElement(spiral);
     scene.add(spiral);
     return spiral;
 }
@@ -153,7 +160,6 @@ function createComplexObject() {
     const baseGeometry = new THREE.CylinderGeometry( 8, 12, 5, 32 );
     const baseMaterial = new THREE.MeshBasicMaterial({ color: 0x0000ff, wireframe: true });
     const base = new THREE.Mesh(baseGeometry, baseMaterial);
-
     object.rotateY(THREE.Math.degToRad(100));
 
     //HAND BETWEEN BASE AND TOP ONE
@@ -161,6 +167,7 @@ function createComplexObject() {
     const midHandGeometry = new THREE.BoxGeometry(3,20,3);
     const midHandMaterial = new THREE.MeshBasicMaterial({ color: 0xff00ff, wireframe: true });
     const midHand = new THREE.Mesh(midHandGeometry, midHandMaterial);
+
 
     midHand.position.y+= 2.5+9;
     handObject.rotateZ(THREE.Math.degToRad(30))     //ROTATION OF ALL HAND
@@ -179,6 +186,12 @@ function createComplexObject() {
     topHandObject.add(topHand);
     handObject.add(topHandObject)
     handObject.add(midHand); //vai pasar a ser outro objeto (talvez)
+
+
+    addElement(base);
+    addElement(midHand);
+    addElement(topHand);
+
 
     object.add(base);
     object.add(handObject);
@@ -256,15 +269,32 @@ function createArtCanvas(h, w) {
     scene.add(object);
 }
 
-function toggleWireframe() {
-    //TODO
+function addElement(obj) {
+    createdObjects.push(obj);
 }
 
-function onKeyDown(e) {
-    //console.log("PRESSED KEY:", e.key.toLowerCase());
-    //console.log("KEY CODE:", e.code());
+function toggleWireframe(flag) {
+    createdObjects.forEach(e => {
+        console.log("E:", e)
+        e.material.wireframe = flag;
+    })
+}
 
-    switch (e.code) {
+function addButtonToList(code) {
+    if(!pressedButtons.includes(code)) {
+        pressedButtons.push(code);
+        console.log("ADDED:", pressedButtons);
+    }
+}
+
+function removeButtonFromList(code) {
+    pressedButtons = pressedButtons.filter(c => c !== code);
+    console.log("PBS:", pressedButtons);
+}
+
+function detectPressedKey(code) {
+    console.log("DETECTED :", code);
+    switch (code) {
         case "Digit1":
             camera = camera1;
             break;
@@ -280,42 +310,51 @@ function onKeyDown(e) {
             toggleWireframe();
             break;
         case "KeyQ":
-            baseGObject.rotateY(THREE.Math.degToRad(-10));
+            baseGObject.rotateY(THREE.Math.degToRad(-angleStep));
             break;
         case "KeyW":
-            baseGObject.rotateY(THREE.Math.degToRad(10));
+            baseGObject.rotateY(THREE.Math.degToRad(angleStep));
             break;
         case "KeyA":
-            midHandGObject.rotateZ(THREE.Math.degToRad(-10));
+            midHandGObject.rotateZ(THREE.Math.degToRad(-angleStep));
             break;
         case "KeyS":
-            midHandGObject.rotateZ(THREE.Math.degToRad(10));
+            midHandGObject.rotateZ(THREE.Math.degToRad(angleStep));
             break;
         case "KeyZ":
-            topHandGObject.rotateZ(THREE.Math.degToRad(-10));
+            topHandGObject.rotateZ(THREE.Math.degToRad(-angleStep));
             break;
         case "KeyX":
-            topHandGObject.rotateZ(THREE.Math.degToRad(+10));
+            topHandGObject.rotateZ(THREE.Math.degToRad(+angleStep));
             break;
         case "ArrowUp":
-            baseGObject.position.z-=5;
-            break
+            baseGObject.position.z-=unitStep;
+            break;
         case "ArrowDown":
-            baseGObject.position.z+=5;
-            break
+            baseGObject.position.z+=unitStep;
+            break;
         case "ArrowLeft":
-            baseGObject.position.x-=5;
-            break
+            baseGObject.position.x-=unitStep;
+            break;
         case "ArrowRight":
-            baseGObject.position.x+=5;
-            break
+            baseGObject.position.x+=unitStep;
+            break;
         case "KeyD":
+            toggleWireframe(false);
+            break;
         case "KeyC":
-            pressed[e.code] = true;
+            toggleWireframe(true);
             break;
     }
 }
 
+
+
+function onKeyDown(e) {
+    addButtonToList(e.code);
+
+}
 function onKeyUp(e) {
-    if (pressed[e.code]) pressed[e.code] = false;
+    removeButtonFromList(e.code);
+    //if (pressed[e.code]) pressed[e.code] = false;
 }
