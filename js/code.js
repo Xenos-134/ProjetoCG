@@ -7,7 +7,7 @@ var pressed = {}
 
 function createScene() {
     scene = new THREE.Scene();
-    scene.add(new THREE.AxisHelper(5));
+    scene.add(new THREE.AxesHelper(5));
 }
 
 function init() {
@@ -32,6 +32,7 @@ function init() {
     //createSphere(0,0,0);
     //createCone(0,0,0);
     //createTorus(0,0,0);
+    //createSpiral(0,0,0,15,9*Math.PI);
 
     //create3DObject(0,0,0);
 
@@ -113,6 +114,39 @@ function createCanvas() {
     const material = new THREE.MeshBasicMaterial({ color: 0x00ff00, wireframe: true });
     const cube = new THREE.Mesh(geometry, material);
     scene.add(cube)
+}
+
+class SpiralCurve extends THREE.Curve {
+
+	constructor(x, y, z, r, l) {
+        super();
+        this.x = x;
+        this.y = y;
+        this.z = z;
+        this.radius = r;
+        this.length = l;
+	}
+
+	getPoint( t, optionalTarget = new THREE.Vector3() ) {
+        const a = this.length * t;
+        const r = this.radius * t;
+
+        const x = this.x + r * Math.cos(a);
+        const y = this.y + r * Math.sin(a);
+        const z = this.z;
+
+		return optionalTarget.set(x, y, z);
+
+	}
+}
+
+function createSpiral(x, y, z, r, l) {
+    const path = new SpiralCurve(x, y, z, r, l);
+    const geometry = new THREE.TubeGeometry(path, 64/(2*Math.PI)*l, r/10/l*(4*Math.PI));
+    const material = new THREE.MeshBasicMaterial({ color: 0xffffff, wireframe: true });
+    const spiral = new THREE.Mesh(geometry, material);
+    scene.add(spiral);
+    return spiral;
 }
 
 function createComplexObject() {
@@ -256,10 +290,8 @@ function onKeyDown(e) {
             pressed[e.code] = true;
             break;
     }
-    console.log(pressed);
 }
 
 function onKeyUp(e) {
     if (pressed[e.code]) pressed[e.code] = false;
-    console.log(pressed);
 }
