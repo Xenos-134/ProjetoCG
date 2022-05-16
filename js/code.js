@@ -18,10 +18,8 @@ function createScene() {
 
 function animate() {
     requestAnimationFrame( animate );
-    //baseGObject.rotateY(THREE.Math.degToRad(-3));
-    //baseGObject.rotateZ(THREE.Math.degToRad(-3));
     pressedButtons.forEach(code => detectPressedKey(code));
-    renderer.render( scene, camera ); // CHANGE TS
+    renderer.render( scene, camera );
 };
 
 
@@ -71,6 +69,9 @@ function createCamera(x,y,z) {
     camera.lookAt(scene.position);
     return camera
 }
+
+
+
 
 function createCube(x,y,z) {
     const geometry = new THREE.BoxGeometry(10,10,10);
@@ -155,12 +156,30 @@ function createSpiral(x, y, z, r, l) {
 }
 
 function createComplexObject() {
-
     const object = new THREE.Object3D();
     const baseGeometry = new THREE.CylinderGeometry( 8, 12, 5, 32 );
     const baseMaterial = new THREE.MeshBasicMaterial({ color: 0x0000ff, wireframe: true });
     const base = new THREE.Mesh(baseGeometry, baseMaterial);
     object.rotateY(THREE.Math.degToRad(100));
+
+    const doorFoldGeometry = new THREE.CylinderGeometry( 1, 1, 7, 32);
+    const doorFoldMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff, wireframe: true });
+    const doorFold = new THREE.Mesh(doorFoldGeometry, doorFoldMaterial);
+    doorFold.rotateZ(THREE.Math.degToRad(90));
+    doorFold.rotateX(THREE.Math.degToRad(90));
+    doorFold.position.x=6;
+    doorFold.position.y=3.5;
+    object.add(doorFold);
+
+
+    const coneGeometry = new THREE.ConeGeometry(8, 5, 16);
+    const coneMaterial = new THREE.MeshBasicMaterial({ color: 0xffff00, wireframe: true });
+    const cone = new THREE.Mesh(coneGeometry, coneMaterial);
+    cone.position.y=8;
+    cone.position.x=13;
+    cone.rotateZ(THREE.Math.degToRad(-120));
+    object.add(cone);
+
 
     //HAND BETWEEN BASE AND TOP ONE
     const handObject = new THREE.Object3D();
@@ -191,6 +210,7 @@ function createComplexObject() {
     addElement(base);
     addElement(midHand);
     addElement(topHand);
+    addElement(doorFold);
 
 
     object.add(base);
