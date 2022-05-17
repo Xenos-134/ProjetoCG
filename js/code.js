@@ -50,7 +50,9 @@ function init() {
     //create3DObject(0,0,0);
 
     //createArtCanvas(40, 40);
-    createComplexObject();
+    //createComplexObject();
+    createStar(10,10,10);
+    createStar(-10,-10,-10);
 
     animate();
 }
@@ -71,6 +73,29 @@ function createCamera(x,y,z) {
 }
 
 
+function createStar(x,y,z) {
+    const object = new THREE.Object3D();
+    const pyramidTopGeometry = new THREE.ConeGeometry( 5, 10, 4);
+    const material = new THREE.MeshBasicMaterial({ color: 0xffff00, wireframe: true });
+    const pyramidTop = new THREE.Mesh(pyramidTopGeometry, material);
+    pyramidTop.position.y = 1.25;
+    const pyramidBot = new THREE.Mesh(pyramidTopGeometry, material);
+    pyramidBot.rotateZ(THREE.Math.degToRad(180));
+    //pyramidBot.rotateY(THREE.Math.degToRad(45));
+    pyramidBot.position.y = - 1.25;
+
+
+    object.position.x = x;
+    object.position.y = y;
+    object.position.z = z;
+
+    addElement(pyramidTop);
+    //addElement(pyramidBot);
+
+    object.add(pyramidTop);
+    object.add(pyramidBot);
+    scene.add(object);
+}
 
 
 function createCube(x,y,z) {
@@ -208,14 +233,13 @@ function createComplexObject() {
 
 
     addElement(base);
+    addElement(cone);
     addElement(midHand);
     addElement(topHand);
     addElement(doorFold);
 
-
     object.add(base);
     object.add(handObject);
-
 
     baseGObject = object;
     midHandGObject = handObject;
@@ -296,7 +320,7 @@ function addElement(obj) {
 function toggleWireframe(flag) {
     createdObjects.forEach(e => {
         console.log("E:", e)
-        e.material.wireframe = flag;
+        e.material.wireframe = !e.material.wireframe;
     })
 }
 
@@ -315,20 +339,6 @@ function removeButtonFromList(code) {
 function detectPressedKey(code) {
     console.log("DETECTED :", code);
     switch (code) {
-        case "Digit1":
-            camera = camera1;
-            break;
-        case "Digit2":
-            renderer.render(scene, camera2);
-            camera = camera2;
-            break;
-        case "Digit3":
-            renderer.render(scene, camera3);
-            camera = camera3;
-            break;
-        case "Digit4":
-            toggleWireframe();
-            break;
         case "KeyQ":
             baseGObject.rotateY(THREE.Math.degToRad(-angleStep));
             break;
@@ -359,22 +369,45 @@ function detectPressedKey(code) {
         case "ArrowRight":
             baseGObject.position.x+=unitStep;
             break;
-        case "KeyD":
-            toggleWireframe(false);
-            break;
-        case "KeyC":
-            toggleWireframe(true);
-            break;
     }
 }
 
 
-
 function onKeyDown(e) {
-    addButtonToList(e.code);
+    switch (e.code) {
+        case "Digit1":
+            camera = camera1;
+            break;
+        case "Digit2":
+            renderer.render(scene, camera2);
+            camera = camera2;
+            break;
+        case "Digit3":
+            renderer.render(scene, camera3);
+            camera = camera3;
+            break;
+        case "Digit6":
+            console.log("XXXXXXXXXXXXXXXxx", pressedButtons);
+            addButtonToList(e.code)
+            break;
+        case "KeyQ":
+        case "KeyW":
+        case "KeyA":
+        case "KeyS":
+        case "KeyZ":
+        case "KeyX":
+        case "ArrowUp":
+        case "ArrowDown":
+        case "ArrowLeft":
+        case "ArrowRight":
+        case "KeyD":
+        case "KeyC":
+            addButtonToList(e.code);
+            break;
+    }
 
 }
 function onKeyUp(e) {
+    if(e.code === "Digit4") toggleWireframe();
     removeButtonFromList(e.code);
-    //if (pressed[e.code]) pressed[e.code] = false;
 }
