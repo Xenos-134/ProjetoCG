@@ -4,9 +4,10 @@
 var camera, camera1, camera2, camera3, scene, renderer;
 var createdObjects = [];
 var pressedButtons = []
+var clock;
 
-const unitStep = 1;
-const angleStep = 5;
+const unitStep = 50;
+const angleStep = 300;
 
 var baseGObject, midHandGObject, topHandGObject;
 
@@ -17,8 +18,9 @@ function createScene() {
 
 
 function animate() {
+    delta = clock.getDelta();
     requestAnimationFrame( animate );
-    pressedButtons.forEach(code => detectPressedKey(code));
+    pressedButtons.forEach(code => detectPressedKey(code, delta));
     renderer.render( scene, camera );
 };
 
@@ -50,10 +52,11 @@ function init() {
     //create3DObject(0,0,0);
 
     //createArtCanvas(40, 40);
-    //createComplexObject();
-    createStar(10,10,10);
-    createStar(-10,-10,-10);
+    createComplexObject();
+    //createStar(10,10,10);
+    //createStar(-10,-10,-10);
 
+    clock = new THREE.Clock();
     animate();
 }
 
@@ -336,38 +339,44 @@ function removeButtonFromList(code) {
     console.log("PBS:", pressedButtons);
 }
 
-function detectPressedKey(code) {
+function detectPressedKey(code, delta) {
     console.log("DETECTED :", code);
     switch (code) {
         case "KeyQ":
-            baseGObject.rotateY(THREE.Math.degToRad(-angleStep));
+            baseGObject.rotateY(THREE.Math.degToRad(-angleStep * delta));
             break;
         case "KeyW":
-            baseGObject.rotateY(THREE.Math.degToRad(angleStep));
+            baseGObject.rotateY(THREE.Math.degToRad(angleStep * delta));
             break;
         case "KeyA":
-            midHandGObject.rotateZ(THREE.Math.degToRad(-angleStep));
+            midHandGObject.rotateZ(THREE.Math.degToRad(-angleStep * delta));
             break;
         case "KeyS":
-            midHandGObject.rotateZ(THREE.Math.degToRad(angleStep));
+            midHandGObject.rotateZ(THREE.Math.degToRad(angleStep * delta));
             break;
         case "KeyZ":
-            topHandGObject.rotateZ(THREE.Math.degToRad(-angleStep));
+            topHandGObject.rotateZ(THREE.Math.degToRad(-angleStep * delta));
             break;
         case "KeyX":
-            topHandGObject.rotateZ(THREE.Math.degToRad(+angleStep));
+            topHandGObject.rotateZ(THREE.Math.degToRad(+angleStep * delta));
             break;
         case "ArrowUp":
-            baseGObject.position.z-=unitStep;
+            baseGObject.position.z -= unitStep * delta;
             break;
         case "ArrowDown":
-            baseGObject.position.z+=unitStep;
+            baseGObject.position.z += unitStep * delta;
             break;
         case "ArrowLeft":
-            baseGObject.position.x-=unitStep;
+            baseGObject.position.x -= unitStep * delta;
             break;
         case "ArrowRight":
-            baseGObject.position.x+=unitStep;
+            baseGObject.position.x += unitStep * delta;
+            break;
+        case "KeyC":
+            baseGObject.position.y -= unitStep * delta;
+            break;
+        case "KeyD":
+            baseGObject.position.y += unitStep * delta;
             break;
     }
 }
