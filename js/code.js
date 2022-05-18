@@ -9,7 +9,9 @@ var clock;
 const unitStep = 50;
 const angleStep = 300;
 
-var baseGObject, midHandGObject, topHandGObject;
+const coneAng = THREE.Math.degToRad(120)
+
+var baseObject, armObject, handObject;
 
 function createScene() {
     scene = new THREE.Scene();
@@ -184,71 +186,68 @@ function createSpiral(x, y, z, r, l) {
 }
 
 function createComplexObject() {
-    const object = new THREE.Object3D();
+    //BASE
+    baseObject = new THREE.Object3D();
+
     const baseGeometry = new THREE.CylinderGeometry( 8, 12, 5, 32 );
     const baseMaterial = new THREE.MeshBasicMaterial({ color: 0x0000ff, wireframe: true });
     const base = new THREE.Mesh(baseGeometry, baseMaterial);
-    object.rotateY(THREE.Math.degToRad(100));
 
-    const doorFoldGeometry = new THREE.CylinderGeometry( 1, 1, 7, 32);
-    const doorFoldMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff, wireframe: true });
-    const doorFold = new THREE.Mesh(doorFoldGeometry, doorFoldMaterial);
-    doorFold.rotateZ(THREE.Math.degToRad(90));
-    doorFold.rotateX(THREE.Math.degToRad(90));
-    doorFold.position.x=6;
-    doorFold.position.y=3.5;
-    object.add(doorFold);
+    const hingeGeometry = new THREE.CylinderGeometry( 1, 1, 7, 16);
+    const hingeMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff, wireframe: true });
+    const hinge = new THREE.Mesh(hingeGeometry, hingeMaterial);
+    hinge.position.x=8;
+    hinge.position.y=2.5;
+    hinge.rotateZ(THREE.Math.degToRad(90));
+    hinge.rotateX(THREE.Math.degToRad(90));
 
-
-    const coneGeometry = new THREE.ConeGeometry(8, 5, 16);
+    const coneGeometry = new THREE.ConeGeometry(8, 5, 32);
     const coneMaterial = new THREE.MeshBasicMaterial({ color: 0xffff00, wireframe: true });
     const cone = new THREE.Mesh(coneGeometry, coneMaterial);
-    cone.position.y=8;
-    cone.position.x=13;
-    cone.rotateZ(THREE.Math.degToRad(-120));
-    object.add(cone);
+    cone.position.y = + 2.5 + 8 * Math.sin(coneAng) + 2.5 * Math.cos(coneAng);
+    cone.position.x = + 8 - 8 * Math.cos(coneAng) + 2.5 * Math.sin(coneAng);
+    cone.rotateZ(-coneAng);
+
+    baseObject.add(base);
+    baseObject.add(hinge);
+    baseObject.add(cone);
 
 
-    //HAND BETWEEN BASE AND TOP ONE
-    const handObject = new THREE.Object3D();
-    const midHandGeometry = new THREE.BoxGeometry(3,20,3);
-    const midHandMaterial = new THREE.MeshBasicMaterial({ color: 0xff00ff, wireframe: true });
-    const midHand = new THREE.Mesh(midHandGeometry, midHandMaterial);
+    //ARM
+    armObject = new THREE.Object3D();
+
+    const armGeometry = new THREE.BoxGeometry(3,20,3);
+    const armMaterial = new THREE.MeshBasicMaterial({ color: 0xff00ff, wireframe: true });
+    const arm = new THREE.Mesh(armGeometry, armMaterial);
+    arm.position.y+= 2.5+9;
+    armObject.rotateZ(THREE.Math.degToRad(30))     //ROTATION OF ALL HAND
+
+    armObject.add(arm); //vai pasar a ser outro objeto (talvez)
+    baseObject.add(armObject);
 
 
-    midHand.position.y+= 2.5+9;
-    handObject.rotateZ(THREE.Math.degToRad(30))     //ROTATION OF ALL HAND
+    //HAND
+    handObject = new THREE.Object3D();
 
-    //TOP HAND
-    const topHandObject = new THREE.Object3D();
-    const topHandGeometry = new THREE.BoxGeometry(3,10,3);
-    const topHandMaterial = new THREE.MeshBasicMaterial({ color: 0x00ffff, wireframe: true });
-    const topHand = new THREE.Mesh(topHandGeometry, topHandMaterial);
+    const handGeometry = new THREE.BoxGeometry(3,10,3);
+    const handMaterial = new THREE.MeshBasicMaterial({ color: 0x00ffff, wireframe: true });
+    const hand = new THREE.Mesh(handGeometry, handMaterial);
+    handObject.position.y+=22;
+    hand.position.y+=3;
+    handObject.rotateZ(THREE.Math.degToRad(50));      //ROTATION OF TOP HAND
 
-    topHandObject.position.y+=22;
-    topHand.position.y+=3;
-    topHandObject.rotateZ(THREE.Math.degToRad(50));      //ROTATION OF TOP HAND
+    handObject.add(hand);
+    armObject.add(handObject)
 
-
-    topHandObject.add(topHand);
-    handObject.add(topHandObject)
-    handObject.add(midHand); //vai pasar a ser outro objeto (talvez)
-
-
+    
     addElement(base);
     addElement(cone);
-    addElement(midHand);
-    addElement(topHand);
-    addElement(doorFold);
+    addElement(hinge);
+    addElement(arm);
+    addElement(hand);
 
-    object.add(base);
-    object.add(handObject);
-
-    baseGObject = object;
-    midHandGObject = handObject;
-    topHandGObject = topHandObject;
-
-    scene.add(object);
+    baseObject.rotateY(THREE.Math.degToRad(100));
+    scene.add(baseObject);
 }
 
 function createCombinedObject2() {
@@ -343,40 +342,40 @@ function detectPressedKey(code, delta) {
     console.log("DETECTED :", code);
     switch (code) {
         case "KeyQ":
-            baseGObject.rotateY(THREE.Math.degToRad(-angleStep * delta));
+            baseObject.rotateY(THREE.Math.degToRad(-angleStep * delta));
             break;
         case "KeyW":
-            baseGObject.rotateY(THREE.Math.degToRad(angleStep * delta));
+            baseObject.rotateY(THREE.Math.degToRad(angleStep * delta));
             break;
         case "KeyA":
-            midHandGObject.rotateZ(THREE.Math.degToRad(-angleStep * delta));
+            armObject.rotateZ(THREE.Math.degToRad(-angleStep * delta));
             break;
         case "KeyS":
-            midHandGObject.rotateZ(THREE.Math.degToRad(angleStep * delta));
+            armObject.rotateZ(THREE.Math.degToRad(angleStep * delta));
             break;
         case "KeyZ":
-            topHandGObject.rotateZ(THREE.Math.degToRad(-angleStep * delta));
+            handObject.rotateZ(THREE.Math.degToRad(-angleStep * delta));
             break;
         case "KeyX":
-            topHandGObject.rotateZ(THREE.Math.degToRad(+angleStep * delta));
+            handObject.rotateZ(THREE.Math.degToRad(+angleStep * delta));
             break;
         case "ArrowUp":
-            baseGObject.position.z -= unitStep * delta;
+            baseObject.position.z -= unitStep * delta;
             break;
         case "ArrowDown":
-            baseGObject.position.z += unitStep * delta;
+            baseObject.position.z += unitStep * delta;
             break;
         case "ArrowLeft":
-            baseGObject.position.x -= unitStep * delta;
+            baseObject.position.x -= unitStep * delta;
             break;
         case "ArrowRight":
-            baseGObject.position.x += unitStep * delta;
+            baseObject.position.x += unitStep * delta;
             break;
         case "KeyC":
-            baseGObject.position.y -= unitStep * delta;
+            baseObject.position.y -= unitStep * delta;
             break;
         case "KeyD":
-            baseGObject.position.y += unitStep * delta;
+            baseObject.position.y += unitStep * delta;
             break;
     }
 }
