@@ -44,10 +44,8 @@ function init() {
 
     camera = camera1;
 
-    //createArtCanvas(40, 40);
     createComplexObject().translateY(-15);
     createStar(15,10,-20).rotateZ(THREE.Math.degToRad(-10));
-    //createStar(-20,-20,-10);
     createPlanet(-20,15,20).rotateY(THREE.Math.degToRad(-20)).rotateX(THREE.Math.degToRad(120));
     createCube(-20, 0, -10).rotateZ(THREE.Math.degToRad(30));
     createCube(40, -5, 0).rotateZ(THREE.Math.degToRad(-30));
@@ -81,7 +79,6 @@ function createSimpleCube(x,y,z) {
 
 
 function createCamera(x,y,z) {
-    //TODO -> Alterar esta parte
     const height = screen.height/15;
     const width = screen.width/15
     const camera = new THREE.OrthographicCamera( width / - 2, width / 2, height / 2, height / - 2, 1, 1000 );
@@ -116,7 +113,6 @@ function createStar(x,y,z) {
     pyramidTop.position.y = 1.25;
     const pyramidBot = new THREE.Mesh(pyramidTopGeometry, material);
     pyramidBot.rotateZ(THREE.Math.degToRad(180));
-    //pyramidBot.rotateY(THREE.Math.degToRad(45));
     pyramidBot.position.y = - 1.25;
 
 
@@ -125,7 +121,6 @@ function createStar(x,y,z) {
     object.position.z = z;
 
     addElement(pyramidTop);
-    //addElement(pyramidBot);
 
     object.add(pyramidTop);
     object.add(pyramidBot);
@@ -155,7 +150,7 @@ function createPlanet(x,y,z) {
     return sphere;
 }
 
-
+// The octahedron that wanted to be a cube.
 function createCube(x,y,z) {
     const geometry1 = new THREE.ConeGeometry( 5, 7, 4 );
     const material = new THREE.MeshBasicMaterial({ color: 0x00ff7f, wireframe: true });
@@ -175,17 +170,6 @@ function createCube(x,y,z) {
     return cube1;
 }
 
-
-
-function createCylinder(x,y,z) {
-    const geometry = new THREE.CylinderGeometry(5, 5, 20, 32 );
-    const material = new THREE.MeshBasicMaterial({ color: 0x00ff00, wireframe: true });
-    const cylinder = new THREE.Mesh(geometry, material);
-    cylinder.position.x = 15;
-    scene.add(cylinder);
-    return cylinder;
-}
-
 function createSphere(x,y,z) {
     const geometry = new THREE.SphereGeometry(2, 8, 16);
     const material = new THREE.MeshBasicMaterial({ color: 0x00ff00, wireframe: true });
@@ -197,24 +181,6 @@ function createSphere(x,y,z) {
     addElement(sphere);
     scene.add(sphere);
     return sphere;
-}
-
-function createCone(x, y, z) {
-    const geometry = new THREE.ConeGeometry(8, 8, 16);
-    const material = new THREE.MeshBasicMaterial({ color: 0x00ff00, wireframe: true });
-    const cone = new THREE.Mesh(geometry, material);
-    cone.position.y = 15
-    scene.add(cone)
-    return cone;
-}
-
-
-function createCanvas() {
-    const geometry = new THREE.BoxGeometry(10,10,10);
-    const material = new THREE.MeshBasicMaterial({ color: 0x00ff00, wireframe: true });
-    const cube = new THREE.Mesh(geometry, material);
-    scene.add(cube)
-    return cube;
 }
 
 class SpiralCurve extends THREE.Curve {
@@ -286,9 +252,9 @@ function createComplexObject() {
     const armMaterial = new THREE.MeshBasicMaterial({ color: 0xff00ff, wireframe: true });
     const arm = new THREE.Mesh(armGeometry, armMaterial);
     arm.position.y+= 2.5+9;
-    armObject.rotateZ(THREE.Math.degToRad(30))     //ROTATION OF ALL HAND
+    armObject.rotateZ(THREE.Math.degToRad(30))
 
-    armObject.add(arm); //vai pasar a ser outro objeto (talvez)
+    armObject.add(arm);
     baseObject.add(armObject);
 
 
@@ -300,7 +266,7 @@ function createComplexObject() {
     const hand = new THREE.Mesh(handGeometry, handMaterial);
     handObject.position.y+=22;
     hand.position.y+=3;
-    handObject.rotateZ(THREE.Math.degToRad(50));      //ROTATION OF TOP HAND
+    handObject.rotateZ(THREE.Math.degToRad(50));
 
     handObject.add(hand);
     armObject.add(handObject)
@@ -315,71 +281,6 @@ function createComplexObject() {
     baseObject.rotateY(THREE.Math.degToRad(100));
     scene.add(baseObject);
     return baseObject;
-}
-
-function createCombinedObject2() {
-    //TODO
-}
-
-function createCombinedObject3() {
-    //TODO
-}
-
-function create3DObject(x,y,z) {
-    const object = new THREE.Object3D();
-    const ballGeometry = new THREE.SphereGeometry(8, 8, 16);
-    const material = new THREE.MeshBasicMaterial({ color: 0x0000ff, wireframe: true });
-    const ball = new THREE.Mesh(ballGeometry, material);
-
-    object.position.x = -25;
-    object.position.y = -25;
-
-    object.add(ball);
-    scene.add(object);
-}
-
-function createArtCanvas(h, w) {
-    const object = new THREE.Object3D();
-    const objectMaterialWireframe = false;
-
-    //MAIN Canvas Part
-    const mainSpaceGeometry = new THREE.BoxGeometry(70,50,1);
-    const mainSpaceMaterial = new THREE.MeshBasicMaterial({ color: 0x0000ff, wireframe: objectMaterialWireframe });
-    const mainSpace = new THREE.Mesh(mainSpaceGeometry, mainSpaceMaterial);
-
-    //BORDERS
-    const borderMaterial = new THREE.MeshBasicMaterial({ color: 0xff00ff, wireframe: objectMaterialWireframe });
-    //Horizontal Borders
-    const hBorderGeometry = new THREE.CylinderGeometry(1,1,51, 20, 1, false, 0, Math.PI);
-    const hBorderL = new THREE.Mesh(hBorderGeometry, borderMaterial);
-    hBorderL.rotation.y = -1.5; hBorderL.position.x = -34.5;
-
-    const hBorderR = new THREE.Mesh(hBorderGeometry, borderMaterial);
-    hBorderR.rotation.y = -1.5; hBorderR.position.x = 34.5;
-    //Vertical Borders
-    const vBorderGeometry = new THREE.CylinderGeometry(1,1,71, 20, 1, false, 0, Math.PI);
-    const vBorderT = new THREE.Mesh(vBorderGeometry, borderMaterial);
-    vBorderT.rotateZ(THREE.Math.degToRad(270));
-    vBorderT.rotateY(THREE.Math.degToRad(270));
-    vBorderT.position.y = -24.5;
-
-    const vBorderB = new THREE.Mesh(vBorderGeometry, borderMaterial);
-    vBorderB.rotateZ(THREE.Math.degToRad(270));
-    vBorderB.rotateY(THREE.Math.degToRad(270));
-    vBorderB.position.y = -24.5;
-    vBorderB.position.y = 24.5;
-
-
-    object.position.x = 0;
-    object.position.y = 0;
-    object.position.z = 0;
-
-    object.add(hBorderL);
-    object.add(hBorderR);
-    object.add(vBorderT);
-    object.add(vBorderB);
-    object.add(mainSpace);
-    scene.add(object);
 }
 
 function addElement(obj) {
