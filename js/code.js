@@ -15,7 +15,7 @@ var baseObject, armObject, handObject;
 
 function createScene() {
     scene = new THREE.Scene();
-    scene.add(new THREE.AxesHelper(5));
+    //scene.add(new THREE.AxesHelper(5));
 }
 
 
@@ -47,16 +47,17 @@ function init() {
 
 
     //createArtCanvas(40, 40);
-    createComplexObject();
-    createStar(10,15,10);
+    createComplexObject().translateY(-15);
+    createStar(15,10,-20).rotateZ(THREE.Math.degToRad(-10));
     //createStar(-20,-20,-10);
-    createPlanet(-20,20,20);
-    createCube(-30,0,0, 30);
-    createCube(40,-5,0, -30);
-    createCube(-40,10,10, -35);
-    createTorus(30,-20, 20);
-    createSphere(30,10,0);
-    createSimpleCube(-25, -15, -10);
+    createPlanet(-20,15,20).rotateY(THREE.Math.degToRad(-20)).rotateX(THREE.Math.degToRad(120));
+    createCube(-20, 0, -10).rotateZ(THREE.Math.degToRad(30));
+    createCube(40, -5, 0).rotateZ(THREE.Math.degToRad(-30));
+    createCube(-30, 5, 10).rotateZ(THREE.Math.degToRad(-35));
+    createTorus(25, -20, 20).rotateY(THREE.Math.degToRad(-30)).rotateX(THREE.Math.degToRad(46));
+    createSphere(30, 10, 0);
+    createSimpleCube(-30, -15, 5);
+    createSpiral(-5, -5, -20, 5, 3.5*Math.PI).rotateX(Math.PI)
 
     clock = new THREE.Clock();
     animate();
@@ -76,6 +77,7 @@ function createSimpleCube(x,y,z) {
 
     addElement(cube);
     scene.add( cube );
+    return cube;
 }
 
 
@@ -90,7 +92,7 @@ function createCamera(x,y,z) {
     camera.position.y = y;
     camera.position.z = z;
     camera.lookAt(scene.position);
-    return camera
+    return camera;
 }
 
 function createTorus(x,y,z) {
@@ -98,13 +100,13 @@ function createTorus(x,y,z) {
     const torusMaterial = new THREE.MeshBasicMaterial( { color: 0xff0f0f, wireframe: true } );
     const torus = new THREE.Mesh( torusGeomety, torusMaterial );
 
-    torus.rotateX(THREE.Math.degToRad(46));
     torus.position.x = x;
     torus.position.y = y;
     torus.position.z = z;
 
     addElement(torus);
     scene.add(torus);
+    return torus;
 }
 
 
@@ -130,6 +132,7 @@ function createStar(x,y,z) {
     object.add(pyramidTop);
     object.add(pyramidBot);
     scene.add(object);
+    return object;
 }
 
 
@@ -139,13 +142,11 @@ function createPlanet(x,y,z) {
     const sphere = new THREE.Mesh( shpereGeometry, shpereMaterial );
 
     const torusGeomety = new THREE.TorusBufferGeometry(10, 1.5, 50, 50);
-    const torusMaterial = new THREE.MeshBasicMaterial( { color: 0xff0f0f, wireframe: true } );
+    const torusMaterial = new THREE.MeshBasicMaterial( { color: 0xff7f00, wireframe: true } );
     const torus = new THREE.Mesh( torusGeomety, torusMaterial );
 
     sphere.add(torus);
 
-    sphere.rotateX(THREE.Math.degToRad(120));
-    sphere.rotateY(THREE.Math.degToRad(0));
     sphere.position.x = x;
     sphere.position.y = y;
     sphere.position.z = z;
@@ -153,12 +154,13 @@ function createPlanet(x,y,z) {
     addElement(sphere);
     addElement(torus);
     scene.add( sphere );
+    return sphere;
 }
 
 
-function createCube(x,y,z, rotation) {
+function createCube(x,y,z) {
     const geometry1 = new THREE.ConeGeometry( 5, 7, 4 );
-    const material = new THREE.MeshBasicMaterial({ color: 0x00ff00, wireframe: true });
+    const material = new THREE.MeshBasicMaterial({ color: 0x00ff7f, wireframe: true });
     const cube1 = new THREE.Mesh(geometry1, material);
     const cube2 = new THREE.Mesh(geometry1, material);
 
@@ -170,10 +172,9 @@ function createCube(x,y,z, rotation) {
     cube1.position.y = y;
     cube1.position.z = z;
 
-    cube1.rotateZ(THREE.Math.degToRad(rotation));
-
     addElement(cube1);
     scene.add(cube1)
+    return cube1;
 }
 
 
@@ -181,13 +182,14 @@ function createCube(x,y,z, rotation) {
 function createCylinder(x,y,z) {
     const geometry = new THREE.CylinderGeometry(5, 5, 20, 32 );
     const material = new THREE.MeshBasicMaterial({ color: 0x00ff00, wireframe: true });
-    const cylinerd = new THREE.Mesh(geometry, material);
-    cylinerd.position.x = 15
-    scene.add(cylinerd)
+    const cylinder = new THREE.Mesh(geometry, material);
+    cylinder.position.x = 15;
+    scene.add(cylinder);
+    return cylinder;
 }
 
 function createSphere(x,y,z) {
-    const geometry = new THREE.SphereGeometry(3, 8, 16);
+    const geometry = new THREE.SphereGeometry(2, 8, 16);
     const material = new THREE.MeshBasicMaterial({ color: 0x00ff00, wireframe: true });
     const sphere = new THREE.Mesh(geometry, material);
     sphere.position.x = x;
@@ -195,7 +197,8 @@ function createSphere(x,y,z) {
     sphere.position.z = z;
 
     addElement(sphere);
-    scene.add(sphere)
+    scene.add(sphere);
+    return sphere;
 }
 
 function createCone(x, y, z) {
@@ -204,6 +207,7 @@ function createCone(x, y, z) {
     const cone = new THREE.Mesh(geometry, material);
     cone.position.y = 15
     scene.add(cone)
+    return cone;
 }
 
 
@@ -212,6 +216,7 @@ function createCanvas() {
     const material = new THREE.MeshBasicMaterial({ color: 0x00ff00, wireframe: true });
     const cube = new THREE.Mesh(geometry, material);
     scene.add(cube)
+    return cube;
 }
 
 class SpiralCurve extends THREE.Curve {
@@ -241,7 +246,7 @@ class SpiralCurve extends THREE.Curve {
 function createSpiral(x, y, z, r, l) {
     const path = new SpiralCurve(x, y, z, r, l);
     const geometry = new THREE.TubeGeometry(path, 64/(2*Math.PI)*l, r/10/l*(4*Math.PI));
-    const material = new THREE.MeshBasicMaterial({ color: 0xffffff, wireframe: true });
+    const material = new THREE.MeshBasicMaterial({ color: 0x7f00ff, wireframe: true });
     const spiral = new THREE.Mesh(geometry, material);
     addElement(spiral);
     scene.add(spiral);
@@ -257,7 +262,7 @@ function createComplexObject() {
     const base = new THREE.Mesh(baseGeometry, baseMaterial);
 
     const hingeGeometry = new THREE.CylinderGeometry( 1, 1, 7, 16);
-    const hingeMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff, wireframe: true });
+    const hingeMaterial = new THREE.MeshBasicMaterial({ color: 0xbfbfbf, wireframe: true });
     const hinge = new THREE.Mesh(hingeGeometry, hingeMaterial);
     hinge.position.x=8;
     hinge.position.y=2.5;
@@ -311,6 +316,7 @@ function createComplexObject() {
 
     baseObject.rotateY(THREE.Math.degToRad(100));
     scene.add(baseObject);
+    return baseObject;
 }
 
 function createCombinedObject2() {
