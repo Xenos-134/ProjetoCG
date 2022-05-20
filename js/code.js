@@ -15,14 +15,16 @@ var baseObject, armObject, handObject;
 
 function createScene() {
     scene = new THREE.Scene();
-    //scene.add(new THREE.AxesHelper(5));
 }
 
 
 function animate() {
     delta = clock.getDelta();
     requestAnimationFrame( animate );
-    pressedButtons.forEach(code => detectPressedKey(code, delta));
+    movement = new THREE.Vector3(0, 0, 0)
+    pressedButtons.forEach(code => detectPressedKey(code, delta, movement));
+    movement.setLength(delta * unitStep);
+    baseObject.position.add(movement);
     renderer.render( scene, camera );
 };
 
@@ -35,16 +37,12 @@ function init() {
     window.addEventListener("keydown", onKeyDown);
     window.addEventListener("keyup", onKeyUp);
 
-
     createScene();
     camera1 = createCamera(0,0,100)
     camera2 = createCamera(0,100,0)
     camera3 = createCamera(100,0,0)
 
     camera = camera1;
-
-
-
 
     //createArtCanvas(40, 40);
     createComplexObject().translateY(-15);
@@ -407,7 +405,7 @@ function removeButtonFromList(code) {
     console.log("PBS:", pressedButtons);
 }
 
-function detectPressedKey(code, delta) {
+function detectPressedKey(code, delta, movement) {
     console.log("DETECTED :", code);
     switch (code) {
         case "KeyQ":
@@ -429,22 +427,22 @@ function detectPressedKey(code, delta) {
             handObject.rotateZ(THREE.Math.degToRad(+angleStep * delta));
             break;
         case "ArrowUp":
-            baseObject.position.z -= unitStep * delta;
+            movement.y += 1;
             break;
         case "ArrowDown":
-            baseObject.position.z += unitStep * delta;
+            movement.y -= 1;
             break;
         case "ArrowLeft":
-            baseObject.position.x -= unitStep * delta;
+            movement.x -= 1;
             break;
         case "ArrowRight":
-            baseObject.position.x += unitStep * delta;
+            movement.x += 1;
             break;
         case "KeyC":
-            baseObject.position.y -= unitStep * delta;
+            movement.z += 1;
             break;
         case "KeyD":
-            baseObject.position.y += unitStep * delta;
+            movement.z -= 1;
             break;
     }
 }
