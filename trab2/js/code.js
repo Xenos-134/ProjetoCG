@@ -5,8 +5,17 @@ var camera, camera1, camera2, camera3, scene, renderer;
 var pressedButtons = []
 var clock;
 
-const unitStep = 50;
-const angleStep = 300;
+const step = 300;
+const R = 20; // Planet Radius
+
+
+class Rocket extends THREE.Object3D {
+    // TODO
+}
+
+class Junk extends THREE.Object3D {
+    // TODO
+}
 
 
 function createScene() {
@@ -18,7 +27,7 @@ function animate() {
     update();
     display();
     requestAnimationFrame(animate);
-};
+}
 
 
 function update() {
@@ -42,11 +51,11 @@ function init() {
     // TODO window resize
 
     createScene();
-    camera1 = createCamera(0,0,100)
-    camera2 = createCamera(0,100,0)
-    camera3 = createCamera(100,0,0)
+    createCameras();
 
     camera = camera1;
+
+    // TODO create planet, rocket and junk
 
     clock = new THREE.Clock();
 }
@@ -70,15 +79,21 @@ function createCube(x,y,z) {
 }
 
 
-function createCamera(x,y,z) {
+function createCameras() {
     const height = screen.height/15;
     const width = screen.width/15
-    const camera = new THREE.OrthographicCamera( width / - 2, width / 2, height / 2, height / - 2, 1, 1000 );
 
-    camera.position.x = x
-    camera.position.y = y;
-    camera.position.z = z;
+    camera1 = new THREE.OrthographicCamera( width / - 2, width / 2, height / 2, height / - 2, 1, 1000 );
+    camera2 = new THREE.PerspectiveCamera( width / height , 1, 1000 );
+    camera3 = new THREE.OrthographicCamera( width / - 2, width / 2, height / 2, height / - 2, 1, 1000 );
+    
+    // TODO
+    /*
+    camera.position.x = 0;
+    camera.position.y = 0;
+    camera.position.z = 0;
     camera.lookAt(scene.position);
+    */
     return camera;
 }
 
@@ -130,12 +145,16 @@ function handleKey(code, delta, movement) {
     console.log("Handle key: ", code);
     switch (code) {
         case "ArrowUp":
+            // TODO
             break;
         case "ArrowDown":
+            // TODO
             break;
         case "ArrowLeft":
+            // TODO
             break;
         case "ArrowRight":
+            // TODO
             break;
     }
 }
@@ -162,7 +181,6 @@ function onKeyDown(e) {
             addButtonToList(e.code);
             break;
     }
-
 }
 
 
