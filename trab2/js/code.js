@@ -17,12 +17,12 @@ function createScene() {
 function animate() {
     update();
     display();
+    requestAnimationFrame(animate);
 };
 
 
 function update() {
     delta = clock.getDelta();
-    requestAnimationFrame( animate );
     pressedButtons.forEach(code => handleKey(code, delta));
 }
 
