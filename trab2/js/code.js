@@ -7,7 +7,7 @@ var clock;
 
 const step = 300;
 const R = 20; // Planet Radius
-
+const NUMBER_OF_SPACE_TRASH = 20;
 
 function sphericalToCartesian(lat, long, r) {
     return new THREE.Vector3(
@@ -65,15 +65,49 @@ function init() {
 
     // TODO create planet, rocket and junk
     createPlanet();
+    for(var i = 0; i < NUMBER_OF_SPACE_TRASH; i++) {
+        addSpaceTrash();
+    }
 
     clock = new THREE.Clock();
+}
+
+function addSpaceTrash() {
+    var geometry;
+    const randomSize = generateRandoNumber(R/24, R/20);
+    const randomGeometry = generateRandoNumber(1,4);
+
+    if(randomGeometry == 1) {
+        geometry = new THREE.BoxGeometry( randomSize, randomSize, randomSize );
+    } else if (randomGeometry == 2) {
+        geometry = new THREE.ConeGeometry( randomSize, randomSize, 3 );;
+    } else {
+        geometry = new THREE.IcosahedronGeometry(randomSize); // PASSAR A FAZER COM UM POLIEDRO
+    }
+
+
+    const material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
+    const object = new THREE.Mesh( geometry, material );
+
+    const vector = sphericalToCartesian(generateRandoNumber(-90,90), generateRandoNumber(-90,90), 1.2 * R);
+    object.position.x = vector.x;
+    object.position.y = vector.y;
+    object.position.z = vector.z;
+
+
+    scene.add( object );
+}
+
+function generateRandoNumber(min, max) {
+    return Math.floor(Math.random() * (max - min) ) + min;
 }
 
 
 function createPlanet() {
     const geometry = new THREE.SphereGeometry(R);
-    const material = new THREE.MeshBasicMaterial({ color: 0xBf03f3f} );
+    const material = new THREE.MeshBasicMaterial({ color: 0xBf03f3f, wireframe: true} );
     const planet = new THREE.Mesh(geometry, material);
+
     scene.add(planet);
 }
 
@@ -205,3 +239,9 @@ function onKeyDown(e) {
 function onKeyUp(e) {
     removeButtonFromList(e.code);
 }
+
+//ESTOU AINDA A TESTAR
+
+
+
+//TODO (ARTEM) CRIAR CLASSE DA SPACE_SHIP
