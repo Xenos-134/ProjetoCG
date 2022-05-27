@@ -9,9 +9,19 @@ const step = 300;
 const R = 20; // Planet Radius
 
 
+function sphericalToCartesian(lat, long, r) {
+    return new THREE.Vector3(
+        r * Math.cos(long) * Math.sin(lat),
+        r * Math.sin(long) * Math.sin(lat),
+        r * Math.cos(lat),
+    );
+}
+
+
 class Rocket extends THREE.Object3D {
     // TODO
 }
+
 
 class Junk extends THREE.Object3D {
     // TODO
@@ -53,11 +63,18 @@ function init() {
     createScene();
     createCameras();
 
-    camera = camera1;
-
     // TODO create planet, rocket and junk
+    createPlanet();
 
     clock = new THREE.Clock();
+}
+
+
+function createPlanet() {
+    const geometry = new THREE.SphereGeometry(R);
+    const material = new THREE.MeshBasicMaterial({ color: 0xBf03f3f} );
+    const planet = new THREE.Mesh(geometry, material);
+    scene.add(planet);
 }
 
 
@@ -87,13 +104,14 @@ function createCameras() {
     camera2 = new THREE.PerspectiveCamera( width / height , 1, 1000 );
     camera3 = new THREE.OrthographicCamera( width / - 2, width / 2, height / 2, height / - 2, 1, 1000 );
     
-    // TODO
-    /*
+
+    camera = camera1;
+
     camera.position.x = 0;
     camera.position.y = 0;
-    camera.position.z = 0;
+    camera.position.z = -30;
     camera.lookAt(scene.position);
-    */
+
     return camera;
 }
 
