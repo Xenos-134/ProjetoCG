@@ -137,15 +137,23 @@ function createCube(x,y,z) {
 
 
 function createCameras() {
-    const height = screen.height/15;
-    const width = screen.width/15
+    let aspect = window.innerWidth / window.innerHeight;
+    let width, height;
+
+    if (aspect > 1) {
+        height = 3 * R;
+        width = height * aspect;
+    } else {
+        width = 3 * R;
+        height = width / aspect;
+    }
 
     camera1 = new THREE.OrthographicCamera( width / - 2, width / 2, height / 2, height / - 2, 1, 1000 );
-    camera1.translateZ(-30).lookAt(scene.position);
+    camera1.translateZ(1.5 * R).lookAt(scene.position);
     
-    camera2 = new THREE.PerspectiveCamera( width / height , 1, 1000 );
+    camera2 = new THREE.PerspectiveCamera( aspect , 1, 1000 );
 
-    camera3 = new THREE.OrthographicCamera( width / - 2, width / 2, height / 2, height / - 2, 1, 1000 );
+    camera3 = new THREE.PerspectiveCamera( aspect , 1, 1000 );
 
     camera = camera1;
     return camera;
@@ -244,9 +252,28 @@ function onKeyUp(e) {
 
 
 function onResize(e) {
-    const height = screen.height/15;
-    const width = screen.width/15
     renderer.setSize(window.innerWidth, window.innerHeight);
+    
+    let aspect = window.innerWidth / window.innerHeight;
+    let width, height;
+
+    if (aspect > 1) {
+        height = 3 * R;
+        width = height * aspect;
+    } else {
+        width = 3 * R;
+        height = width / aspect;
+    }
+
+    camera1.left = width / - 2, camera1.right = width / 2, camera1.top = height / 2, camera1.bottom = height / - 2;
+
+    camera2.aspect = aspect;
+
+    camera3.aspect = aspect;
+
+    camera1.updateProjectionMatrix();
+    camera2.updateProjectionMatrix();
+    camera3.updateProjectionMatrix();
 }
 
 
