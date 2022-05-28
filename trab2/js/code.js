@@ -10,6 +10,8 @@ const R = 20; // Planet Radius
 const NUMBER_OF_SPACE_TRASH = 20;
 
 var space_ship;
+var lat = -90;
+var lon = 0;
 
 function sphericalToCartesian(lat, long, r) {
     return new THREE.Vector3(
@@ -36,9 +38,10 @@ function createScene() {
 
 
 function animate() {
+    //TESTE DE ORIENTACAO
+
     update();
     display();
-    //space_ship.rotateY(THREE.Math.degToRad(2));
     requestAnimationFrame(animate);
 }
 
@@ -67,8 +70,9 @@ function init() {
     createCameras();
 
     // TODO create planet, rocket and junk
-    /*
     createPlanet();
+    /*
+
     for(var i = 0; i < NUMBER_OF_SPACE_TRASH; i++) {
         addSpaceTrash();
     }
@@ -200,20 +204,52 @@ function removeButtonFromList(code) {
 
 function handleKey(code, delta, movement) {
     console.log("Handle key: ", code);
+    var initial_position;
+    const angle_step = 2;
+
     switch (code) {
         case "ArrowUp":
-            // TODO
+
+            space_ship.rotation.y = 0;
+            space_ship.rotation.z = THREE.Math.degToRad(180);
+            lat+=2;
+            initial_position = sphericalToCartesian(THREE.Math.degToRad(lat), THREE.Math.degToRad(lon), 1.2 * R);
+            space_ship.position.x = initial_position.x;
+            space_ship.position.y = initial_position.y;
+            space_ship.position.z = initial_position.z;
+            space_ship.rotation.x = THREE.Math.degToRad(90 - lat);
+
             break;
         case "ArrowDown":
-            // TODO
+            space_ship.rotation.z = THREE.Math.degToRad(0);
+            space_ship.rotation.y = 0;
+            lat-=2;
+            initial_position = sphericalToCartesian(THREE.Math.degToRad(lat), THREE.Math.degToRad(lon), 1.2 * R);
+            space_ship.rotation.x =  - THREE.Math.degToRad(90 - lat);
             break;
         case "ArrowLeft":
-            // TODO
+            space_ship.rotation.z = THREE.Math.degToRad(-90);
+            space_ship.rotation.x = 0;
+
+            lon-=2;
+            initial_position = sphericalToCartesian(THREE.Math.degToRad(lat), THREE.Math.degToRad(lon), 1.2 * R);
+
+            space_ship.rotation.y = THREE.Math.degToRad(lon);
             break;
         case "ArrowRight":
-            // TODO
+            space_ship.rotation.z = THREE.Math.degToRad(90);
+            space_ship.rotation.x = 0;
+
+            lon+=2;
+            initial_position = sphericalToCartesian(THREE.Math.degToRad(lat), THREE.Math.degToRad(lon), 1.2 * R);
+
+            space_ship.rotation.y = THREE.Math.degToRad(lon);
             break;
     }
+
+    space_ship.position.x = initial_position.x;
+    space_ship.position.y = initial_position.y;
+    space_ship.position.z = initial_position.z;
 }
 
 
@@ -260,7 +296,7 @@ function onKeyUp(e) {
 * */
 
 function createSpaceShipObject() {
-    const size_metric = R/5;
+    const size_metric = R/20;
 
     //MAIN BODY
     const main_body_g = new THREE.CylinderGeometry( size_metric , size_metric, size_metric, 32 );
@@ -332,7 +368,12 @@ function createSpaceShipObject() {
     main_body.add(leg_object_4);
 
     space_ship = main_body;
-    space_ship.rotateY(THREE.Math.degToRad(0))
+
+    const initial_position = sphericalToCartesian(THREE.Math.degToRad(lat), THREE.Math.degToRad(lon), 1.2 * R);
+    space_ship.position.x = initial_position.x;
+    space_ship.position.y = initial_position.y;
+    space_ship.position.z = initial_position.z;
+
     scene.add(main_body);
 }
 
