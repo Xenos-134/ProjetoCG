@@ -61,6 +61,7 @@ function init() {
 
     window.addEventListener("keydown", onKeyDown);
     window.addEventListener("keyup", onKeyUp);
+    window.addEventListener("resize", onResize);
     // TODO window resize
 
     createScene();
@@ -140,17 +141,13 @@ function createCameras() {
     const width = screen.width/15
 
     camera1 = new THREE.OrthographicCamera( width / - 2, width / 2, height / 2, height / - 2, 1, 1000 );
-    camera2 = new THREE.PerspectiveCamera( width / height , 1, 1000 );
-    camera3 = new THREE.OrthographicCamera( width / - 2, width / 2, height / 2, height / - 2, 1, 1000 );
+    camera1.translateZ(-30).lookAt(scene.position);
     
+    camera2 = new THREE.PerspectiveCamera( width / height , 1, 1000 );
+
+    camera3 = new THREE.OrthographicCamera( width / - 2, width / 2, height / 2, height / - 2, 1, 1000 );
 
     camera = camera1;
-
-    camera.position.x = 0;
-    camera.position.y = 0;
-    camera.position.z = -30;
-    camera.lookAt(scene.position);
-
     return camera;
 }
 
@@ -244,6 +241,14 @@ function onKeyDown(e) {
 function onKeyUp(e) {
     removeButtonFromList(e.code);
 }
+
+
+function onResize(e) {
+    const height = screen.height/15;
+    const width = screen.width/15
+    renderer.setSize(window.innerWidth, window.innerHeight);
+}
+
 
 //ESTOU AINDA A TESTAR
 
