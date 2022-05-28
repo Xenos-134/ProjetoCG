@@ -62,7 +62,6 @@ function init() {
     window.addEventListener("keydown", onKeyDown);
     window.addEventListener("keyup", onKeyUp);
     window.addEventListener("resize", onResize);
-    // TODO window resize
 
     createScene();
     createCameras();
