@@ -64,7 +64,7 @@ function init() {
 
     window.addEventListener("keydown", onKeyDown);
     window.addEventListener("keyup", onKeyUp);
-    // TODO window resize
+    window.addEventListener("resize", onResize);
 
     createScene();
     createCameras();
@@ -140,21 +140,25 @@ function createCube(x,y,z) {
 
 
 function createCameras() {
-    const height = screen.height/15;
-    const width = screen.width/15
+    let aspect = window.innerWidth / window.innerHeight;
+    let width, height;
+
+    if (aspect > 1) {
+        height = 3 * R;
+        width = height * aspect;
+    } else {
+        width = 3 * R;
+        height = width / aspect;
+    }
 
     camera1 = new THREE.OrthographicCamera( width / - 2, width / 2, height / 2, height / - 2, 1, 1000 );
-    camera2 = new THREE.PerspectiveCamera( width / height , 1, 1000 );
-    camera3 = new THREE.OrthographicCamera( width / - 2, width / 2, height / 2, height / - 2, 1, 1000 );
+    camera1.translateZ(1.5 * R).lookAt(scene.position);
     
+    camera2 = new THREE.PerspectiveCamera( aspect , 1, 1000 );
+
+    camera3 = new THREE.PerspectiveCamera( aspect , 1, 1000 );
 
     camera = camera1;
-
-    camera.position.x = 0;
-    camera.position.y = 0;
-    camera.position.z = -30;
-    camera.lookAt(scene.position);
-
     return camera;
 }
 
@@ -280,6 +284,33 @@ function onKeyDown(e) {
 function onKeyUp(e) {
     removeButtonFromList(e.code);
 }
+
+
+function onResize(e) {
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    
+    let aspect = window.innerWidth / window.innerHeight;
+    let width, height;
+
+    if (aspect > 1) {
+        height = 3 * R;
+        width = height * aspect;
+    } else {
+        width = 3 * R;
+        height = width / aspect;
+    }
+
+    camera1.left = width / - 2, camera1.right = width / 2, camera1.top = height / 2, camera1.bottom = height / - 2;
+
+    camera2.aspect = aspect;
+
+    camera3.aspect = aspect;
+
+    camera1.updateProjectionMatrix();
+    camera2.updateProjectionMatrix();
+    camera3.updateProjectionMatrix();
+}
+
 
 //ESTOU AINDA A TESTAR
 
