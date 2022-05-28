@@ -13,9 +13,9 @@ var space_ship;
 
 function sphericalToCartesian(lat, long, r) {
     return new THREE.Vector3(
-        r * Math.cos(long) * Math.sin(lat),
         r * Math.sin(long) * Math.sin(lat),
         r * Math.cos(lat),
+        r * Math.cos(long) * Math.sin(lat),
     );
 }
 
@@ -94,7 +94,7 @@ function addSpaceTrash() {
     const material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
     const object = new THREE.Mesh( geometry, material );
 
-    const vector = sphericalToCartesian(generateRandoNumber(-90,90), generateRandoNumber(-90,90), 1.2 * R);
+    const vector = sphericalToCartesian(Math.PI * Math.random(), 2*Math.PI * Math.random(), 1.2 * R);
     object.position.x = vector.x;
     object.position.y = vector.y;
     object.position.z = vector.z;
