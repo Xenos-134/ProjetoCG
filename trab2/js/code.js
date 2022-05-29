@@ -6,8 +6,10 @@ var pressedButtons = []
 var clock;
 
 const step = 300;
-const R = 20; // Planet Radius
+const R = 200; // Planet Radius
 const NUMBER_OF_SPACE_TRASH = 20;
+
+const minJunkSize = R/24, maxJunkSize = R/20;
 
 var space_ship;
 var lat = -90;
@@ -83,17 +85,30 @@ function init() {
 
 function createSpaceTrash() {
     var geometry;
-    const randomSize = generateRandoNumber(R/24, R/20);
-    const randomGeometry = generateRandoNumber(1,4);
+    const size = generateRandoNumber(minJunkSize, maxJunkSize);
+ 
+    let l, r, h;
+    switch (generateRandoNumber(1,4)) {
+        case 1:
+            l = size / Math.sqrt(3);
+            geometry = new THREE.BoxGeometry(l, l, l);
+            break;
 
-    if(randomGeometry == 1) {
-        geometry = new THREE.BoxGeometry( randomSize, randomSize, randomSize );
-    } else if (randomGeometry == 2) {
-        geometry = new THREE.ConeGeometry( randomSize, randomSize, 3 );;
-    } else {
-        geometry = new THREE.IcosahedronGeometry(randomSize); // PASSAR A FAZER COM UM POLIEDRO
+        case 2:
+            h = size / Math.sqrt(3);
+            r = h / 2;
+            geometry = new THREE.CylinderGeometry(r, r, h);
+            break;
+
+        case 3:
+            r = size / 2;
+            geometry = new THREE.SphereGeometry(r);
+            break;
+
+        default:
+            console.error("This space junk geometry does not exist.");
+            break;
     }
-
 
     const material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
     const object = new THREE.Mesh( geometry, material );
@@ -463,31 +478,7 @@ class Rocket {
     }
 
     getOctant() {
-        var octant;
-
-        //UPPER Quadrant
-
-        if(this._x >= 0 && this._y >= 0 && this._z >= 0) {
-            return 1;
-        } else if (this._x < 0 && this._y >= 0 && this._z >= 0) {
-            return 2;
-        } else if (this._x < 0 && this._y < 0 && this._z >= 0) {
-            return 3;
-        } else if (this._x >= 0 && this._y < 0 && this._z >= 0) {
-            return 4;
-        }
-
-        //LOWER Quadrant
-
-        else if(this._x >= 0 && this._y >= 0 && this._z < 0) {
-            return 5;
-        } else if (this._x < 0 && this._y >= 0 && this._z < 0) {
-            return 6;
-        } else if (this._x < 0 && this._y < 0 && this._z < 0) {
-            return 7;
-        } else if (this._x >= 0 && this._y < 0 && this._z < 0) {
-            return 8;
-        }
+        return (this._x < 0)*4 + (this._x < 0)*2 + (this._x < 0);
     }
 }
 
