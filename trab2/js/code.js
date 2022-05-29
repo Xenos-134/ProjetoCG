@@ -478,7 +478,7 @@ class Rocket {
     }
 
     getOctant() {
-        return (this._x < 0)*4 + (this._x < 0)*2 + (this._x < 0);
+        return (this._x < 0) + (this._y < 0)*2 + (this._z < 0)*4;
     }
 }
 
