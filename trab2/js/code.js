@@ -13,22 +13,15 @@ var space_ship;
 var lat = -90;
 var lon = 0;
 
+
+var junkObjectsArray = [];
+
 function sphericalToCartesian(lat, long, r) {
     return new THREE.Vector3(
         r * Math.sin(long) * Math.sin(lat),
         r * Math.cos(lat),
         r * Math.cos(long) * Math.sin(lat),
     );
-}
-
-
-class Rocket extends THREE.Object3D {
-    // TODO
-}
-
-
-class Junk extends THREE.Object3D {
-    // TODO
 }
 
 
@@ -71,17 +64,24 @@ function init() {
 
     // TODO create planet, rocket and junk
     createPlanet();
-    /*
-
     for(var i = 0; i < NUMBER_OF_SPACE_TRASH; i++) {
-        addSpaceTrash();
+        //createSpaceTrash();
+        const spaceJunk = new Junk();
+        spaceJunk.addObjectToScene();
+        junkObjectsArray.push(spaceJunk);
     }
-    */
     createSpaceShipObject();
+
+    /*
+    //A CRIACAO DA NAVE VAI SER ASSIM
+    const rocket = new Rocket();
+    console.log("ROCKET", rocket);
+
+    */
     clock = new THREE.Clock();
 }
 
-function addSpaceTrash() {
+function createSpaceTrash() {
     var geometry;
     const randomSize = generateRandoNumber(R/24, R/20);
     const randomGeometry = generateRandoNumber(1,4);
@@ -104,7 +104,8 @@ function addSpaceTrash() {
     object.position.z = vector.z;
 
 
-    scene.add( object );
+    //scene.add( object );
+    return object
 }
 
 function generateRandoNumber(min, max) {
@@ -322,8 +323,6 @@ function onResize(e) {
 *   base       \\
 *   nozzle
 *             capsule
-*
-*
 * */
 
 function createSpaceShipObject() {
@@ -406,6 +405,7 @@ function createSpaceShipObject() {
     space_ship.position.z = initial_position.z;
 
     scene.add(main_body);
+    return main_body;
 }
 
 
@@ -434,5 +434,74 @@ function createLegObject(size_metric) {
     return leg_main_object;
 }
 
-
 //TODO (ARTEM) CRIAR CLASSE DA SPACE_SHIP
+class Rocket {
+    constructor() {
+        this._object = createSpaceShipObject();
+        const initial_position = sphericalToCartesian(THREE.Math.degToRad(lat), THREE.Math.degToRad(lon), 1.2 * R);
+        this._x = initial_position.x;
+        this._y = initial_position.y;
+        this._z = initial_position.z;
+    }
+
+
+    get position() {
+        return {x: this._x, y: this._y, z:this._z};
+    }
+
+    move(lat, lon) {
+        const cartesian_coordinate = sphericalToCartesian(THREE.Math.degToRad(lat), THREE.Math.degToRad(lon), 1.2 * R);
+        this._object.position.x = cartesian_coordinate.x;
+        this._object.position.y = cartesian_coordinate.y;
+        this._object.position.z = cartesian_coordinate.z;
+
+        this._x = cartesian_coordinate.x;
+        this._y = cartesian_coordinate.y;
+        this._z = cartesian_coordinate.z;
+
+        //TODO ADICIONAR A PARTE DA ALTERACAO DO ANGULO DA NAVE
+    }
+
+    getOctant() {
+        var octant;
+
+        //UPPER Quadrant
+
+        if(this._x >= 0 && this._y >= 0 && this._z >= 0) {
+            return 1;
+        } else if (this._x < 0 && this._y >= 0 && this._z >= 0) {
+            return 2;
+        } else if (this._x < 0 && this._y < 0 && this._z >= 0) {
+            return 3;
+        } else if (this._x >= 0 && this._y < 0 && this._z >= 0) {
+            return 4;
+        }
+
+        //LOWER Quadrant
+
+        else if(this._x >= 0 && this._y >= 0 && this._z < 0) {
+            return 5;
+        } else if (this._x < 0 && this._y >= 0 && this._z < 0) {
+            return 6;
+        } else if (this._x < 0 && this._y < 0 && this._z < 0) {
+            return 7;
+        } else if (this._x >= 0 && this._y < 0 && this._z < 0) {
+            return 8;
+        }
+    }
+}
+
+
+
+class Junk {
+    constructor() {
+        this._junkObject = createSpaceTrash();
+        this._x = this._junkObject.position.x;
+        this._y = this._junkObject.position.y;
+        this._z = this._junkObject.position.z;
+    }
+
+    addObjectToScene() {
+        scene.add(this._junkObject);
+    }
+}
