@@ -225,42 +225,37 @@ function removeButtonFromList(code) {
 
 function handleKey(code, delta, movement) {
     console.log("Handle key: ", code);
-    var initial_position;
 
+    const old_lat = lat, old_lon = lon;
     switch (code) {
         case "ArrowUp":
             lat += step * delta;
-            initial_position = sphericalToCartesian(THREE.Math.degToRad(lat), THREE.Math.degToRad(lon), 1.2 * R);
             space_ship.rotation.x = THREE.Math.degToRad(lat + 90);
             space_ship.rotation.y = 0;
             space_ship.rotation.z = THREE.Math.degToRad(0);
             break;
         case "ArrowDown":
             lat -= step * delta;
-            initial_position = sphericalToCartesian(THREE.Math.degToRad(lat), THREE.Math.degToRad(lon), 1.2 * R);
             space_ship.rotation.x = THREE.Math.degToRad(lat + 90);
             space_ship.rotation.y = 0;
             space_ship.rotation.z = THREE.Math.degToRad(180);
             break;
         case "ArrowLeft":
             lon -= step * delta;
-            initial_position = sphericalToCartesian(THREE.Math.degToRad(lat), THREE.Math.degToRad(lon), 1.2 * R);
             space_ship.rotation.x = 0;
             space_ship.rotation.y = THREE.Math.degToRad(lon);
             space_ship.rotation.z = THREE.Math.degToRad(-90);
             break;
         case "ArrowRight":
             lon += step * delta;
-            initial_position = sphericalToCartesian(THREE.Math.degToRad(lat), THREE.Math.degToRad(lon), 1.2 * R);
             space_ship.rotation.x = 0;
             space_ship.rotation.y = THREE.Math.degToRad(lon);
             space_ship.rotation.z = THREE.Math.degToRad(90);
             break;
     }
 
-    space_ship.position.x = initial_position.x;
-    space_ship.position.y = initial_position.y;
-    space_ship.position.z = initial_position.z;
+    let new_pos = sphericalToCartesian(THREE.Math.degToRad(lat), THREE.Math.degToRad(lon), 1.2 * R);
+    space_ship.position.copy(new_pos);
 }
 
 
