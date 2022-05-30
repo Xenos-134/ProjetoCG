@@ -45,7 +45,9 @@ function animate() {
 
 function update() {
     delta = clock.getDelta();
-    pressedButtons.forEach(code => handleKey(code, delta));
+
+    const movement = new THREE.Vector2();
+    pressedButtons.forEach(code => handleKey(code, delta, movement));
 }
 
 
@@ -232,24 +234,24 @@ function handleKey(code, delta, movement) {
         case "ArrowUp":
             lat += step * delta;
             space_ship.rotation.x = degToRad(lat + 90);
-            space_ship.rotation.y = 0;
+            space_ship.rotation.y = degToRad(lon);
             space_ship.rotation.z = degToRad(0);
             break;
         case "ArrowDown":
             lat -= step * delta;
             space_ship.rotation.x = degToRad(lat + 90);
-            space_ship.rotation.y = 0;
+            space_ship.rotation.y = degToRad(lon);
             space_ship.rotation.z = degToRad(180);
             break;
         case "ArrowLeft":
             lon -= step * delta;
-            space_ship.rotation.x = 0;
+            space_ship.rotation.x = degToRad(lat + 90);
             space_ship.rotation.y = degToRad(lon);
             space_ship.rotation.z = degToRad(-90);
             break;
         case "ArrowRight":
             lon += step * delta;
-            space_ship.rotation.x = 0;
+            space_ship.rotation.x = degToRad(lat + 90);
             space_ship.rotation.y = degToRad(lon);
             space_ship.rotation.z = degToRad(90);
             break;
@@ -353,10 +355,7 @@ function createSpaceShipObject() {
     const window_o = new THREE.Mesh(window_o_g, material2);
     window_o.position.y = 0.9 * size_metric;
     window_o_main_object.add(window_o)
-
-    window_o_main_object.rotateX(degToRad(90));
-    window_o_main_object.rotateY(degToRad(-10));
-    window_o_main_object.rotateZ(degToRad(90));
+    window_o_main_object.rotateX(degToRad(90)).rotateY(degToRad(-10)).rotateZ(degToRad(90));
 
     const window_inner_o = new THREE.CapsuleGeometry( size_metric/4, 0.5, 4, 8 );
     const window_inner = new THREE.Mesh(window_inner_o, material3);
@@ -415,6 +414,7 @@ function createSpaceShipObject() {
     ship.position.z = initial_position.z;
 
     scene.add(ship);
+    ship.rotation.order = ('YXZ');
     return ship;
 }
 
