@@ -334,17 +334,21 @@ function createSpaceShipObject() {
 
     const ship = new THREE.Object3D();
 
+    const nose_matrial = new THREE.MeshBasicMaterial({color: 0xfb4934});
+    const section_1_matrial = new THREE.MeshBasicMaterial( {color: 0xfbf1c7});
+    const base_matrial = new THREE.MeshBasicMaterial( {color: 0xd3869b});
+    const nozzle_matrial = new THREE.MeshBasicMaterial( {color: 0xfebd2f});
+
     //MAIN BODY
     const section_3_g = new THREE.CylinderGeometry( size_metric , size_metric, size_metric, 32 );
-    const material = new THREE.MeshBasicMaterial( {color: 0xffff00, wireframe: true} );
     const material2 = new THREE.MeshBasicMaterial( {color: 0x00ff00, wireframe: true} );
     const material3 = new THREE.MeshBasicMaterial( {color: 0x1e81b0, wireframe: true} );
-    const section_3 = new THREE.Mesh( section_3_g, material );
+    const section_3 = new THREE.Mesh( section_3_g, section_1_matrial );
     ship.add(section_3);
 
     //SECTION_2
     const section_2_g = new THREE.CylinderGeometry( size_metric/1.2 , size_metric, size_metric, 32 );
-    const section_2 = new THREE.Mesh(section_2_g, material);
+    const section_2 = new THREE.Mesh(section_2_g, section_1_matrial);
     section_2.position.y = size_metric;
     ship.add(section_2);
 
@@ -364,25 +368,25 @@ function createSpaceShipObject() {
 
     //SECTION_1
     const section_1_g = new THREE.CylinderGeometry( size_metric/1.8 , size_metric/1.2, size_metric, 32 );
-    const section_1 = new THREE.Mesh(section_1_g, material);
+    const section_1 = new THREE.Mesh(section_1_g, section_1_matrial);
     section_1.position.y = 2 * size_metric;
     ship.add(section_1);
 
     //NOSE
     const nose_g = new THREE.CylinderGeometry( 0 , size_metric/1.8, size_metric, 32 );
-    const nose = new THREE.Mesh(nose_g, material);
+    const nose = new THREE.Mesh(nose_g, nose_matrial);
     nose.position.y = 3 * size_metric;
     ship.add(nose);
 
     //BASE
     const base_g = new THREE.CylinderGeometry( size_metric , size_metric/1.2, size_metric, 32 );
-    const base = new THREE.Mesh(base_g, material);
+    const base = new THREE.Mesh(base_g, base_matrial);
     base.position.y = -1 * size_metric;
     ship.add(base);
 
     //NOZZLE
     const nozzle_g = new THREE.CylinderGeometry( size_metric/1.5 , size_metric/1.5, size_metric/2, 32 );
-    const nozzle = new THREE.Mesh(nozzle_g, material);
+    const nozzle = new THREE.Mesh(nozzle_g, nozzle_matrial);
     nozzle.position.y = -1.7 * size_metric;
     ship.add(nozzle);
 
@@ -422,10 +426,13 @@ function createSpaceShipObject() {
 function createLegObject(size_metric) {
     const material = new THREE.MeshBasicMaterial( {color: 0xffff00, wireframe: true} );
 
+    const leg_material = new THREE.MeshBasicMaterial( {color: 0x665c54});
+    const capsule_material = new THREE.MeshBasicMaterial( {color: 0xd79921});
+    //capsule
     const leg_main_object = new THREE.Object3D();
     const leg_object = new THREE.Object3D();
     const leg_g = new THREE.CylinderGeometry( size_metric/8 , size_metric/8, size_metric * 2, 32 )
-    const leg = new THREE.Mesh(leg_g, material);
+    const leg = new THREE.Mesh(leg_g, leg_material);
 
     leg_object.add(leg);
     leg_object.position.x = size_metric;
@@ -435,7 +442,7 @@ function createLegObject(size_metric) {
 
     //CAPSULE
     const capsule_g = new THREE.CapsuleGeometry( size_metric/4, 2 * size_metric, 4, 8 );
-    const capsule = new THREE.Mesh(capsule_g, material);
+    const capsule = new THREE.Mesh(capsule_g, capsule_material);
     capsule.position.y= -size_metric;
     capsule.rotateZ(degToRad(-30));
     leg.add(capsule);
