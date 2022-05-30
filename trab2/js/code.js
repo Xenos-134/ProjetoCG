@@ -7,7 +7,7 @@ var clock;
 
 const step = 150;
 const R = 200; // Planet Radius
-const NUMBER_OF_SPACE_TRASH = 20;
+const NUMBER_OF_SPACE_TRASH = 10;
 
 const degToRad = THREE.Math.degToRad;
 
@@ -74,7 +74,6 @@ function init() {
         //createSpaceTrash();
         const spaceJunk = new Junk();
         spaceJunk.addObjectToScene();
-        junkObjectsArray.push(spaceJunk);
     }
     space_ship = createSpaceShipObject();
 
@@ -216,19 +215,20 @@ function createSphere(x,y,z) {
 function addButtonToList(code) {
     if(!pressedButtons.includes(code)) {
         pressedButtons.push(code);
-        console.log("Add key: ", pressedButtons);
+        //console.log("Add key: ", pressedButtons);
     }
 }
 
 
 function removeButtonFromList(code) {
     pressedButtons = pressedButtons.filter(c => c !== code);
-    console.log("Remove key: ", pressedButtons);
+    //console.log("Remove key: ", pressedButtons);
 }
 
 
 function handleKey(code, delta, movement) {
-    console.log("Handle key: ", code);
+    //console.log("Handle key: ", code);
+    detectColisions();
 
     switch (code) {
         case "ArrowUp":
@@ -445,7 +445,32 @@ function createLegObject(size_metric) {
 }
 
 function getOctant(position) {
-    return (position.x) + (position.y < 0)*2 + (position.z < 0)*4;
+    //return (position.x) + (position.y < 0)*2 + (position.z < 0)*4;
+    var octant;
+
+    //UPPER Quadrant
+
+    if(position.x >= 0 && position.y >= 0 && position.z >= 0) {
+        return 1;
+    } else if (position.x < 0 && position.y >= 0 && position.z >= 0) {
+        return 2;
+    } else if (position.x < 0 && position.y < 0 && position.z >= 0) {
+        return 3;
+    } else if (position.x >= 0 && position.y < 0 && position.z >= 0) {
+        return 4;
+    }
+
+    //LOWER Quadrant
+
+    else if(position.x >= 0 && position.y >= 0 && position.z < 0) {
+        return 5;
+    } else if (position.x < 0 && position.y >= 0 && position.z < 0) {
+        return 6;
+    } else if (position.x < 0 && position.y < 0 && position.z < 0) {
+        return 7;
+    } else if (position.x >= 0 && position.y < 0 && position.z < 0) {
+        return 8;
+    }
 }
 
 //TODO (ARTEM) CRIAR CLASSE DA SPACE_SHIP
@@ -479,17 +504,37 @@ class Rocket {
     
 }
 
-
-
 class Junk {
     constructor() {
         this._junkObject = createSpaceTrash();
         this._x = this._junkObject.position.x;
         this._y = this._junkObject.position.y;
         this._z = this._junkObject.position.z;
+        this._octant = getOctant(this._junkObject.position);
     }
 
     addObjectToScene() {
         scene.add(this._junkObject);
+        junkObjectsArray.push(this);
     }
+}
+
+function detectColisions() {
+    const space_ship_octant = getOctant(space_ship.position);
+    //console.log("SpaceShip Octant",space_ship_octant);
+
+    junkObjectsArray.forEach(junk => {
+        if(space_ship_octant !== junk._octant) return;
+        const distance_between_2 = (junk._junkObject.position.x - space_ship.position.x)**2
+        + (junk._junkObject.position.y - space_ship.position.y)**2
+        + (junk._junkObject.position.z - space_ship.position.z)**2;
+
+        //console.log("OBJECT", junk);
+        if(Math.sqrt(distance_between_2) < R/10) { //2 * R/20 If two spheres touch each other
+            //console.log("COLISION DETECTED");
+            scene.remove(junk._junkObject);
+            junkObjectsArray = junkObjectsArray.filter(elm => elm != junk);
+            //console.log("NEW junkArray:", junkObjectsArray);
+        }
+    })
 }
