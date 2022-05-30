@@ -5,7 +5,7 @@ var camera, camera1, camera2, camera3, scene, renderer;
 var pressedButtons = []
 var clock;
 
-const step = 300;
+const step = 2;
 const R = 200; // Planet Radius
 const NUMBER_OF_SPACE_TRASH = 20;
 
@@ -168,11 +168,12 @@ function createCameras() {
     }
 
     camera1 = new THREE.OrthographicCamera( width / - 2, width / 2, height / 2, height / - 2, 1, 1000 );
-    camera1.translateZ(1.5 * R).lookAt(scene.position);
+    camera1.translateZ(2 * R).lookAt(scene.position);
     
-    camera2 = new THREE.PerspectiveCamera( aspect , 1, 1000 );
+    camera2 = new THREE.PerspectiveCamera( 45, aspect , 1, 1000 );
+    camera2.translateZ(3 * R).lookAt(scene.position);
 
-    camera3 = new THREE.PerspectiveCamera( aspect , 1, 1000 );
+    camera3 = new THREE.PerspectiveCamera( 45, aspect , 1, 1000 );
 
     camera = camera1;
     return camera;
@@ -225,47 +226,47 @@ function removeButtonFromList(code) {
 function handleKey(code, delta, movement) {
     console.log("Handle key: ", code);
     var initial_position;
-    const angle_step = 2;
 
     switch (code) {
         case "ArrowUp":
 
-            space_ship.rotation.y = 0;
-            space_ship.rotation.z = THREE.Math.degToRad(180);
-            lat+=2;
+            lat += step;
             initial_position = sphericalToCartesian(THREE.Math.degToRad(lat), THREE.Math.degToRad(lon), 1.2 * R);
             space_ship.position.x = initial_position.x;
             space_ship.position.y = initial_position.y;
             space_ship.position.z = initial_position.z;
             space_ship.rotation.x = THREE.Math.degToRad(90 - lat);
+            space_ship.rotation.y = 0;
+            space_ship.rotation.z = THREE.Math.degToRad(180);
 
             break;
         case "ArrowDown":
-            space_ship.rotation.z = THREE.Math.degToRad(0);
-            space_ship.rotation.y = 0;
-            lat-=2;
+            lat -= step;
             initial_position = sphericalToCartesian(THREE.Math.degToRad(lat), THREE.Math.degToRad(lon), 1.2 * R);
             space_ship.rotation.x =  - THREE.Math.degToRad(90 - lat);
+            space_ship.rotation.y = 0;
+            space_ship.rotation.z = THREE.Math.degToRad(0);
             break;
         case "ArrowLeft":
-            space_ship.rotation.z = THREE.Math.degToRad(-90);
-            space_ship.rotation.x = 0;
 
-            lon-=2;
+            lon -= step;
             initial_position = sphericalToCartesian(THREE.Math.degToRad(lat), THREE.Math.degToRad(lon), 1.2 * R);
 
+            space_ship.rotation.x = 0;
             space_ship.rotation.y = THREE.Math.degToRad(lon);
+            space_ship.rotation.z = THREE.Math.degToRad(-90);
             break;
         case "ArrowRight":
-            space_ship.rotation.z = THREE.Math.degToRad(90);
-            space_ship.rotation.x = 0;
 
-            lon+=2;
+            lon += step;
             initial_position = sphericalToCartesian(THREE.Math.degToRad(lat), THREE.Math.degToRad(lon), 1.2 * R);
 
+            space_ship.rotation.x = 0;
             space_ship.rotation.y = THREE.Math.degToRad(lon);
+            space_ship.rotation.z = THREE.Math.degToRad(90);
             break;
     }
+    // space_ship.setRotationFromEuler(new THREE.Euler(THREE.Math.degToRad(lat), THREE.Math.degToRad(lon), 0, 'ZYX'));
 
     space_ship.position.x = initial_position.x;
     space_ship.position.y = initial_position.y;
@@ -407,6 +408,13 @@ function createSpaceShipObject() {
     leg_object_4.rotateY(THREE.Math.degToRad(270));
 
 
+    //CAMERA
+    camera3.translateY(-R)//.translateZ(-R/2);
+    main_body.add(camera3);
+    camera3.up = new THREE.Vector3(0,0,1);
+    camera3.lookAt(0,1,0);
+
+
     main_body.add(leg_object_1);
     main_body.add(leg_object_2);
     main_body.add(leg_object_3);
@@ -449,6 +457,10 @@ function createLegObject(size_metric) {
     return leg_main_object;
 }
 
+function getOctant(position) {
+    return (position.x) + (position.y < 0)*2 + (position.z < 0)*4;
+}
+
 //TODO (ARTEM) CRIAR CLASSE DA SPACE_SHIP
 class Rocket {
     constructor() {
@@ -477,9 +489,7 @@ class Rocket {
         //TODO ADICIONAR A PARTE DA ALTERACAO DO ANGULO DA NAVE
     }
 
-    getOctant() {
-        return (this._x < 0) + (this._y < 0)*2 + (this._z < 0)*4;
-    }
+    
 }
 
 
