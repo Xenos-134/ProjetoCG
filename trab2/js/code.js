@@ -45,9 +45,7 @@ function animate() {
 
 function update() {
     delta = clock.getDelta();
-
-    const movement = new THREE.Vector2();
-    pressedButtons.forEach(code => handleKey(code, delta, movement));
+    pressedButtons.forEach(code => handleKey(code, delta));
 }
 
 
@@ -141,24 +139,6 @@ function createPlanet() {
 }
 
 
-function createCube(x,y,z) {
-    const geometry = new THREE.BoxGeometry( 5, 5, 5 );
-    const material = new THREE.MeshBasicMaterial( {color: 0x00ff00, wireframe: true} );
-    const cube = new THREE.Mesh( geometry, material );
-    cube.rotateZ(degToRad(30));
-    cube.rotateX(degToRad(30));
-    cube.rotateY(degToRad(30));
-
-    cube.position.x = x;
-    cube.position.y = y;
-    cube.position.z = z;
-
-    addElement(cube);
-    scene.add( cube );
-    return cube;
-}
-
-
 function createCameras() {
     let aspect = window.innerWidth / window.innerHeight;
     let width, height;
@@ -184,35 +164,6 @@ function createCameras() {
 }
 
 
-function createTorus(x,y,z) {
-    const torusGeomety = new THREE.TorusBufferGeometry(5, 1, 30, 30);
-    const torusMaterial = new THREE.MeshBasicMaterial( { color: 0xff0f0f, wireframe: true } );
-    const torus = new THREE.Mesh( torusGeomety, torusMaterial );
-
-    torus.position.x = x;
-    torus.position.y = y;
-    torus.position.z = z;
-
-    addElement(torus);
-    scene.add(torus);
-    return torus;
-}
-
-
-function createSphere(x,y,z) {
-    const geometry = new THREE.SphereGeometry(2, 8, 16);
-    const material = new THREE.MeshBasicMaterial({ color: 0x00ff00, wireframe: true });
-    const sphere = new THREE.Mesh(geometry, material);
-    sphere.position.x = x;
-    sphere.position.y = y;
-    sphere.position.z = z;
-
-    addElement(sphere);
-    scene.add(sphere);
-    return sphere;
-}
-
-
 function addButtonToList(code) {
     if(!pressedButtons.includes(code)) {
         pressedButtons.push(code);
@@ -227,38 +178,32 @@ function removeButtonFromList(code) {
 }
 
 
-function handleKey(code, delta, movement) {
+function handleKey(code, delta) {
     console.log("Handle key: ", code);
 
     switch (code) {
         case "ArrowUp":
-            lat += step * delta;
-            space_ship.rotation.x = degToRad(lat + 90);
-            space_ship.rotation.y = degToRad(lon);
+            lat += step * delta;;
             space_ship.rotation.z = degToRad(0);
             break;
         case "ArrowDown":
             lat -= step * delta;
-            space_ship.rotation.x = degToRad(lat + 90);
-            space_ship.rotation.y = degToRad(lon);
             space_ship.rotation.z = degToRad(180);
             break;
         case "ArrowLeft":
             lon -= step * delta;
-            space_ship.rotation.x = degToRad(lat + 90);
-            space_ship.rotation.y = degToRad(lon);
             space_ship.rotation.z = degToRad(-90);
             break;
         case "ArrowRight":
             lon += step * delta;
-            space_ship.rotation.x = degToRad(lat + 90);
-            space_ship.rotation.y = degToRad(lon);
             space_ship.rotation.z = degToRad(90);
             break;
     }
 
     let new_pos = sphericalToCartesian(degToRad(lat), degToRad(lon), 1.2 * R);
     space_ship.position.copy(new_pos);
+    space_ship.rotation.x = degToRad(lat + 90);
+    space_ship.rotation.y = degToRad(lon);
 }
 
 
@@ -291,7 +236,7 @@ function onKeyUp(e) {
 }
 
 
-function onResize(e) {
+function onResize() {
     renderer.setSize(window.innerWidth, window.innerHeight);
     
     let aspect = window.innerWidth / window.innerHeight;
