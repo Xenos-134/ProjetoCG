@@ -5,7 +5,7 @@ var camera, camera1, camera2, camera3, scene, renderer;
 var pressedButtons = []
 var clock;
 
-const step = 2;
+const step = 150;
 const R = 200; // Planet Radius
 const NUMBER_OF_SPACE_TRASH = 20;
 
@@ -72,7 +72,7 @@ function init() {
         spaceJunk.addObjectToScene();
         junkObjectsArray.push(spaceJunk);
     }
-    createSpaceShipObject();
+    space_ship = createSpaceShipObject();
 
     /*
     //A CRIACAO DA NAVE VAI SER ASSIM
@@ -110,7 +110,7 @@ function createSpaceTrash() {
             break;
     }
 
-    const material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
+    const material = new THREE.MeshBasicMaterial( { color: 0xBfBfBf } );
     const object = new THREE.Mesh( geometry, material );
 
     const vector = sphericalToCartesian(Math.PI * Math.random(), 2*Math.PI * Math.random(), 1.2 * R);
@@ -229,44 +229,34 @@ function handleKey(code, delta, movement) {
 
     switch (code) {
         case "ArrowUp":
-
-            lat += step;
+            lat += step * delta;
             initial_position = sphericalToCartesian(THREE.Math.degToRad(lat), THREE.Math.degToRad(lon), 1.2 * R);
-            space_ship.position.x = initial_position.x;
-            space_ship.position.y = initial_position.y;
-            space_ship.position.z = initial_position.z;
-            space_ship.rotation.x = THREE.Math.degToRad(90 - lat);
-            space_ship.rotation.y = 0;
-            space_ship.rotation.z = THREE.Math.degToRad(180);
-
-            break;
-        case "ArrowDown":
-            lat -= step;
-            initial_position = sphericalToCartesian(THREE.Math.degToRad(lat), THREE.Math.degToRad(lon), 1.2 * R);
-            space_ship.rotation.x =  - THREE.Math.degToRad(90 - lat);
+            space_ship.rotation.x = THREE.Math.degToRad(lat + 90);
             space_ship.rotation.y = 0;
             space_ship.rotation.z = THREE.Math.degToRad(0);
             break;
-        case "ArrowLeft":
-
-            lon -= step;
+        case "ArrowDown":
+            lat -= step * delta;
             initial_position = sphericalToCartesian(THREE.Math.degToRad(lat), THREE.Math.degToRad(lon), 1.2 * R);
-
+            space_ship.rotation.x = THREE.Math.degToRad(lat + 90);
+            space_ship.rotation.y = 0;
+            space_ship.rotation.z = THREE.Math.degToRad(180);
+            break;
+        case "ArrowLeft":
+            lon -= step * delta;
+            initial_position = sphericalToCartesian(THREE.Math.degToRad(lat), THREE.Math.degToRad(lon), 1.2 * R);
             space_ship.rotation.x = 0;
             space_ship.rotation.y = THREE.Math.degToRad(lon);
             space_ship.rotation.z = THREE.Math.degToRad(-90);
             break;
         case "ArrowRight":
-
-            lon += step;
+            lon += step * delta;
             initial_position = sphericalToCartesian(THREE.Math.degToRad(lat), THREE.Math.degToRad(lon), 1.2 * R);
-
             space_ship.rotation.x = 0;
             space_ship.rotation.y = THREE.Math.degToRad(lon);
             space_ship.rotation.z = THREE.Math.degToRad(90);
             break;
     }
-    // space_ship.setRotationFromEuler(new THREE.Euler(THREE.Math.degToRad(lat), THREE.Math.degToRad(lon), 0, 'ZYX'));
 
     space_ship.position.x = initial_position.x;
     space_ship.position.y = initial_position.y;
@@ -344,18 +334,21 @@ function onResize(e) {
 function createSpaceShipObject() {
     const size_metric = R/20;
 
+    const ship = new THREE.Object3D();
+
     //MAIN BODY
-    const main_body_g = new THREE.CylinderGeometry( size_metric , size_metric, size_metric, 32 );
+    const section_3_g = new THREE.CylinderGeometry( size_metric , size_metric, size_metric, 32 );
     const material = new THREE.MeshBasicMaterial( {color: 0xffff00, wireframe: true} );
     const material2 = new THREE.MeshBasicMaterial( {color: 0x00ff00, wireframe: true} );
     const material3 = new THREE.MeshBasicMaterial( {color: 0x1e81b0, wireframe: true} );
-    const main_body = new THREE.Mesh( main_body_g, material );
+    const section_3 = new THREE.Mesh( section_3_g, material );
+    ship.add(section_3);
 
     //SECTION_2
     const section_2_g = new THREE.CylinderGeometry( size_metric/1.2 , size_metric, size_metric, 32 );
     const section_2 = new THREE.Mesh(section_2_g, material);
     section_2.position.y = size_metric;
-    main_body.add(section_2);
+    ship.add(section_2);
 
 
     //WINDOW OUTER
@@ -378,25 +371,25 @@ function createSpaceShipObject() {
     const section_1_g = new THREE.CylinderGeometry( size_metric/1.8 , size_metric/1.2, size_metric, 32 );
     const section_1 = new THREE.Mesh(section_1_g, material);
     section_1.position.y = 2 * size_metric;
-    main_body.add(section_1);
+    ship.add(section_1);
 
     //NOSE
     const nose_g = new THREE.CylinderGeometry( 0 , size_metric/1.8, size_metric, 32 );
     const nose = new THREE.Mesh(nose_g, material);
     nose.position.y = 3 * size_metric;
-    main_body.add(nose);
+    ship.add(nose);
 
     //BASE
     const base_g = new THREE.CylinderGeometry( size_metric , size_metric/1.2, size_metric, 32 );
     const base = new THREE.Mesh(base_g, material);
     base.position.y = -1 * size_metric;
-    main_body.add(base);
+    ship.add(base);
 
     //NOZZLE
     const nozzle_g = new THREE.CylinderGeometry( size_metric/1.5 , size_metric/1.5, size_metric/2, 32 );
     const nozzle = new THREE.Mesh(nozzle_g, material);
     nozzle.position.y = -1.7 * size_metric;
-    main_body.add(nozzle);
+    ship.add(nozzle);
 
     //LEGS
     const leg_object_1 = createLegObject(size_metric);
@@ -409,26 +402,24 @@ function createSpaceShipObject() {
 
 
     //CAMERA
-    camera3.translateY(-R)//.translateZ(-R/2);
-    main_body.add(camera3);
-    camera3.up = new THREE.Vector3(0,0,1);
+    camera3.translateY(-R).translateZ(-R/2);
+    ship.add(camera3);
+    camera3.up = new THREE.Vector3(0,0,-1);
     camera3.lookAt(0,1,0);
 
 
-    main_body.add(leg_object_1);
-    main_body.add(leg_object_2);
-    main_body.add(leg_object_3);
-    main_body.add(leg_object_4);
-
-    space_ship = main_body;
+    ship.add(leg_object_1);
+    ship.add(leg_object_2);
+    ship.add(leg_object_3);
+    ship.add(leg_object_4);
 
     const initial_position = sphericalToCartesian(THREE.Math.degToRad(lat), THREE.Math.degToRad(lon), 1.2 * R);
-    space_ship.position.x = initial_position.x;
-    space_ship.position.y = initial_position.y;
-    space_ship.position.z = initial_position.z;
+    ship.position.x = initial_position.x;
+    ship.position.y = initial_position.y;
+    ship.position.z = initial_position.z;
 
-    scene.add(main_body);
-    return main_body;
+    scene.add(ship);
+    return ship;
 }
 
 
