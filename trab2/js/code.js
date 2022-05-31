@@ -14,20 +14,16 @@ const degToRad = THREE.Math.degToRad;
 const minJunkSize = R/24, maxJunkSize = R/20;
 
 var space_ship;
-<<<<<<< HEAD
-var lat = generateRandoNumber(0, 180), lon = generateRandoNumber(0, 360);
-=======
 var lat = generateRandoNumber(-90, 90), lon = generateRandoNumber(-180, 180);
->>>>>>> 7d4ccf7a59c6bb01b060b5db176a93a3624efd7d
 
 var junkObjectsArray = [];
 
 
 function sphericalToCartesian(lat, lon, r) {
     return new THREE.Vector3(
-        r * Math.sin(lon) * Math.sin(lat),
-        r * Math.cos(lat),
-        r * Math.cos(lon) * Math.sin(lat),
+        r * Math.sin(lon) * Math.cos(lat),
+        r * Math.sin(lat),
+        r * Math.cos(lon) * Math.cos(lat),
     );
 }
 
@@ -120,7 +116,7 @@ function createSpaceTrash(size) {
     const material = new THREE.MeshBasicMaterial( { color: 0xBfBfBf } );
     const object = new THREE.Mesh( geometry, material );
 
-    const vector = sphericalToCartesian(Math.PI * Math.random(), 2*Math.PI * Math.random(), 1.2 * R);
+    const vector = sphericalToCartesian(generateRandoNumber(-90, 90), generateRandoNumber(-180, 180), 1.2 * R);
     object.position.x = vector.x;
     object.position.y = vector.y;
     object.position.z = vector.z;
@@ -197,11 +193,11 @@ function handleKey(code, delta) {
             break;
         case "ArrowLeft":
             lon -= step * delta;
-            space_ship.rotation.z = degToRad(-90);
+            space_ship.rotation.z = degToRad(90);
             break;
         case "ArrowRight":
             lon += step * delta;
-            space_ship.rotation.z = degToRad(90);
+            space_ship.rotation.z = degToRad(-90);
             break;
     }
 }
@@ -437,6 +433,6 @@ function detectColisions() {
 function updateSpaceShipPos() {
     let new_pos = sphericalToCartesian(degToRad(lat), degToRad(lon), 1.2 * R);
     space_ship.position.copy(new_pos);
-    space_ship.rotation.x = degToRad(lat + 90);
+    space_ship.rotation.x = degToRad(lat);
     space_ship.rotation.y = degToRad(lon);
 }
