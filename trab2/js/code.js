@@ -14,7 +14,7 @@ const degToRad = THREE.Math.degToRad;
 const minJunkSize = R/24, maxJunkSize = R/20;
 
 var space_ship;
-var lat = -90, lon = 180;
+var lat = generateRandoNumber(0, 360), lon = generateRandoNumber(0, 360);
 
 var junkObjectsArray = [];
 
