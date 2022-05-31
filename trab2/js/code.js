@@ -5,26 +5,25 @@ var camera, camera1, camera2, camera3, scene, renderer;
 var pressedButtons = []
 var clock;
 
-const step = 150;
+const step = 50;
 const R = 200; // Planet Radius
-const NUMBER_OF_SPACE_TRASH = 10;
+const NUMBER_OF_SPACE_TRASH = 20;
 
 const degToRad = THREE.Math.degToRad;
 
 const minJunkSize = R/24, maxJunkSize = R/20;
 
 var space_ship;
-var lat = -90;
-var lon = 0;
+var lat = -90, lon = 180;
 
 var junkObjectsArray = [];
 
 
-function sphericalToCartesian(lat, long, r) {
+function sphericalToCartesian(lat, lon, r) {
     return new THREE.Vector3(
-        r * Math.sin(long) * Math.sin(lat),
+        r * Math.sin(lon) * Math.sin(lat),
         r * Math.cos(lat),
-        r * Math.cos(long) * Math.sin(lat),
+        r * Math.cos(lon) * Math.sin(lat),
     );
 }
 
@@ -35,8 +34,6 @@ function createScene() {
 
 
 function animate() {
-    //TESTE DE ORIENTACAO
-
     update();
     display();
     requestAnimationFrame(animate);
@@ -45,7 +42,15 @@ function animate() {
 
 function update() {
     delta = clock.getDelta();
+
+    const old_lat = lat, old_lon = lon;
+
     pressedButtons.forEach(code => handleKey(code, delta));
+
+    if (lat != old_lat || lon != old_lon) {
+        updateSpaceShipPos();
+        detectColisions();
+    }
 }
 
 
@@ -66,27 +71,18 @@ function init() {
     createScene();
     createCameras();
 
-    // TODO create planet, rocket and junk
     createPlanet();
     for(var i = 0; i < NUMBER_OF_SPACE_TRASH; i++) {
-        //createSpaceTrash();
         const spaceJunk = new Junk();
         spaceJunk.addObjectToScene();
     }
-    space_ship = createSpaceShipObject();
+    initSpaceShip();
 
-    /*
-    //A CRIACAO DA NAVE VAI SER ASSIM
-    const rocket = new Rocket();
-    console.log("ROCKET", rocket);
-
-    */
     clock = new THREE.Clock();
 }
 
-function createSpaceTrash() {
+function createSpaceTrash(size) {
     var geometry;
-    const size = generateRandoNumber(minJunkSize, maxJunkSize);
  
     let l, r, h;
     switch (generateRandoNumber(1,4)) {
@@ -96,7 +92,7 @@ function createSpaceTrash() {
             break;
 
         case 2:
-            h = size / Math.sqrt(3);
+            h = size / Math.sqrt(2);
             r = h / 2;
             geometry = new THREE.CylinderGeometry(r, r, h);
             break;
@@ -131,7 +127,7 @@ function generateRandoNumber(min, max) {
 
 function createPlanet() {
     const geometry = new THREE.SphereGeometry(R);
-    const material = new THREE.MeshBasicMaterial({ color: 0xBf03f3f, wireframe: true} );
+    const material = new THREE.MeshBasicMaterial({ color: 0xf03f3f, wireframe: true} );
     const planet = new THREE.Mesh(geometry, material);
 
     scene.add(planet);
@@ -179,7 +175,6 @@ function removeButtonFromList(code) {
 
 function handleKey(code, delta) {
     //console.log("Handle key: ", code);
-    detectColisions();
 
     switch (code) {
         case "ArrowUp":
@@ -199,11 +194,6 @@ function handleKey(code, delta) {
             space_ship.rotation.z = degToRad(90);
             break;
     }
-
-    let new_pos = sphericalToCartesian(degToRad(lat), degToRad(lon), 1.2 * R);
-    space_ship.position.copy(new_pos);
-    space_ship.rotation.x = degToRad(lat + 90);
-    space_ship.rotation.y = degToRad(lon);
 }
 
 
@@ -212,15 +202,12 @@ function onKeyDown(e) {
         case "Digit1":
             camera = camera1;
             break;
-
         case "Digit2":
             camera = camera2;
             break;
-
         case "Digit3":
             camera = camera3;
             break;
-
         case "ArrowUp":
         case "ArrowDown":
         case "ArrowLeft":
@@ -251,31 +238,27 @@ function onResize() {
     }
 
     camera1.left = width / - 2, camera1.right = width / 2, camera1.top = height / 2, camera1.bottom = height / - 2;
+    camera1.updateProjectionMatrix();
 
     camera2.aspect = aspect;
+    camera2.updateProjectionMatrix();
 
     camera3.aspect = aspect;
-
-    camera1.updateProjectionMatrix();
-    camera2.updateProjectionMatrix();
     camera3.updateProjectionMatrix();
 }
-
-
-//ESTOU AINDA A TESTAR
 
 /*
 *   nose
 *   section_1
 *   section_2 () (window)
-*   main_body \\ (leg)
+*   section_3 \\ (leg)
 *   base       \\
 *   nozzle
 *             capsule
 * */
 
 function createSpaceShipObject() {
-    const size_metric = R/20;
+    const size_metric = R/10 / 2 / 3;
 
     const ship = new THREE.Object3D();
 
@@ -340,14 +323,6 @@ function createSpaceShipObject() {
     const leg_object_4 = createLegObject(size_metric);
     leg_object_4.rotateY(degToRad(270));
 
-
-    //CAMERA
-    camera3.translateY(-R).translateZ(-R/2);
-    ship.add(camera3);
-    camera3.up = new THREE.Vector3(0,0,-1);
-    camera3.lookAt(0,1,0);
-
-
     ship.add(leg_object_1);
     ship.add(leg_object_2);
     ship.add(leg_object_3);
@@ -358,9 +333,23 @@ function createSpaceShipObject() {
     ship.position.y = initial_position.y;
     ship.position.z = initial_position.z;
 
-    scene.add(ship);
-    ship.rotation.order = ('YXZ');
     return ship;
+}
+
+
+function initSpaceShip() {
+    space_ship = createSpaceShipObject();
+
+    camera3.translateY(-R/2).translateZ(-R/4);
+    camera3.up = new THREE.Vector3(0,0,-1);
+    camera3.lookAt(0,1,0);
+    space_ship.add(camera3);
+    
+    space_ship.rotation.order = ('YXZ');
+    
+    updateSpaceShipPos();
+
+    scene.add(space_ship);
 }
 
 
@@ -389,69 +378,16 @@ function createLegObject(size_metric) {
     return leg_main_object;
 }
 
+
 function getOctant(position) {
-    //return (position.x) + (position.y < 0)*2 + (position.z < 0)*4;
-    var octant;
-
-    //UPPER Quadrant
-
-    if(position.x >= 0 && position.y >= 0 && position.z >= 0) {
-        return 1;
-    } else if (position.x < 0 && position.y >= 0 && position.z >= 0) {
-        return 2;
-    } else if (position.x < 0 && position.y < 0 && position.z >= 0) {
-        return 3;
-    } else if (position.x >= 0 && position.y < 0 && position.z >= 0) {
-        return 4;
-    }
-
-    //LOWER Quadrant
-
-    else if(position.x >= 0 && position.y >= 0 && position.z < 0) {
-        return 5;
-    } else if (position.x < 0 && position.y >= 0 && position.z < 0) {
-        return 6;
-    } else if (position.x < 0 && position.y < 0 && position.z < 0) {
-        return 7;
-    } else if (position.x >= 0 && position.y < 0 && position.z < 0) {
-        return 8;
-    }
+    return (position.x < 0) + (position.y < 0)*2 + (position.z < 0)*4;
 }
 
-//TODO (ARTEM) CRIAR CLASSE DA SPACE_SHIP
-class Rocket {
-    constructor() {
-        this._object = createSpaceShipObject();
-        const initial_position = sphericalToCartesian(degToRad(lat), degToRad(lon), 1.2 * R);
-        this._x = initial_position.x;
-        this._y = initial_position.y;
-        this._z = initial_position.z;
-    }
-
-
-    get position() {
-        return {x: this._x, y: this._y, z:this._z};
-    }
-
-    move(lat, lon) {
-        const cartesian_coordinate = sphericalToCartesian(degToRad(lat), degToRad(lon), 1.2 * R);
-        this._object.position.x = cartesian_coordinate.x;
-        this._object.position.y = cartesian_coordinate.y;
-        this._object.position.z = cartesian_coordinate.z;
-
-        this._x = cartesian_coordinate.x;
-        this._y = cartesian_coordinate.y;
-        this._z = cartesian_coordinate.z;
-
-        //TODO ADICIONAR A PARTE DA ALTERACAO DO ANGULO DA NAVE
-    }
-
-    
-}
 
 class Junk {
     constructor() {
-        this._junkObject = createSpaceTrash();
+        this.size = generateRandoNumber(minJunkSize, maxJunkSize);
+        this._junkObject = createSpaceTrash(this.size);
         this._x = this._junkObject.position.x;
         this._y = this._junkObject.position.y;
         this._z = this._junkObject.position.z;
@@ -464,9 +400,9 @@ class Junk {
     }
 }
 
+
 function detectColisions() {
     const space_ship_octant = getOctant(space_ship.position);
-    //console.log("SpaceShip Octant",space_ship_octant);
 
     junkObjectsArray.forEach(junk => {
         if(space_ship_octant !== junk._octant) return;
@@ -474,12 +410,16 @@ function detectColisions() {
         + (junk._junkObject.position.y - space_ship.position.y)**2
         + (junk._junkObject.position.z - space_ship.position.z)**2;
 
-        //console.log("OBJECT", junk);
-        if(Math.sqrt(distance_between_2) < R/10) { //2 * R/20 If two spheres touch each other
-            //console.log("COLISION DETECTED");
+        if(Math.sqrt(distance_between_2) < R/10/2 + junk.size/2 ) {
             scene.remove(junk._junkObject);
             junkObjectsArray = junkObjectsArray.filter(elm => elm != junk);
-            //console.log("NEW junkArray:", junkObjectsArray);
         }
     })
+}
+
+function updateSpaceShipPos() {
+    let new_pos = sphericalToCartesian(degToRad(lat), degToRad(lon), 1.2 * R);
+    space_ship.position.copy(new_pos);
+    space_ship.rotation.x = degToRad(lat + 90);
+    space_ship.rotation.y = degToRad(lon);
 }
