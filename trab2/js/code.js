@@ -71,6 +71,12 @@ function init() {
     createScene();
     createCameras();
 
+    let light = new THREE.PointLight(0xffff99);
+    let lightAmbient = new THREE.AmbientLight(0x99bbff, 0.7);
+
+    light.position.set( 3 * R, 3 * R, 3 * R );
+    scene.add(light).add(lightAmbient);
+
     createPlanet();
     for(var i = 0; i < NUMBER_OF_SPACE_TRASH; i++) {
         const spaceJunk = new Junk();
@@ -127,7 +133,7 @@ function generateRandoNumber(min, max) {
 
 function createPlanet() {
     const geometry = new THREE.SphereGeometry(R);
-    const material = new THREE.MeshBasicMaterial({ color: 0xf03f3f, wireframe: true} );
+    const material = new THREE.MeshLambertMaterial({ color: 0xf03f3f} );
     const planet = new THREE.Mesh(geometry, material);
 
     scene.add(planet);
@@ -262,15 +268,15 @@ function createSpaceShipObject() {
 
     const ship = new THREE.Object3D();
 
-    const nose_matrial = new THREE.MeshBasicMaterial({color: 0xfb4934});
-    const section_1_matrial = new THREE.MeshBasicMaterial( {color: 0xfbf1c7});
-    const base_matrial = new THREE.MeshBasicMaterial( {color: 0xd3869b});
-    const nozzle_matrial = new THREE.MeshBasicMaterial( {color: 0xfebd2f});
+    const nose_matrial = new THREE.MeshLambertMaterial({color: 0xfb4934});
+    const section_1_matrial = new THREE.MeshLambertMaterial( {color: 0xfbf1c7});
+    const base_matrial = new THREE.MeshLambertMaterial( {color: 0xd3869b});
+    const nozzle_matrial = new THREE.MeshLambertMaterial( {color: 0xfebd2f});
 
     //MAIN BODY
     const section_3_g = new THREE.CylinderGeometry( size_metric , size_metric, size_metric, 32 );
-    const material2 = new THREE.MeshBasicMaterial( {color: 0x00ff00, wireframe: true} );
-    const material3 = new THREE.MeshBasicMaterial( {color: 0x1e81b0, wireframe: true} );
+    const material2 = new THREE.MeshLambertMaterial( {color: 0x00ff00} );
+    const material3 = new THREE.MeshLambertMaterial( {color: 0x1e81b0} );
     const section_3 = new THREE.Mesh( section_3_g, section_1_matrial );
     ship.add(section_3);
 
@@ -358,10 +364,10 @@ function initSpaceShip() {
 
 
 function createLegObject(size_metric) {
-    const material = new THREE.MeshBasicMaterial( {color: 0xffff00, wireframe: true} );
+    const material = new THREE.MeshLambertMaterial( {color: 0xffff00} );
 
-    const leg_material = new THREE.MeshBasicMaterial( {color: 0x665c54});
-    const capsule_material = new THREE.MeshBasicMaterial( {color: 0xd79921});
+    const leg_material = new THREE.MeshLambertMaterial( {color: 0x665c54});
+    const capsule_material = new THREE.MeshLambertMaterial( {color: 0xd79921});
     //capsule
     const leg_main_object = new THREE.Object3D();
     const leg_object = new THREE.Object3D();
