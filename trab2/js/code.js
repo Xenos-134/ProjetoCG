@@ -21,9 +21,9 @@ var junkObjectsArray = [];
 
 function sphericalToCartesian(lat, lon, r) {
     return new THREE.Vector3(
-        r * Math.sin(lon) * Math.sin(lat),
-        r * Math.cos(lat),
-        r * Math.cos(lon) * Math.sin(lat),
+        r * Math.sin(lon) * Math.cos(lat),  // sin(x+90) = cos(x)
+        r * -Math.sin(lat),                 // cos(x+90) = -sin(x)
+        r * Math.cos(lon) * Math.cos(lat),
     );
 }
 
@@ -116,7 +116,7 @@ function createSpaceTrash(size) {
     const material = new THREE.MeshBasicMaterial( { color: 0xBfBfBf } );
     const object = new THREE.Mesh( geometry, material );
 
-    const vector = sphericalToCartesian(Math.PI * Math.random(), 2*Math.PI * Math.random(), 1.2 * R);
+    const vector = sphericalToCartesian(generateRandoNumber(-90, 90), generateRandoNumber(-180, 180), 1.2 * R);
     object.position.x = vector.x;
     object.position.y = vector.y;
     object.position.z = vector.z;
@@ -184,20 +184,20 @@ function handleKey(code, delta) {
 
     switch (code) {
         case "ArrowUp":
-            lat += step * delta;;
+            lat -= step * delta;
             space_ship.rotation.z = degToRad(0);
             break;
         case "ArrowDown":
-            lat -= step * delta;
+            lat += step * delta;
             space_ship.rotation.z = degToRad(180);
             break;
         case "ArrowLeft":
             lon -= step * delta;
-            space_ship.rotation.z = degToRad(-90);
+            space_ship.rotation.z = degToRad(90);
             break;
         case "ArrowRight":
             lon += step * delta;
-            space_ship.rotation.z = degToRad(90);
+            space_ship.rotation.z = degToRad(-90);
             break;
     }
 }
@@ -338,11 +338,6 @@ function createSpaceShipObject() {
     ship.add(leg_object_3);
     ship.add(leg_object_4);
 
-    const initial_position = sphericalToCartesian(degToRad(lat), degToRad(lon), 1.2 * R);
-    ship.position.x = initial_position.x;
-    ship.position.y = initial_position.y;
-    ship.position.z = initial_position.z;
-
     return ship;
 }
 
@@ -433,6 +428,6 @@ function detectColisions() {
 function updateSpaceShipPos() {
     let new_pos = sphericalToCartesian(degToRad(lat), degToRad(lon), 1.2 * R);
     space_ship.position.copy(new_pos);
-    space_ship.rotation.x = degToRad(lat + 90);
+    space_ship.rotation.x = degToRad(lat);
     space_ship.rotation.y = degToRad(lon);
 }
