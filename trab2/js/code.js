@@ -345,8 +345,8 @@ function createSpaceShipObject() {
 function initSpaceShip() {
     space_ship = createSpaceShipObject();
 
-    camera3.translateY(-R/2).translateZ(-R/4);
-    camera3.up = new THREE.Vector3(0,0,-1);
+    camera3.translateY(-R/2).translateZ(R/4);
+    camera3.up = new THREE.Vector3(0,0,1);
     camera3.lookAt(0,1,0);
     space_ship.add(camera3);
     
