@@ -110,7 +110,6 @@ function onKeyDown(e) {
         case "KeyA":
             if (addKey(e.code)) {
                 //TODO
-                console.log("test")
             }
             break;
         case "KeyS":
