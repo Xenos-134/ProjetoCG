@@ -16,8 +16,7 @@ var globalMainObject = new THREE.Object3D();
 
 function animate() {
 
-    globalMainObject.rotateY(THREE.Math.degToRad(5));
-
+    globalMainObject.rotateX(THREE.Math.degToRad(1));
     update();
     display();
     requestAnimationFrame(animate);
@@ -50,12 +49,27 @@ function init() {
     clock = new THREE.Clock();
 }
 
+
 function createFigure1() {
 
-    const trainglePlane = new TrianglePlaneGeometry(20, 20, 20);
+    const parentObject = new THREE.Object3D();
 
-    globalMainObject = trainglePlane.object;
-    scene.add(trainglePlane.object);
+    const trianglePlane1 = new TrianglePlaneGeometry(20, 10, 20);
+    trianglePlane1.object.rotateZ(THREE.Math.degToRad(90));
+    trianglePlane1.object.rotateX(THREE.Math.degToRad(30));
+    trianglePlane1.object.position.x = -Math.cos(THREE.Math.degToRad(30)) * 10;
+
+    const material = new THREE.MeshBasicMaterial( { color: 0xf0ffff, wireframe: true, side: THREE.DoubleSide});
+    const trianglePlane2 = new TrianglePlaneGeometry(20, 10, 20, material);
+    trianglePlane2.object.rotateZ(THREE.Math.degToRad(-90));
+    trianglePlane2.object.rotateX(THREE.Math.degToRad(30));
+    trianglePlane2.object.position.x = Math.cos(THREE.Math.degToRad(30)) * 10;;
+
+
+    parentObject.add(trianglePlane1.object);
+    parentObject.add(trianglePlane2.object);
+    globalMainObject = parentObject;
+    scene.add(parentObject);
 }
 
 
@@ -71,15 +85,24 @@ class TrianglePlaneGeometry {
     geometry;
     object;
 
-    constructor(c1, c2, c3) {
+    constructor(c1, c2, c3, custom_material) {
         const shape = new THREE.Shape();
         shape.moveTo(- c1, - c2); //Bottom Left  Corner
         shape.lineTo(c3, - c2);   //Bottom Right Corner
         shape.lineTo(0, c2);   //Top          Corner
 
         this.geometry = new THREE.ShapeGeometry(shape);
-        const material = new THREE.MeshBasicMaterial( { color: 0x00ff00, wireframe: false, side: THREE.DoubleSide } );
-        this.object = new THREE.Mesh( this.geometry, material) ;
+
+        if(custom_material) {
+            this.object = new THREE.Mesh( this.geometry, custom_material);
+        } else {
+            this.object = new THREE.Mesh( this.geometry, new THREE.MeshBasicMaterial( { color: 0x00ff00, wireframe: false, side: THREE.DoubleSide }));
+        }
+
+    }
+
+    setMaterial(new_material) {
+        this.object = new THREE.Mesh( this.geometry, new_material);
     }
 }
 
