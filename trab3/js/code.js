@@ -84,16 +84,22 @@ function removeKey(code) {
 function handleKey(code, delta) {
     switch (code) {
         case "KeyQ":
+            //TODO
             break;
         case "KeyW":
+            //TODO
             break;
         case "KeyE":
+            //TODO
             break;
         case "KeyR":
+            //TODO
             break;
         case "KeyT":
+            //TODO
             break;
         case "KeyY":
+            //TODO
             break;
     }
 }
@@ -106,6 +112,11 @@ function onKeyDown(e) {
             break;
         case "Digit2":
             camera = camera2;
+            break;
+        case "Digit3":
+            if (addKey(e.code)) {
+                //TODO
+            }
             break;
         case "KeyA":
             if (addKey(e.code)) {
@@ -122,11 +133,6 @@ function onKeyDown(e) {
                 //TODO
             }
             break;
-        case "KeyR":
-            if (addKey(e.code)) {
-                //TODO
-            }
-            break;
         case "KeyZ":
             if (addKey(e.code)) {
                 //TODO
@@ -138,6 +144,11 @@ function onKeyDown(e) {
             }
             break;
         case "KeyC":
+            if (addKey(e.code)) {
+                //TODO
+            }
+            break;
+        case "Space":
             if (addKey(e.code)) {
                 //TODO
             }
