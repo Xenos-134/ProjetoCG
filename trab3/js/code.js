@@ -9,7 +9,15 @@ const step = 50;
 const degToRad = THREE.Math.degToRad;
 
 
+//UNIDADE DE DIMENSAO
+const unit = 1;
+
+var globalMainObject = new THREE.Object3D();
+
 function animate() {
+
+    globalMainObject.rotateY(THREE.Math.degToRad(5));
+
     update();
     display();
     requestAnimationFrame(animate);
@@ -18,7 +26,6 @@ function animate() {
 
 function update() {
     delta = clock.getDelta();
-
     pressedKeys.forEach(code => handleKey(code, delta));
 }
 
@@ -39,9 +46,43 @@ function init() {
 
     scene = new THREE.Scene();
     createCameras();
-
+    createFigure1();
     clock = new THREE.Clock();
 }
+
+function createFigure1() {
+
+    const trainglePlane = new TrianglePlaneGeometry(20, 20, 20);
+
+    globalMainObject = trainglePlane.object;
+    scene.add(trainglePlane.object);
+}
+
+
+//Represetacao de uma geometria plana do triangulo
+/*
+         (C2)
+          /\
+         /  \
+        /    \
+  (C1) -------- (C3)
+* */
+class TrianglePlaneGeometry {
+    geometry;
+    object;
+
+    constructor(c1, c2, c3) {
+        const shape = new THREE.Shape();
+        shape.moveTo(- c1, - c2); //Bottom Left  Corner
+        shape.lineTo(c3, - c2);   //Bottom Right Corner
+        shape.lineTo(0, c2);   //Top          Corner
+
+        this.geometry = new THREE.ShapeGeometry(shape);
+        const material = new THREE.MeshBasicMaterial( { color: 0x00ff00, wireframe: false, side: THREE.DoubleSide } );
+        this.object = new THREE.Mesh( this.geometry, material) ;
+    }
+}
+
 
 
 function createCameras() {
