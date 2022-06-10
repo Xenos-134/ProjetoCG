@@ -84,6 +84,7 @@ function createFigure1() {
 class TrianglePlaneGeometry {
     geometry;
     object;
+    object_material;
 
     constructor(c1, c2, c3, custom_material) {
         const shape = new THREE.Shape();
@@ -93,16 +94,35 @@ class TrianglePlaneGeometry {
 
         this.geometry = new THREE.ShapeGeometry(shape);
 
+        var texture2 = new THREE.TextureLoader().load( "https://previews.123rf.com/images/akiyoko/akiyoko1809/akiyoko180900051/108410284-traditional-japanese-pattern-origami-paper-texture-background.jpg" );
+        texture2.wrapS = texture2.wrapT = THREE.RepeatWrapping;
+        texture2.repeat.set( 1 / 50, 1 / 50 );
+        texture2.offset.set( 0.1, 0.1 );
+
+        var material2 = new THREE.MeshBasicMaterial( {
+            map: texture2,
+            side: THREE.DoubleSide
+        } );
+
         if(custom_material) {
             this.object = new THREE.Mesh( this.geometry, custom_material);
+            this.object_material = custom_material;
         } else {
-            this.object = new THREE.Mesh( this.geometry, new THREE.MeshBasicMaterial( { color: 0x00ff00, wireframe: false, side: THREE.DoubleSide }));
+            const default_material = new THREE.MeshBasicMaterial( {
+                wireframe: false,
+                side: THREE.DoubleSide ,
+            });
+            this.object = new THREE.Mesh( this.geometry, material2);
+            this.object_material = default_material;
         }
 
     }
 
     setMaterial(new_material) {
         this.object = new THREE.Mesh( this.geometry, new_material);
+    }
+
+    setTexture() {
     }
 }
 
