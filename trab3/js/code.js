@@ -6,7 +6,7 @@ var pressedKeys = []
 var clock;
 
 const step = 50;
-const degToRad = THREE.Math.degToRad;
+const degToRad = THREE.Math.degToRad, cos = Math.cos, sin = Math.sin, PI = Math.PI;
 
 
 //UNIDADE DE DIMENSAO
@@ -16,7 +16,7 @@ var globalMainObject = new THREE.Object3D();
 
 function animate() {
 
-    globalMainObject.rotateX(THREE.Math.degToRad(1));
+    globalMainObject.rotateX(degToRad(1));
     update();
     display();
     requestAnimationFrame(animate);
@@ -45,7 +45,12 @@ function init() {
 
     scene = new THREE.Scene();
     createCameras();
-    createFigure1();
+    const directionalLight = new THREE.DirectionalLight( 0xffffff, 0.5 ).translateX(10)
+                                                                        .translateY(10)
+                                                                        .translateZ(10);
+    scene.add( directionalLight );
+    //createFigure1();
+    createFigure1Buffer();
     //createFigure1Test();
     clock = new THREE.Clock();
 }
@@ -56,16 +61,16 @@ function createFigure1() {
     const parentObject = new THREE.Object3D();
 
     const trianglePlane1 = new TrianglePlaneGeometry(20, 10, 20);
-    trianglePlane1.object.rotateZ(THREE.Math.degToRad(90));
-    trianglePlane1.object.rotateX(THREE.Math.degToRad(30));
-    trianglePlane1.object.position.x = -Math.cos(THREE.Math.degToRad(30)) * 10;
+    trianglePlane1.object.rotateZ(degToRad(90));
+    trianglePlane1.object.rotateX(degToRad(30));
+    trianglePlane1.object.position.x = -cos(degToRad(30)) * 10;
 
     const trianglePlane2 = new TrianglePlaneGeometry(20, 10, 20);
     trianglePlane2.setTexture("https://previews.123rf.com/images/akiyoko/akiyoko1809/akiyoko180900074/108428809-traditional-japanese-pattern-origami-paper-texture-background.jpg");
 
-    trianglePlane2.object.rotateZ(THREE.Math.degToRad(-90));
-    trianglePlane2.object.rotateX(THREE.Math.degToRad(30));
-    trianglePlane2.object.position.x = Math.cos(THREE.Math.degToRad(30)) * 10;
+    trianglePlane2.object.rotateZ(degToRad(-90));
+    trianglePlane2.object.rotateX(degToRad(30));
+    trianglePlane2.object.position.x = cos(degToRad(30)) * 10;
 
 
     parentObject.add(trianglePlane1.object);
@@ -92,6 +97,28 @@ function createFigure1Test() {
     const object = new THREE.Mesh( geometry, default_material);
     globalMainObject = object;
     scene.add(object);
+}
+
+
+function createFigure1Buffer() {
+    const geometry = new THREE.BufferGeometry()
+    const vertices = new Float32Array( [
+          0,           -20,  0,
+         20*cos(PI/6),   0, 20*sin(PI/6),
+          0,            20,  0,
+
+          0,            20,  0,
+        -20*cos(PI/6),   0, 20*sin(PI/6),
+          0,           -20,  0
+    ] );
+    geometry.setAttribute( 'position', new THREE.BufferAttribute( vertices, 3 ) );
+
+    const material = new THREE.MeshBasicMaterial( { color: 0xffffff, side: THREE.DoubleSide } );
+
+    const figure = new THREE.Mesh( geometry, material );
+
+    globalMainObject = figure;
+    scene.add(figure);
 }
 
 
