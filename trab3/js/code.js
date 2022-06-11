@@ -16,7 +16,7 @@ var globalMainObject = new THREE.Object3D();
 
 function animate() {
 
-    globalMainObject.rotateX(THREE.Math.degToRad(1));
+    globalMainObject.rotateY(THREE.Math.degToRad(1));
     update();
     display();
     requestAnimationFrame(animate);
@@ -45,11 +45,145 @@ function init() {
 
     scene = new THREE.Scene();
     createCameras();
-    createFigure1();
-    //createFigure1Test();
+    createFigure3();    //createFigure1Test();
     clock = new THREE.Clock();
 }
 
+
+
+function createFigure3() {
+    const vertices = [
+        //Back L
+            //Up T
+        { pos: [  0,  20,  -5], norm: [ 0,  0,  1], uv: [0, 0], },
+        { pos: [-20,   0,  0], norm: [ 0,  0,  1], uv: [1, 0], },
+        { pos: [  0, -10,  -5], norm: [ 0,  0,  1], uv: [0, 1], },
+            //Bot T
+        { pos: [  0,   -10,  -5], norm: [ 0,  0,  1], uv: [0.5, 1], },
+        { pos: [  -20, 0,  0], norm: [ 0,  0,  1], uv: [0, 1], },
+        { pos: [  0,   -70,  -5], norm: [ 0,  0,  1], uv: [1, 0], },
+
+        //Back R
+            //Up T
+        { pos: [  0,  20,  -5], norm: [ 0,  0,  1], uv: [0, 0], },
+        { pos: [20,   0,  0], norm: [ 0,  0,  1], uv: [1, 0], },
+        { pos: [  0, -10,  -5], norm: [ 0,  0,  1], uv: [0, 1], },
+            //Bot T
+        { pos: [  0,   -10,  -5], norm: [ 0,  0,  1], uv: [0.5, 1], },
+        { pos: [  20, 0,  0], norm: [ 0,  0,  1], uv: [0, 1], },
+        { pos: [  0,   -70,  -5], norm: [ 0,  0,  1], uv: [0.5, 0], },
+
+
+        //Front 1 L
+        { pos: [  -20,  0,  0], norm: [ 0,  0,  1], uv: [0, 1], },
+        { pos: [   0,  -70,  -5], norm: [ 0,  0,  1], uv: [0.5, 0], },
+        { pos: [    -3,  -10,  -10], norm: [ 0,  0,  1], uv: [0.5, 1], },
+
+        //Front 2 L
+        { pos: [  -3,  -10,  -10], norm: [ 0,  0,  1], uv: [0.5, 1], },
+        { pos: [  -15,  -15,  -2], norm: [ 0,  0,  1], uv: [0, 1], },
+        { pos: [  0,  -70,  -5], norm: [ 0,  0,  1], uv: [0.5, 0], },
+
+        //Front 1 R
+        { pos: [  20,  0,  0], norm: [ 0,  0,  1], uv: [1, 1], },
+        { pos: [   0,  -70,  -5], norm: [ 0,  0,  1], uv: [0.5, 0], },
+        { pos: [    3,  -10,  -10], norm: [ 0,  0,  1], uv: [0.5, 1], },
+
+        //Front 2 R
+        { pos: [  3,  -10,  -10], norm: [ 0,  0,  1], uv: [0.5, 1], },
+        { pos: [  15,  -15,  -2], norm: [ 0,  0,  1], uv: [0, 1], },
+        { pos: [  0,  -70,  -5], norm: [ 0,  0,  1], uv: [0.5, 0], },
+
+
+
+
+
+
+    ];
+
+    const positions = [];
+    const normals = [];
+    const uvs = [];
+    for (const vertex of vertices) {
+        positions.push(...vertex.pos);
+        normals.push(...vertex.norm);
+        uvs.push(...vertex.uv);
+    }
+
+    const geometry = new THREE.BufferGeometry();
+    const positionNumComponents = 3;
+    const normalNumComponents = 3;
+    const uvNumComponents = 2;
+    geometry.setAttribute(
+        'position',
+        new THREE.BufferAttribute(new Float32Array(positions), positionNumComponents));
+    geometry.setAttribute(
+        'normal',
+        new THREE.BufferAttribute(new Float32Array(normals), normalNumComponents));
+    geometry.setAttribute(
+        'uv',
+        new THREE.BufferAttribute(new Float32Array(uvs), uvNumComponents));
+
+    let sprite = new THREE.TextureLoader().load("https://previews.123rf.com/images/akiyoko/akiyoko1809/akiyoko180900051/108410284-traditional-japanese-pattern-origami-paper-texture-background.jpg");
+
+    //var material = new THREE.MeshBasicMaterial( {map: sprite, side: THREE.DoubleSide });
+    var material = new THREE.MeshBasicMaterial( { side: THREE.DoubleSide, map: sprite });
+    var object = new THREE.Mesh( geometry, material );
+
+    globalMainObject = object;
+
+    scene.add(object);
+}
+
+
+
+
+
+function createFigure2() {
+    const vertices = [
+        { pos: [  0,  20,  -5], norm: [ 0,  0,  1], uv: [0, 0], },
+        { pos: [-20,   0,  1], norm: [ 0,  0,  1], uv: [1, 0], },
+        { pos: [  0, -20,  -5], norm: [ 0,  0,  1], uv: [0, 1], },
+
+        { pos: [ 0,  20,  -5], norm: [ 0,  0,  1], uv: [0, 1], },
+        { pos: [ 0, -20,  -5], norm: [ 0,  0,  1], uv: [1, 0], },
+        { pos: [ 20,  0,  1], norm: [ 0,  0,  1], uv: [1, 1], },
+
+    ];
+
+    const positions = [];
+    const normals = [];
+    const uvs = [];
+    for (const vertex of vertices) {
+        positions.push(...vertex.pos);
+        normals.push(...vertex.norm);
+        uvs.push(...vertex.uv);
+    }
+
+    const geometry = new THREE.BufferGeometry();
+    const positionNumComponents = 3;
+    const normalNumComponents = 3;
+    const uvNumComponents = 2;
+    geometry.setAttribute(
+        'position',
+        new THREE.BufferAttribute(new Float32Array(positions), positionNumComponents));
+    geometry.setAttribute(
+        'normal',
+        new THREE.BufferAttribute(new Float32Array(normals), normalNumComponents));
+    geometry.setAttribute(
+        'uv',
+        new THREE.BufferAttribute(new Float32Array(uvs), uvNumComponents));
+
+    let sprite = new THREE.TextureLoader().load("https://previews.123rf.com/images/akiyoko/akiyoko1809/akiyoko180900051/108410284-traditional-japanese-pattern-origami-paper-texture-background.jpg");
+
+    //var material = new THREE.MeshBasicMaterial( {map: sprite, side: THREE.DoubleSide });
+    var material = new THREE.MeshBasicMaterial( { side: THREE.DoubleSide, map: sprite });
+    var object = new THREE.Mesh( geometry, material );
+
+    globalMainObject = object;
+
+    scene.add(object);
+}
 
 
 function createFigure1() {
@@ -73,29 +207,6 @@ function createFigure1() {
     globalMainObject = parentObject;
     scene.add(parentObject);
 }
-
-
-//Dado que o enunciado nao 'e claro em relacao se podemos utilizar custom object gerado com shape geometry estou a fazer assim
-function createFigure1Test() {
-    const shape = new THREE.Shape();
-    shape.moveTo(0, 20); //Left Corner
-    shape.lineTo(-20, 0);   //Bottom Right Corner
-    shape.lineTo(0, -20);   //Top          Corner
-    shape.lineTo(20, 0);   //Top          Corner
-
-    const geometry = new THREE.ShapeGeometry(shape);
-
-    const default_material = new THREE.MeshBasicMaterial( {
-        wireframe: false,
-        side: THREE.DoubleSide ,
-    });
-    const object = new THREE.Mesh( geometry, default_material);
-    globalMainObject = object;
-    scene.add(object);
-}
-
-
-
 
 //Represetacao de uma geometria plana do triangulo
 /*
