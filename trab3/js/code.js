@@ -16,11 +16,8 @@ var globalMainObject = new THREE.Object3D();
 
 function animate() {
 
-<<<<<<< HEAD
-    globalMainObject.rotateY(THREE.Math.degToRad(1));
-=======
+
     globalMainObject.rotateX(degToRad(1));
->>>>>>> a9d62575c096fafc39a647e8b250a452cd318a9d
     update();
     display();
     requestAnimationFrame(animate);
@@ -49,9 +46,7 @@ function init() {
 
     scene = new THREE.Scene();
     createCameras();
-<<<<<<< HEAD
     createFigure3();    //createFigure1Test();
-=======
     const directionalLight = new THREE.DirectionalLight( 0xffffff, 0.5 ).translateX(10)
                                                                         .translateY(10)
                                                                         .translateZ(10);
@@ -59,7 +54,6 @@ function init() {
     //createFigure1();
     createFigure1Buffer();
     //createFigure1Test();
->>>>>>> a9d62575c096fafc39a647e8b250a452cd318a9d
     clock = new THREE.Clock();
 }
 
@@ -222,9 +216,6 @@ function createFigure1() {
     scene.add(parentObject);
 }
 
-<<<<<<< HEAD
-=======
-
 //Dado que o enunciado nao 'e claro em relacao se podemos utilizar custom object gerado com shape geometry estou a fazer assim
 function createFigure1Test() {
     const shape = new THREE.Shape();
@@ -269,7 +260,6 @@ function createFigure1Buffer() {
 
 
 
->>>>>>> a9d62575c096fafc39a647e8b250a452cd318a9d
 //Represetacao de uma geometria plana do triangulo
 /*
          (C2)
