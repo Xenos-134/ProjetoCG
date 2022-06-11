@@ -46,12 +46,13 @@ function init() {
     scene = new THREE.Scene();
     createCameras();
     createFigure1();
+    //createFigure1Test();
     clock = new THREE.Clock();
 }
 
 
-function createFigure1() {
 
+function createFigure1() {
     const parentObject = new THREE.Object3D();
 
     const trianglePlane1 = new TrianglePlaneGeometry(20, 10, 20);
@@ -59,11 +60,12 @@ function createFigure1() {
     trianglePlane1.object.rotateX(THREE.Math.degToRad(30));
     trianglePlane1.object.position.x = -Math.cos(THREE.Math.degToRad(30)) * 10;
 
-    const material = new THREE.MeshBasicMaterial( { color: 0xf0ffff, wireframe: true, side: THREE.DoubleSide});
-    const trianglePlane2 = new TrianglePlaneGeometry(20, 10, 20, material);
+    const trianglePlane2 = new TrianglePlaneGeometry(20, 10, 20);
+    trianglePlane2.setTexture("https://previews.123rf.com/images/akiyoko/akiyoko1809/akiyoko180900074/108428809-traditional-japanese-pattern-origami-paper-texture-background.jpg");
+
     trianglePlane2.object.rotateZ(THREE.Math.degToRad(-90));
     trianglePlane2.object.rotateX(THREE.Math.degToRad(30));
-    trianglePlane2.object.position.x = Math.cos(THREE.Math.degToRad(30)) * 10;;
+    trianglePlane2.object.position.x = Math.cos(THREE.Math.degToRad(30)) * 10;
 
 
     parentObject.add(trianglePlane1.object);
@@ -71,6 +73,28 @@ function createFigure1() {
     globalMainObject = parentObject;
     scene.add(parentObject);
 }
+
+
+//Dado que o enunciado nao 'e claro em relacao se podemos utilizar custom object gerado com shape geometry estou a fazer assim
+function createFigure1Test() {
+    const shape = new THREE.Shape();
+    shape.moveTo(0, 20); //Left Corner
+    shape.lineTo(-20, 0);   //Bottom Right Corner
+    shape.lineTo(0, -20);   //Top          Corner
+    shape.lineTo(20, 0);   //Top          Corner
+
+    const geometry = new THREE.ShapeGeometry(shape);
+
+    const default_material = new THREE.MeshBasicMaterial( {
+        wireframe: false,
+        side: THREE.DoubleSide ,
+    });
+    const object = new THREE.Mesh( geometry, default_material);
+    globalMainObject = object;
+    scene.add(object);
+}
+
+
 
 
 //Represetacao de uma geometria plana do triangulo
@@ -94,15 +118,7 @@ class TrianglePlaneGeometry {
 
         this.geometry = new THREE.ShapeGeometry(shape);
 
-        var texture2 = new THREE.TextureLoader().load( "https://previews.123rf.com/images/akiyoko/akiyoko1809/akiyoko180900051/108410284-traditional-japanese-pattern-origami-paper-texture-background.jpg" );
-        texture2.wrapS = texture2.wrapT = THREE.RepeatWrapping;
-        texture2.repeat.set( 1 / 50, 1 / 50 );
-        texture2.offset.set( 0.1, 0.1 );
-
-        var material2 = new THREE.MeshBasicMaterial( {
-            map: texture2,
-            side: THREE.DoubleSide
-        } );
+        const material2 = this.genarateTextureMaterialFromUrl();
 
         if(custom_material) {
             this.object = new THREE.Mesh( this.geometry, custom_material);
@@ -122,7 +138,29 @@ class TrianglePlaneGeometry {
         this.object = new THREE.Mesh( this.geometry, new_material);
     }
 
-    setTexture() {
+    setTexture(textureLink) {
+        const material = this.genarateTextureMaterialFromUrl(textureLink);
+        this.setMaterial(material);
+    }
+
+    //Gera e retorna um material com uma textura
+    genarateTextureMaterialFromUrl(textureLink) {
+        var texture
+        if(textureLink) {
+            texture = new THREE.TextureLoader().load( textureLink );
+        } else { //Default Case
+            texture = new THREE.TextureLoader().load( "https://previews.123rf.com/images/akiyoko/akiyoko1809/akiyoko180900051/108410284-traditional-japanese-pattern-origami-paper-texture-background.jpg" );
+
+        }
+
+        texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+        texture.repeat.set( 1 / 50, 1 / 50 );
+        texture.offset.set( 0.1, 0.1 );
+        var material = new THREE.MeshBasicMaterial( {
+            map: texture,
+            side: THREE.DoubleSide
+        });
+        return material
     }
 }
 
