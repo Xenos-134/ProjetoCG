@@ -62,38 +62,38 @@ function createFigure4() {
 
         //R PART ====================================================
         //BODY
-            //B1 top
-        { pos: [  0,  0,  0], norm: [ 0,  0,  1], uv: [0, 0], },
-        { pos: [  100, -35,  10], norm: [ 0,  0,  1], uv: [0, 1], },
-        { pos: [120,   0,  0], norm: [ 0,  0,  1], uv: [1, 0], },
-            //B1 bot
+            //B1 top (V)
+        { pos: [  0,  0,  0], norm: [ 0,  0,  1], uv: [0, 1], },
+        { pos: [  100, -35,  10], norm: [ 0,  0,  1], uv: [0.5, 0], },
+        { pos: [120,   0,  0], norm: [ 0,  0,  1], uv: [1, 1], },
+            //B1 bot (V)
         { pos: [  0,  0,  0], norm: [ 0,  0,  1], uv: [0, 0], },
         { pos: [  100,  -35,  10], norm: [ 0,  0,  1], uv: [0, 0], },
         { pos: [  20,  -30,  10], norm: [ 0,  0,  1], uv: [0, 0], },
 
         //B2 top
-        { pos: [  0,  0,  0], norm: [ 0,  0,  1], uv: [0, 0], },
+        { pos: [  0,  0,  0], norm: [ 0,  0,  1], uv: [0, 1], },
         { pos: [  20,  -30,  10], norm: [ 0,  0,  1], uv: [0, 0], },
-        { pos: [  70,  0,  10], norm: [ 0,  0,  1], uv: [0, 0], },
+        { pos: [  70,  0,  10], norm: [ 0,  0,  1], uv: [1, 1], },
 
         //B2 bot
-        { pos: [  70,  0,  10], norm: [ 0,  0,  1], uv: [0, 0], },
+        { pos: [  70,  0,  10], norm: [ 0,  0,  1], uv: [0.5, 1], },
         { pos: [  20,  -30,  10], norm: [ 0,  0,  1], uv: [0, 0], },
-        { pos: [  100,  -35,  10], norm: [ 0,  0,  1], uv: [0, 0], },
+        { pos: [  100,  -35,  10], norm: [ 0,  0,  1], uv: [1, 0], },
 
         //NECK
             //N back
-        { pos: [  20,  -30,  10], norm: [ 0,  0,  1], uv: [0, 0], },
-        { pos: [  20,  80,  10], norm: [ 0,  0,  1], uv: [0, 0], },
-        { pos: [  0,  0,  0], norm: [ 0,  0,  1], uv: [0, 0], },
+        { pos: [  20,  -30,  10], norm: [ 0,  0,  1], uv: [1, 0], },
+        { pos: [  20,  80,  10], norm: [ 0,  0,  1], uv: [1, 1], },
+        { pos: [  0,  0,  0], norm: [ 0,  0,  1], uv: [0, 0.25], },
             //N front
         { pos: [  0,  0,  0], norm: [ 0,  0,  1], uv: [0, 0], },
-        { pos: [  20,  80,  10], norm: [ 0,  0,  1], uv: [0, 0], },
-        { pos: [  15,  85,  0], norm: [ 0,  0,  1], uv: [0, 0], },
+        { pos: [  20,  80,  10], norm: [ 0,  0,  1], uv: [1, 0.5], },
+        { pos: [  15,  85,  0], norm: [ 0,  0,  1], uv: [0.5, 1], },
 
         //HEAD
-        { pos: [  20,  80,  10], norm: [ 0,  0,  1], uv: [0, 0], },
-        { pos: [  15,  85,  0], norm: [ 0,  0,  1], uv: [0, 0], },
+        { pos: [  20,  80,  10], norm: [ 0,  0,  1], uv: [1, 1], },
+        { pos: [  15,  85,  0], norm: [ 0,  0,  1], uv: [0.5, 1], },
         { pos: [  -10,  60,  0], norm: [ 0,  0,  1], uv: [0, 0], },
 
         //L PART ====================================================
@@ -134,14 +134,46 @@ function createFigure4() {
 
     ];
 
-    const positions = [];
-    const normals = [];
-    const uvs = [];
+    const geometry = getGeometry(vertices);
+
+    let sprite = new THREE.TextureLoader().load("https://previews.123rf.com/images/akiyoko/akiyoko1809/akiyoko180900051/108410284-traditional-japanese-pattern-origami-paper-texture-background.jpg");
+    //var material = new THREE.MeshBasicMaterial( {map: sprite, side: THREE.DoubleSide });
+    var material = new THREE.MeshBasicMaterial( { side: THREE.DoubleSide, map: sprite});
+    var object = new THREE.Mesh( geometry, material );
+
+    globalMainObject = object;
+    scene.add(object);
+}
+
+function getPositions(vertices) {
+    var positions = [];
     for (const vertex of vertices) {
         positions.push(...vertex.pos);
+    }
+    return positions;
+}
+
+
+function getNormals(vertices) {
+    const normals = [];
+    for (const vertex of vertices) {
         normals.push(...vertex.norm);
+    }
+    return normals;
+}
+
+function getUvs(vertices) {
+    const uvs = [];
+    for (const vertex of vertices) {
         uvs.push(...vertex.uv);
     }
+    return uvs;
+}
+
+function getGeometry(vertices) {
+    const positions = getPositions(vertices);
+    const normals = getNormals(vertices);
+    const uvs = getUvs(vertices);
 
     const geometry = new THREE.BufferGeometry();
     const positionNumComponents = 3;
@@ -157,18 +189,8 @@ function createFigure4() {
         'uv',
         new THREE.BufferAttribute(new Float32Array(uvs), uvNumComponents));
 
-    let sprite = new THREE.TextureLoader().load("https://previews.123rf.com/images/akiyoko/akiyoko1809/akiyoko180900051/108410284-traditional-japanese-pattern-origami-paper-texture-background.jpg");
-
-    //var material = new THREE.MeshBasicMaterial( {map: sprite, side: THREE.DoubleSide });
-    var material = new THREE.MeshBasicMaterial( { side: THREE.DoubleSide, wireframe: true});
-    var object = new THREE.Mesh( geometry, material );
-
-    globalMainObject = object;
-
-    scene.add(object);
+    return geometry;
 }
-
-
 
 
 function createFigure3() {
