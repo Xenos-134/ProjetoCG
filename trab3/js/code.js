@@ -15,9 +15,6 @@ const unit = 1;
 var globalMainObject = new THREE.Object3D();
 
 function animate() {
-
-
-    globalMainObject.rotateX(degToRad(1));
     update();
     display();
     requestAnimationFrame(animate);
@@ -46,16 +43,131 @@ function init() {
 
     scene = new THREE.Scene();
     createCameras();
-    createFigure3();    //createFigure1Test();
+    //createFigure3();
+    createFigure4();
     const directionalLight = new THREE.DirectionalLight( 0xffffff, 0.5 ).translateX(10)
                                                                         .translateY(10)
                                                                         .translateZ(10);
     scene.add( directionalLight );
     //createFigure1();
-    createFigure1Buffer();
+    //createFigure1Buffer();
     //createFigure1Test();
     clock = new THREE.Clock();
 }
+
+
+//Figura 3 RENOMEAR DEPOIS
+function createFigure4() {
+    const vertices = [
+
+        //R PART ====================================================
+        //BODY
+            //B1 top
+        { pos: [  0,  0,  0], norm: [ 0,  0,  1], uv: [0, 0], },
+        { pos: [  100, -35,  10], norm: [ 0,  0,  1], uv: [0, 1], },
+        { pos: [120,   0,  0], norm: [ 0,  0,  1], uv: [1, 0], },
+            //B1 bot
+        { pos: [  0,  0,  0], norm: [ 0,  0,  1], uv: [0, 0], },
+        { pos: [  100,  -35,  10], norm: [ 0,  0,  1], uv: [0, 0], },
+        { pos: [  20,  -30,  10], norm: [ 0,  0,  1], uv: [0, 0], },
+
+        //B2 top
+        { pos: [  0,  0,  0], norm: [ 0,  0,  1], uv: [0, 0], },
+        { pos: [  20,  -30,  10], norm: [ 0,  0,  1], uv: [0, 0], },
+        { pos: [  70,  0,  10], norm: [ 0,  0,  1], uv: [0, 0], },
+
+        //B2 bot
+        { pos: [  70,  0,  10], norm: [ 0,  0,  1], uv: [0, 0], },
+        { pos: [  20,  -30,  10], norm: [ 0,  0,  1], uv: [0, 0], },
+        { pos: [  100,  -35,  10], norm: [ 0,  0,  1], uv: [0, 0], },
+
+        //NECK
+            //N back
+        { pos: [  20,  -30,  10], norm: [ 0,  0,  1], uv: [0, 0], },
+        { pos: [  20,  80,  10], norm: [ 0,  0,  1], uv: [0, 0], },
+        { pos: [  0,  0,  0], norm: [ 0,  0,  1], uv: [0, 0], },
+            //N front
+        { pos: [  0,  0,  0], norm: [ 0,  0,  1], uv: [0, 0], },
+        { pos: [  20,  80,  10], norm: [ 0,  0,  1], uv: [0, 0], },
+        { pos: [  15,  85,  0], norm: [ 0,  0,  1], uv: [0, 0], },
+
+        //HEAD
+        { pos: [  20,  80,  10], norm: [ 0,  0,  1], uv: [0, 0], },
+        { pos: [  15,  85,  0], norm: [ 0,  0,  1], uv: [0, 0], },
+        { pos: [  -10,  60,  0], norm: [ 0,  0,  1], uv: [0, 0], },
+
+        //L PART ====================================================
+        //BODY
+        //B1 top
+        { pos: [  0,  0,  0], norm: [ 0,  0,  1], uv: [0, 0], },
+        { pos: [  100, -35,  -10], norm: [ 0,  0,  1], uv: [0, 1], },
+        { pos: [120,   0,  0], norm: [ 0,  0,  1], uv: [1, 0], },
+        //B1 bot
+        { pos: [  0,  0,  0], norm: [ 0,  0,  1], uv: [0, 0], },
+        { pos: [  100,  -35,  -10], norm: [ 0,  0,  1], uv: [0, 0], },
+        { pos: [  20,  -30,  -10], norm: [ 0,  0,  1], uv: [0, 0], },
+
+        //B2 top
+        { pos: [  0,  0,  0], norm: [ 0,  0,  1], uv: [0, 0], },
+        { pos: [  20,  -30,  -10], norm: [ 0,  0,  1], uv: [0, 0], },
+        { pos: [  70,  0,  -10], norm: [ 0,  0,  1], uv: [0, 0], },
+        //B2 bot
+        { pos: [  70,  0,  -10], norm: [ 0,  0,  1], uv: [0, 0], },
+        { pos: [  20,  -30, -10], norm: [ 0,  0,  1], uv: [0, 0], },
+        { pos: [  100,  -35,  -10], norm: [ 0,  0,  1], uv: [0, 0], },
+
+        //NECK
+            //N back
+        { pos: [  20,  -30,  -10], norm: [ 0,  0,  1], uv: [0, 0], },
+        { pos: [  20,  80,  -10], norm: [ 0,  0,  1], uv: [0, 0], },
+        { pos: [  0,  0,  0], norm: [ 0,  0,  1], uv: [0, 0], },
+            //N front
+        { pos: [  0,  0,  0], norm: [ 0,  0,  1], uv: [0, 0], },
+        { pos: [  20,  80,  -10], norm: [ 0,  0,  1], uv: [0, 0], },
+        { pos: [  15,  85,  0], norm: [ 0,  0,  1], uv: [0, 0], },
+
+        //HEAD
+        { pos: [  20,  80,  -10], norm: [ 0,  0,  1], uv: [0, 0], },
+        { pos: [  15,  85,  0], norm: [ 0,  0,  1], uv: [0, 0], },
+        { pos: [  -10,  60,  0], norm: [ 0,  0,  1], uv: [0, 0], },
+
+
+    ];
+
+    const positions = [];
+    const normals = [];
+    const uvs = [];
+    for (const vertex of vertices) {
+        positions.push(...vertex.pos);
+        normals.push(...vertex.norm);
+        uvs.push(...vertex.uv);
+    }
+
+    const geometry = new THREE.BufferGeometry();
+    const positionNumComponents = 3;
+    const normalNumComponents = 3;
+    const uvNumComponents = 2;
+    geometry.setAttribute(
+        'position',
+        new THREE.BufferAttribute(new Float32Array(positions), positionNumComponents));
+    geometry.setAttribute(
+        'normal',
+        new THREE.BufferAttribute(new Float32Array(normals), normalNumComponents));
+    geometry.setAttribute(
+        'uv',
+        new THREE.BufferAttribute(new Float32Array(uvs), uvNumComponents));
+
+    let sprite = new THREE.TextureLoader().load("https://previews.123rf.com/images/akiyoko/akiyoko1809/akiyoko180900051/108410284-traditional-japanese-pattern-origami-paper-texture-background.jpg");
+
+    //var material = new THREE.MeshBasicMaterial( {map: sprite, side: THREE.DoubleSide });
+    var material = new THREE.MeshBasicMaterial( { side: THREE.DoubleSide, wireframe: true});
+    var object = new THREE.Mesh( geometry, material );
+
+    globalMainObject = object;
+
+    scene.add(object);
+}
+
 
 
 
@@ -101,12 +213,6 @@ function createFigure3() {
         { pos: [  3,  -10,  -10], norm: [ 0,  0,  1], uv: [0.5, 1], },
         { pos: [  15,  -15,  -2], norm: [ 0,  0,  1], uv: [0, 1], },
         { pos: [  0,  -70,  -5], norm: [ 0,  0,  1], uv: [0.5, 0], },
-
-
-
-
-
-
     ];
 
     const positions = [];
@@ -142,6 +248,7 @@ function createFigure3() {
 
     scene.add(object);
 }
+
 
 
 
@@ -406,11 +513,15 @@ function onKeyDown(e) {
         case "KeyA":
             if (addKey(e.code)) {
                 //TODO
+                globalMainObject.rotateY(degToRad(10));
+
             }
             break;
         case "KeyS":
             if (addKey(e.code)) {
                 //TODO
+                globalMainObject.rotateY(degToRad(-10));
+
             }
             break;
         case "KeyD":
