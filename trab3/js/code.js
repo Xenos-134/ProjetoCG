@@ -45,9 +45,9 @@ function init() {
     createCameras();
     //createFigure3();
 
-    const base = createBase(30, 150, 150);
-    base.rotateX(degToRad(-10));
-    base.rotateY(degToRad(-10));
+    const base = createBase(20, 150, 100);
+    //base.rotateX(degToRad(-10));
+    //base.rotateY(degToRad(-10));
 
 
 
@@ -66,62 +66,54 @@ function init() {
 
 
 function createBase(h, w, l) {
-    const heigth = h/3;
+    //*********************************************************
+    //      Base
+    //*********************************************************
+    const stepMaterial = new THREE.MeshPhongMaterial({color: 0xffe6cc} );
+    const stepGeometry1 = new THREE.BoxGeometry(w, h/2, l/2);
+    const stepGeometry2 = new THREE.BoxGeometry(w, h  , l/2);
+    const step1 = new THREE.Mesh(stepGeometry1, stepMaterial).translateY(+h/4).translateZ(+l/4);
+    const step2 = new THREE.Mesh(stepGeometry2, stepMaterial).translateY(+h/2).translateZ(-l/4);
 
-    //Base degree
-    const geometryB = new THREE.BoxGeometry( w, heigth, l );
-    const material = new THREE.MeshPhongMaterial({color: 0xffe6cc} );
-    const cube = new THREE.Mesh( geometryB, material );
-
-    const geometryM = new THREE.BoxGeometry( w, heigth, l * 2/3 );
-    const cubeM = new THREE.Mesh( geometryM, material );
-    cubeM.translateY(heigth);
-    cubeM.translateZ(l * 1/6);
-
-    const geometryT = new THREE.BoxGeometry(w, heigth, l * 1/3);
-    const cubeT = new THREE.Mesh(geometryT, material);
-    cubeT.translateZ(l * 1/6);
-    cubeT.translateY(heigth);
-
-    cubeM.add(cubeT);
-    cube.add(cubeM);
-
-    cube.rotateY(degToRad(180));
+    const base = new THREE.Object3D().add(step1).add(step2);
 
     //*********************************************************
     //      Figure 1
     //*********************************************************
     const figure1 = createFigure2(0.3);
-    figure1.position.z += l * 1/3;
     figure1.position.x += w*-0.2;
-    figure1.position.y += 3*heigth;
-    cube.add(figure1);
+    figure1.position.y += 3*h/4;
+    figure1.position.z += l * 1/4;
+    base.add(figure1);
 
     //*********************************************************
     //      Figure 2
     //*********************************************************
     const figure2 = createFigure3(0.3);
-    figure2.position.y += 2*heigth;
-    cube.add(figure2);
+    figure2.position.y += 3*h/4;
+    figure2.position.z += l * 1/4;
+    base.add(figure2);
 
     //*********************************************************
     //      Figure 3
     //*********************************************************
     const figure3 = createFigure4(0.3);
-    figure3.position.y += heigth;
-    figure3.position.z += -l * 1.3/3;
+    figure3.position.x += w*0.2;
+    figure3.position.y += 3*h/4;
+    figure3.position.z += l * 1/3;
     figure3.translateX(w*0.1);
-    figure3.position.x += w*0.05;
     figure3.rotateY(degToRad(-45))
+    base.add(figure3);
 
-    cube.add(figure3);
-    globalMainObject = cube;
+    figure1.rotateY(degToRad(180));
+    figure2.rotateY(degToRad(180));
+    figure3.rotateY(degToRad(180));
 
+    globalMainObject = base;
 
-    scene.add( cube );
-    return cube;
+    scene.add( base );
+    return base;
 }
-
 
 
 //Figura 3 RENOMEAR DEPOIS
@@ -499,7 +491,7 @@ function createCameras() {
     camera1.translateZ(150).lookAt(scene.position);
     
     camera2 = new THREE.PerspectiveCamera( 45, aspect , 1, 1000 );
-    camera2.translateZ(20).lookAt(scene.position);
+    camera2.translateY(100).translateZ(200).lookAt(scene.position);
 
     camera = camera1;
     return camera;
