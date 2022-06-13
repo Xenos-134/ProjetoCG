@@ -45,9 +45,7 @@ function init() {
     createCameras();
     //createFigure3();
 
-    const base = createBase(30, 100, 150);
-
-
+    const base = createBase(30, 150, 150);
     base.rotateX(degToRad(-10));
     base.rotateY(degToRad(-10));
 
@@ -56,10 +54,7 @@ function init() {
     const directionalLight = new THREE.DirectionalLight( 0xffffff, 0.7 ).translateX(170)
                                                                         .translateY(50)
                                                                         .translateZ(150);
-
     scene.add( directionalLight );
-
-
     const light = new THREE.AmbientLight( 0x404040 ); // soft white light
     scene.add( light );
 
@@ -75,7 +70,7 @@ function createBase(h, w, l) {
 
     //Base degree
     const geometryB = new THREE.BoxGeometry( w, heigth, l );
-    const material = new THREE.MeshPhongMaterial({color: 0x00ff00} );
+    const material = new THREE.MeshPhongMaterial({color: 0xffe6cc} );
     const cube = new THREE.Mesh( geometryB, material );
 
     const geometryM = new THREE.BoxGeometry( w, heigth, l * 2/3 );
@@ -91,19 +86,39 @@ function createBase(h, w, l) {
     cubeM.add(cubeT);
     cube.add(cubeM);
 
-    scene.add( cube );
-
     cube.rotateY(degToRad(180));
 
+    //*********************************************************
+    //      Figure 1
+    //*********************************************************
+    const figure1 = createFigure2(0.3);
+    figure1.position.z += l * 1/3;
+    figure1.position.x += w*-0.2;
+    figure1.position.y += 3*heigth;
+    cube.add(figure1);
 
+    //*********************************************************
+    //      Figure 2
+    //*********************************************************
+    const figure2 = createFigure3(0.3);
+    figure2.position.y += 2*heigth;
+    cube.add(figure2);
+
+    //*********************************************************
+    //      Figure 3
+    //*********************************************************
     const figure3 = createFigure4(0.3);
-    figure3.translateY(heigth)
-    figure3.translateZ(-l * 1/3)
+    figure3.position.y += heigth;
+    figure3.position.z += -l * 1.3/3;
     figure3.translateX(w*0.1);
-    cube.add(figure3);
+    figure3.position.x += w*0.05;
+    figure3.rotateY(degToRad(-45))
 
+    cube.add(figure3);
     globalMainObject = cube;
 
+
+    scene.add( cube );
     return cube;
 }
 
@@ -192,10 +207,7 @@ function createFigure4(u) {
     var material = new THREE.MeshPhongMaterial( { side: THREE.DoubleSide, wireframe: false, map: sprite, shading: THREE.FlatShading});
     var object = new THREE.Mesh( geometry, material );
 
-    //object.rotateY(THREE.Math.degToRad(180))
-
     globalMainObject = object;
-
     object.translateY(15*u);
     scene.add(object);
     return object;
@@ -249,82 +261,61 @@ function getGeometry(vertices) {
 }
 
 
-function createFigure3() {
+function createFigure3(u) {
     const vertices = [
         //Back L
             //Up T
-        { pos: [  0,  20,  -5], norm: [ 0,  0,  1], uv: [0, 0], },
-        { pos: [-20,   0,  0], norm: [ 0,  0,  1], uv: [1, 0], },
-        { pos: [  0, -10,  -5], norm: [ 0,  0,  1], uv: [0, 1], },
+        { pos: [  0,  20*u,  -5*u], norm: [ 0,  0,  1], uv: [0, 0], },
+        { pos: [-20*u,   0,  0], norm: [ 0,  0,  1], uv: [1, 0], },
+        { pos: [  0, -10*u,  -5*u], norm: [ 0,  0,  1], uv: [0, 1], },
             //Bot T
-        { pos: [  0,   -10,  -5], norm: [ 0,  0,  1], uv: [0.5, 1], },
-        { pos: [  -20, 0,  0], norm: [ 0,  0,  1], uv: [0, 1], },
-        { pos: [  0,   -70,  -5], norm: [ 0,  0,  1], uv: [1, 0], },
+        { pos: [  0,   -10*u,  -5*u], norm: [ 0,  0,  1], uv: [0.5, 1], },
+        { pos: [  -20*u, 0,  0], norm: [ 0,  0,  1], uv: [0, 1], },
+        { pos: [  0,   -70*u,  -5*u], norm: [ 0,  0,  1], uv: [1, 0], },
 
         //Back R
             //Up T
-        { pos: [  0,  20,  -5], norm: [ 0,  0,  1], uv: [0, 0], },
-        { pos: [20,   0,  0], norm: [ 0,  0,  1], uv: [1, 0], },
-        { pos: [  0, -10,  -5], norm: [ 0,  0,  1], uv: [0, 1], },
+        { pos: [  0,  20*u,  -5*u], norm: [ 0,  0,  1], uv: [0, 0], },
+        { pos: [20*u,   0,  0], norm: [ 0,  0,  1], uv: [1, 0], },
+        { pos: [  0, -10*u,  -5*u], norm: [ 0,  0,  1], uv: [0, 1], },
             //Bot T
-        { pos: [  0,   -10,  -5], norm: [ 0,  0,  1], uv: [0.5, 1], },
-        { pos: [  20, 0,  0], norm: [ 0,  0,  1], uv: [0, 1], },
-        { pos: [  0,   -70,  -5], norm: [ 0,  0,  1], uv: [0.5, 0], },
+        { pos: [  0,   -10*u,  -5*u], norm: [ 0,  0,  1], uv: [0.5, 1], },
+        { pos: [  20*u, 0,  0], norm: [ 0,  0,  1], uv: [0, 1], },
+        { pos: [  0,   -70*u,  -5*u], norm: [ 0,  0,  1], uv: [0.5, 0], },
 
 
         //Front 1 L
-        { pos: [  -20,  0,  0], norm: [ 0,  0,  1], uv: [0, 1], },
-        { pos: [   0,  -70,  -5], norm: [ 0,  0,  1], uv: [0.5, 0], },
-        { pos: [    -3,  -10,  -10], norm: [ 0,  0,  1], uv: [0.5, 1], },
+        { pos: [  -20*u,  0,  0], norm: [ 0,  0,  1], uv: [0, 1], },
+        { pos: [   0,  -70*u,  -5*u], norm: [ 0,  0,  1], uv: [0.5, 0], },
+        { pos: [    -3*u,  -10*u,  -10*u], norm: [ 0,  0,  1], uv: [0.5, 1], },
 
         //Front 2 L
-        { pos: [  -3,  -10,  -10], norm: [ 0,  0,  1], uv: [0.5, 1], },
-        { pos: [  -15,  -15,  -2], norm: [ 0,  0,  1], uv: [0, 1], },
-        { pos: [  0,  -70,  -5], norm: [ 0,  0,  1], uv: [0.5, 0], },
+        { pos: [  -3*u,  -10*u,  -10*u], norm: [ 0,  0,  1], uv: [0.5, 1], },
+        { pos: [  -15*u,  -15*u,  -2*u], norm: [ 0,  0,  1], uv: [0, 1], },
+        { pos: [  0,  -70*u,  -5*u], norm: [ 0,  0,  1], uv: [0.5, 0], },
 
         //Front 1 R
-        { pos: [  20,  0,  0], norm: [ 0,  0,  1], uv: [1, 1], },
-        { pos: [   0,  -70,  -5], norm: [ 0,  0,  1], uv: [0.5, 0], },
-        { pos: [    3,  -10,  -10], norm: [ 0,  0,  1], uv: [0.5, 1], },
+        { pos: [  20*u,  0,  0], norm: [ 0,  0,  1], uv: [1, 1], },
+        { pos: [   0,  -70*u,  -5*u], norm: [ 0,  0,  1], uv: [0.5, 0], },
+        { pos: [    3*u,  -10*u,  -10*u], norm: [ 0,  0,  1], uv: [0.5, 1], },
 
         //Front 2 R
-        { pos: [  3,  -10,  -10], norm: [ 0,  0,  1], uv: [0.5, 1], },
-        { pos: [  15,  -15,  -2], norm: [ 0,  0,  1], uv: [0, 1], },
-        { pos: [  0,  -70,  -5], norm: [ 0,  0,  1], uv: [0.5, 0], },
+        { pos: [  3*u,  -10*u,  -10*u], norm: [ 0,  0,  1], uv: [0.5, 1], },
+        { pos: [  15*u,  -15*u,  -2*u], norm: [ 0,  0,  1], uv: [0, 1], },
+        { pos: [  0,  -70*u,  -5*u], norm: [ 0,  0,  1], uv: [0.5, 0], },
     ];
 
-    const positions = [];
-    const normals = [];
-    const uvs = [];
-    for (const vertex of vertices) {
-        positions.push(...vertex.pos);
-        normals.push(...vertex.norm);
-        uvs.push(...vertex.uv);
-    }
+    const geometry = getGeometry(vertices);
 
-    const geometry = new THREE.BufferGeometry();
-    const positionNumComponents = 3;
-    const normalNumComponents = 3;
-    const uvNumComponents = 2;
-    geometry.setAttribute(
-        'position',
-        new THREE.BufferAttribute(new Float32Array(positions), positionNumComponents));
-    geometry.setAttribute(
-        'normal',
-        new THREE.BufferAttribute(new Float32Array(normals), normalNumComponents));
-    geometry.setAttribute(
-        'uv',
-        new THREE.BufferAttribute(new Float32Array(uvs), uvNumComponents));
-
-    let sprite = new THREE.TextureLoader().load("https://previews.123rf.com/images/akiyoko/akiyoko1809/akiyoko180900051/108410284-traditional-japanese-pattern-origami-paper-texture-background.jpg");
-
+    let sprite = new THREE.TextureLoader().load("https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/i/86f34523-ed7d-4609-9030-10454cdeb829/d2m48nr-9730f9d7-cbf3-4047-89bd-62b8255fd114.png");
     //var material = new THREE.MeshBasicMaterial( {map: sprite, side: THREE.DoubleSide });
-    var material = new THREE.MeshBasicMaterial( { side: THREE.DoubleSide, map: sprite });
+    var material = new THREE.MeshPhongMaterial( { side: THREE.DoubleSide, wireframe: false, map: sprite, shading: THREE.FlatShading});
     var object = new THREE.Mesh( geometry, material );
 
     globalMainObject = object;
-
+    object.translateY(50*u);
     scene.add(object);
+    return object;
 }
 
 
@@ -332,50 +323,28 @@ function createFigure3() {
 
 
 
-function createFigure2() {
+function createFigure2(u) {
     const vertices = [
-        { pos: [  0,  20,  -5], norm: [ 0,  0,  1], uv: [0, 0], },
-        { pos: [-20,   0,  1], norm: [ 0,  0,  1], uv: [1, 0], },
-        { pos: [  0, -20,  -5], norm: [ 0,  0,  1], uv: [0, 1], },
+        { pos: [  0,  20*u,  -5*u], norm: [ 0,  0,  1], uv: [0, 0], },
+        { pos: [-20*u,   0,  1*u], norm: [ 0,  0,  1], uv: [1, 0], },
+        { pos: [  0, -20*u,  -5*u], norm: [ 0,  0,  1], uv: [0, 1], },
 
-        { pos: [ 0,  20,  -5], norm: [ 0,  0,  1], uv: [0, 1], },
-        { pos: [ 0, -20,  -5], norm: [ 0,  0,  1], uv: [1, 0], },
-        { pos: [ 20,  0,  1], norm: [ 0,  0,  1], uv: [1, 1], },
+        { pos: [ 0,  20*u,  -5*u], norm: [ 0,  0,  1], uv: [0, 1], },
+        { pos: [ 0, -20*u,  -5*u], norm: [ 0,  0,  1], uv: [1, 0], },
+        { pos: [ 20*u,  0,  1*u], norm: [ 0,  0,  1], uv: [1, 1], },
 
     ];
 
-    const positions = [];
-    const normals = [];
-    const uvs = [];
-    for (const vertex of vertices) {
-        positions.push(...vertex.pos);
-        normals.push(...vertex.norm);
-        uvs.push(...vertex.uv);
-    }
-
-    const geometry = new THREE.BufferGeometry();
-    const positionNumComponents = 3;
-    const normalNumComponents = 3;
-    const uvNumComponents = 2;
-    geometry.setAttribute(
-        'position',
-        new THREE.BufferAttribute(new Float32Array(positions), positionNumComponents));
-    geometry.setAttribute(
-        'normal',
-        new THREE.BufferAttribute(new Float32Array(normals), normalNumComponents));
-    geometry.setAttribute(
-        'uv',
-        new THREE.BufferAttribute(new Float32Array(uvs), uvNumComponents));
-
-    let sprite = new THREE.TextureLoader().load("https://previews.123rf.com/images/akiyoko/akiyoko1809/akiyoko180900051/108410284-traditional-japanese-pattern-origami-paper-texture-background.jpg");
-
+    const geometry = getGeometry(vertices);
+    let sprite = new THREE.TextureLoader().load("https://previews.123rf.com/images/akiyoko/akiyoko1809/akiyoko180900074/108428809-traditional-japanese-pattern-origami-paper-texture-background.jpg");
     //var material = new THREE.MeshBasicMaterial( {map: sprite, side: THREE.DoubleSide });
-    var material = new THREE.MeshBasicMaterial( { side: THREE.DoubleSide, map: sprite });
+    var material = new THREE.MeshPhongMaterial( { side: THREE.DoubleSide, wireframe: false, map: sprite, shading: THREE.FlatShading});
     var object = new THREE.Mesh( geometry, material );
 
     globalMainObject = object;
-
+    object.translateY(10*u);
     scene.add(object);
+    return object;
 }
 
 
