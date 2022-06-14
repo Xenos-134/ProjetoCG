@@ -66,6 +66,21 @@ function init() {
 }
 
 
+function createSpotlight(x, y, z, target) {
+    const spotlight = new THREE.Object3D();
+    spotlight.position.set(x, y, z);
+
+    const light = new THREE.SpotLight(0xffffff, 1, 0, degToRad(20), 0.5, 1);
+    light.target = target;
+    // const spotLightHelper = new THREE.SpotLightHelper(light);
+    // spotLightHelper.update();
+    // spotlight.add(spotLightHelper);
+    
+    spotlight.add(light);
+    return spotlight;
+}
+
+
 function createBase(h, w, l) {
     //*********************************************************
     //      Base
@@ -109,6 +124,11 @@ function createBase(h, w, l) {
     figure1.rotateY(degToRad(180));
     figure2.rotateY(degToRad(180));
     figure3.rotateY(degToRad(180));
+
+    const light1 = createSpotlight(figure1.position.x, h+30, figure1.position.z, figure1);
+    const light2 = createSpotlight(figure2.position.x, h+30, figure2.position.z, figure2);
+    const light3 = createSpotlight(figure3.position.x, h+30, figure3.position.z, figure3);
+    base.add(light1).add(light2).add(light3);
 
     globalMainObject = base;
 
