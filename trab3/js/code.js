@@ -14,6 +14,7 @@ const unit = 1;
 
 var globalMainObject = new THREE.Object3D();
 var figure1, figure2, figure3;
+var directionalLight, light1, light2, light3;
 
 function animate() {
     update();
@@ -52,12 +53,12 @@ function init() {
 
 
 
-    const directionalLight = new THREE.DirectionalLight( 0xffffff, 0.7 ).translateX(170)
+    directionalLight = new THREE.DirectionalLight( 0xffffff, 0.7 ).translateX(170)
                                                                         .translateY(50)
                                                                         .translateZ(150);
     scene.add( directionalLight );
-    const light = new THREE.AmbientLight( 0x404040 ); // soft white light
-    scene.add( light );
+    // const light = new THREE.AmbientLight( 0x404040 ); // soft white light
+    // scene.add( light );
 
     //createFigure1();
     //createFigure1Buffer();
@@ -76,6 +77,7 @@ function createSpotlight(x, y, z, target) {
     // spotLightHelper.update();
     // spotlight.add(spotLightHelper);
     
+    spotlight.light = light;
     spotlight.add(light);
     return spotlight;
 }
@@ -125,9 +127,9 @@ function createBase(h, w, l) {
     figure2.rotateY(degToRad(180));
     figure3.rotateY(degToRad(180));
 
-    const light1 = createSpotlight(figure1.position.x, h+30, figure1.position.z, figure1);
-    const light2 = createSpotlight(figure2.position.x, h+30, figure2.position.z, figure2);
-    const light3 = createSpotlight(figure3.position.x, h+30, figure3.position.z, figure3);
+    light1 = createSpotlight(figure1.position.x, h+30, figure1.position.z, figure1);
+    light2 = createSpotlight(figure2.position.x, h+30, figure2.position.z, figure2);
+    light3 = createSpotlight(figure3.position.x, h+30, figure3.position.z, figure3);
     base.add(light1).add(light2).add(light3);
 
     globalMainObject = base;
@@ -573,37 +575,37 @@ function onKeyDown(e) {
         case "KeyA":
             if (addKey(e.code)) {
                 //TODO
-                globalMainObject.rotateX(degToRad(10));
+                //globalMainObject.rotateX(degToRad(10));
 
             }
             break;
         case "KeyS":
             if (addKey(e.code)) {
                 //TODO
-                globalMainObject.rotateX(degToRad(-10));
+                //globalMainObject.rotateX(degToRad(-10));
 
             }
             break;
         case "KeyD":
             if (addKey(e.code)) {
-                //TODO
+                directionalLight.visible = !directionalLight.visible;
             }
             break;
         case "KeyZ":
             if (addKey(e.code)) {
-                globalMainObject.rotateY(degToRad(10));
-                //TODO
+                //globalMainObject.rotateY(degToRad(10));
+                light1.visible = !light1.visible;
             }
             break;
         case "KeyX":
             if (addKey(e.code)) {
-                globalMainObject.rotateY(degToRad(-10));
-                //TODO
+                //globalMainObject.rotateY(degToRad(-10));
+                light2.visible = !light2.visible;
             }
             break;
         case "KeyC":
             if (addKey(e.code)) {
-                //TODO
+                light3.visible = !light3.visible;
             }
             break;
         case "Space":
