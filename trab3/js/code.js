@@ -8,13 +8,28 @@ var clock;
 const step = 5;
 const degToRad = THREE.Math.degToRad, cos = Math.cos, sin = Math.sin, PI = Math.PI;
 
-
-//UNIDADE DE DIMENSAO
-const unit = 1;
-
 var globalMainObject = new THREE.Object3D();
 var figure1, figure2, figure3;
 var directionalLight, light1, light2, light3;
+
+var isLambert = true;
+
+//*********************************************************
+//      Default Values for Reset
+//*********************************************************
+var figure1DefaultValues = {
+    angle: 0,
+}
+
+var figure2DefaultValues = {
+    angle: 0,
+}
+
+var figure3DefaultValues = {
+    angle: 0,
+}
+
+
 
 function animate() {
     update();
@@ -45,24 +60,16 @@ function init() {
 
     scene = new THREE.Scene();
     createCameras();
-    //createFigure3();
 
-    const base = createBase(20, 150, 100);
+    createBase(20, 150, 100);
     //base.rotateX(degToRad(-10));
     //base.rotateY(degToRad(-10));
 
-
-
-    directionalLight = new THREE.DirectionalLight( 0xffffff, 0.7 ).translateX(170)
+    directionalLight = new THREE.DirectionalLight( 0xffffff, 0.7 ).translateX(0)
                                                                         .translateY(50)
                                                                         .translateZ(150);
     scene.add( directionalLight );
-    // const light = new THREE.AmbientLight( 0x404040 ); // soft white light
-    // scene.add( light );
 
-    //createFigure1();
-    //createFigure1Buffer();
-    //createFigure1Test();
     clock = new THREE.Clock();
 }
 
@@ -76,7 +83,9 @@ function createSpotlight(x, y, z, target) {
     // const spotLightHelper = new THREE.SpotLightHelper(light);
     // spotLightHelper.update();
     // spotlight.add(spotLightHelper);
-    
+
+    createSpotlightObject(x,y + 10,z);
+
     spotlight.light = light;
     spotlight.add(light);
     return spotlight;
@@ -92,16 +101,17 @@ function createBase(h, w, l) {
     const stepGeometry2 = new THREE.BoxGeometry(w, h  , l/2);
     const step1 = new THREE.Mesh(stepGeometry1, stepMaterial).translateY(+h/4).translateZ(+l/4);
     const step2 = new THREE.Mesh(stepGeometry2, stepMaterial).translateY(+h/2).translateZ(-l/4);
-
     const base = new THREE.Object3D().add(step1).add(step2);
+
 
     //*********************************************************
     //      Figure 1
     //*********************************************************
-    figure1 = createFigure2(0.3);
-    figure1.position.x += w*-0.2;
+    figure1 = createFigure2(0.5);
+    figure1.position.x += w*-0.3;
     figure1.position.y += 3*h/4;
     figure1.position.z += l * 1/4;
+    figure1DefaultValues.angle = figure1.rotation.y;
     base.add(figure1);
 
     //*********************************************************
@@ -110,6 +120,7 @@ function createBase(h, w, l) {
     figure2 = createFigure3(0.3);
     figure2.position.y += 3*h/4;
     figure2.position.z += l * 1/4;
+    figure2DefaultValues.angle = figure2.rotation.y;
     base.add(figure2);
 
     //*********************************************************
@@ -120,16 +131,17 @@ function createBase(h, w, l) {
     figure3.position.y += 3*h/4;
     figure3.position.z += l * 1/3;
     figure3.translateX(w*0.1);
-    figure3.rotateY(degToRad(-45))
+    //figure3.rotateY(degToRad(-45))
+    figure3DefaultValues.angle = figure3.rotation.y;
     base.add(figure3);
 
     figure1.rotateY(degToRad(180));
     figure2.rotateY(degToRad(180));
     figure3.rotateY(degToRad(180));
 
-    light1 = createSpotlight(figure1.position.x, h+30, figure1.position.z, figure1);
-    light2 = createSpotlight(figure2.position.x, h+30, figure2.position.z, figure2);
-    light3 = createSpotlight(figure3.position.x, h+30, figure3.position.z, figure3);
+    light1 = createSpotlight(figure1.position.x, h+50, figure1.position.z, figure1);
+    light2 = createSpotlight(figure2.position.x, h+50, figure2.position.z, figure2);
+    light3 = createSpotlight(figure3.position.x, h+50, figure3.position.z, figure3);
     base.add(light1).add(light2).add(light3);
 
     globalMainObject = base;
@@ -137,6 +149,34 @@ function createBase(h, w, l) {
     scene.add( base );
     return base;
 }
+
+function resetWindow() {
+    figure1.rotation.y = figure1DefaultValues.angle;
+    figure2.rotation.y = figure2DefaultValues.angle;
+    figure3.rotation.y = figure3DefaultValues.angle;
+    camera = camera1;
+    directionalLight.visible = true;
+}
+
+
+function createSpotlightObject(x, y, z) {
+    const geometry = new THREE.CylinderGeometry( 0, 15, 15, 32 );
+    const material = new THREE.MeshPhongMaterial( {color: 0x33ccff, } );
+    const cylinder = new THREE.Mesh( geometry, material );
+
+    const sphereMaterial = new THREE.MeshPhongMaterial( {color: 0xffff00, } );
+    const sphereGeometry = new THREE.SphereGeometry( 5, 32, 16 );
+    const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
+    sphere.translateY(-8);
+
+
+    cylinder.add(sphere);
+    cylinder.translateX(x);
+    cylinder.translateY(y);
+    cylinder.translateZ(z);
+    scene.add( cylinder );
+}
+
 
 
 //Figura 3 RENOMEAR DEPOIS
@@ -218,14 +258,18 @@ function createFigure4(u) {
     const geometry = getGeometry(vertices);
 
     let sprite = new THREE.TextureLoader().load("https://previews.123rf.com/images/akiyoko/akiyoko1809/akiyoko180900051/108410284-traditional-japanese-pattern-origami-paper-texture-background.jpg");
-    //var material = new THREE.MeshBasicMaterial( {map: sprite, side: THREE.DoubleSide });
-    var material = new THREE.MeshPhongMaterial( { side: THREE.DoubleSide, wireframe: false, map: sprite, shading: THREE.FlatShading});
-    var object = new THREE.Mesh( geometry, material );
+    var material = new THREE.MeshPhongMaterial( { side: THREE.DoubleSide, wireframe: false, map: sprite, flatShading: THREE.FlatShading});
+    var object = new THREE.Mesh( geometry, material);
+
+    const figure = new THREE.Object3D();
 
     globalMainObject = object;
     object.translateY(15*u);
-    scene.add(object);
-    return object;
+    object.translateX(-60 * u);
+
+    figure.add(object);
+    scene.add(figure);
+    return figure;
 }
 
 function getPositions(vertices) {
@@ -324,7 +368,7 @@ function createFigure3(u) {
 
     let sprite = new THREE.TextureLoader().load("https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/i/86f34523-ed7d-4609-9030-10454cdeb829/d2m48nr-9730f9d7-cbf3-4047-89bd-62b8255fd114.png");
     //var material = new THREE.MeshBasicMaterial( {map: sprite, side: THREE.DoubleSide });
-    var material = new THREE.MeshPhongMaterial( { side: THREE.DoubleSide, wireframe: false, map: sprite, shading: THREE.FlatShading});
+    var material = new THREE.MeshPhongMaterial( { side: THREE.DoubleSide, wireframe: false, map: sprite, flatShading: THREE.FlatShading});
     var object = new THREE.Mesh( geometry, material );
 
     globalMainObject = object;
@@ -332,9 +376,6 @@ function createFigure3(u) {
     scene.add(object);
     return object;
 }
-
-
-
 
 
 
@@ -353,7 +394,7 @@ function createFigure2(u) {
     const geometry = getGeometry(vertices);
     let sprite = new THREE.TextureLoader().load("https://previews.123rf.com/images/akiyoko/akiyoko1809/akiyoko180900074/108428809-traditional-japanese-pattern-origami-paper-texture-background.jpg");
     //var material = new THREE.MeshBasicMaterial( {map: sprite, side: THREE.DoubleSide });
-    var material = new THREE.MeshPhongMaterial( { side: THREE.DoubleSide, wireframe: false, map: sprite, shading: THREE.FlatShading});
+    var material = new THREE.MeshPhongMaterial( { side: THREE.DoubleSide, wireframe: false, map: sprite, flatShading: THREE.FlatShading});
     var object = new THREE.Mesh( geometry, material );
 
     globalMainObject = object;
@@ -363,27 +404,6 @@ function createFigure2(u) {
 }
 
 
-function createFigure1() {
-    const parentObject = new THREE.Object3D();
-
-    const trianglePlane1 = new TrianglePlaneGeometry(20, 10, 20);
-    trianglePlane1.object.rotateZ(degToRad(90));
-    trianglePlane1.object.rotateX(degToRad(30));
-    trianglePlane1.object.position.x = -cos(degToRad(30)) * 10;
-
-    const trianglePlane2 = new TrianglePlaneGeometry(20, 10, 20);
-    trianglePlane2.setTexture("https://previews.123rf.com/images/akiyoko/akiyoko1809/akiyoko180900074/108428809-traditional-japanese-pattern-origami-paper-texture-background.jpg");
-
-    trianglePlane2.object.rotateZ(degToRad(-90));
-    trianglePlane2.object.rotateX(degToRad(30));
-    trianglePlane2.object.position.x = cos(degToRad(30)) * 10;
-
-
-    parentObject.add(trianglePlane1.object);
-    parentObject.add(trianglePlane2.object);
-    globalMainObject = parentObject;
-    scene.add(parentObject);
-}
 
 //Dado que o enunciado nao 'e claro em relacao se podemos utilizar custom object gerado com shape geometry estou a fazer assim
 function createFigure1Test() {
@@ -425,77 +445,6 @@ function createFigure1Buffer() {
     globalMainObject = figure;
     scene.add(figure);
 }
-
-
-
-
-//Represetacao de uma geometria plana do triangulo
-/*
-         (C2)
-          /\
-         /  \
-        /    \
-  (C1) -------- (C3)
-* */
-class TrianglePlaneGeometry {
-    geometry;
-    object;
-    object_material;
-
-    constructor(c1, c2, c3, custom_material) {
-        const shape = new THREE.Shape();
-        shape.moveTo(- c1, - c2); //Bottom Left  Corner
-        shape.lineTo(c3, - c2);   //Bottom Right Corner
-        shape.lineTo(0, c2);   //Top          Corner
-
-        this.geometry = new THREE.ShapeGeometry(shape);
-
-        const material2 = this.genarateTextureMaterialFromUrl();
-
-        if(custom_material) {
-            this.object = new THREE.Mesh( this.geometry, custom_material);
-            this.object_material = custom_material;
-        } else {
-            const default_material = new THREE.MeshBasicMaterial( {
-                wireframe: false,
-                side: THREE.DoubleSide ,
-            });
-            this.object = new THREE.Mesh( this.geometry, material2);
-            this.object_material = default_material;
-        }
-
-    }
-
-    setMaterial(new_material) {
-        this.object = new THREE.Mesh( this.geometry, new_material);
-    }
-
-    setTexture(textureLink) {
-        const material = this.genarateTextureMaterialFromUrl(textureLink);
-        this.setMaterial(material);
-    }
-
-    //Gera e retorna um material com uma textura
-    genarateTextureMaterialFromUrl(textureLink) {
-        var texture
-        if(textureLink) {
-            texture = new THREE.TextureLoader().load( textureLink );
-        } else { //Default Case
-            texture = new THREE.TextureLoader().load( "https://previews.123rf.com/images/akiyoko/akiyoko1809/akiyoko180900051/108410284-traditional-japanese-pattern-origami-paper-texture-background.jpg" );
-
-        }
-
-        texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-        texture.repeat.set( 1 / 50, 1 / 50 );
-        texture.offset.set( 0.1, 0.1 );
-        var material = new THREE.MeshBasicMaterial( {
-            map: texture,
-            side: THREE.DoubleSide
-        });
-        return material
-    }
-}
-
 
 
 function createCameras() {
@@ -569,19 +518,20 @@ function onKeyDown(e) {
             break;
         case "Digit3":
             if (addKey(e.code)) {
+                resetWindow();
                 //TODO
             }
             break;
         case "KeyA":
             if (addKey(e.code)) {
-                //TODO
                 //globalMainObject.rotateX(degToRad(10));
 
             }
             break;
         case "KeyS":
             if (addKey(e.code)) {
-                //TODO
+                isLambert = !isLambert;
+                changeMaterial();
                 //globalMainObject.rotateX(degToRad(-10));
 
             }
@@ -627,6 +577,20 @@ function onKeyDown(e) {
 
 function onKeyUp(e) {
     removeKey(e.code);
+}
+
+
+function changeMaterial() {
+   const localFigure3 = figure3.children[0];
+    if(isLambert) {
+        figure1.material = new THREE.MeshLambertMaterial( { side: THREE.DoubleSide, wireframe: false, map: figure1.material.map , flatShading: THREE.FlatShading});
+        figure2.material = new THREE.MeshLambertMaterial( { side: THREE.DoubleSide, wireframe: false, map: figure2.material.map , flatShading: THREE.FlatShading});
+        localFigure3.material = new THREE.MeshLambertMaterial( { side: THREE.DoubleSide, wireframe: false, map: localFigure3.material.map , flatShading: THREE.FlatShading});
+    } else {
+        figure1.material = new THREE.MeshPhongMaterial( { side: THREE.DoubleSide, wireframe: false, map: figure1.material.map , flatShading: THREE.FlatShading});
+        figure2.material = new THREE.MeshPhongMaterial( { side: THREE.DoubleSide, wireframe: false, map: figure2.material.map , flatShading: THREE.FlatShading});
+        localFigure3.material = new THREE.MeshPhongMaterial( { side: THREE.DoubleSide, wireframe: false, map: localFigure3.material.map , flatShading: THREE.FlatShading});
+    }
 }
 
 
