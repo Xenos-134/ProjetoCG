@@ -33,14 +33,18 @@ var figure3DefaultValues = {
 
 
 function animate() {
-    update();
-    if(!isPaused) display();
+
+    if(!isPaused) {
+        update();
+        display();
+    }
     requestAnimationFrame(animate);
     displayPauseView();
 }
 
 
 function update() {
+    console.log("UPDATE");
     delta = clock.getDelta();
     pressedKeys.forEach(code => handleKey(code, delta));
 }
@@ -511,6 +515,7 @@ function handleKey(code, delta) {
 
 
 function onKeyDown(e) {
+    if(e.code != "Space" && isPaused) return;
     switch (e.code) {
         case "Digit1":
             camera = camera1;
