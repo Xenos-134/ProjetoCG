@@ -5,7 +5,7 @@ var camera, camera1, camera2, scene, renderer;
 var pressedKeys = []
 var clock;
 
-const step = 50;
+const step = 5;
 const degToRad = THREE.Math.degToRad, cos = Math.cos, sin = Math.sin, PI = Math.PI;
 
 
@@ -13,6 +13,7 @@ const degToRad = THREE.Math.degToRad, cos = Math.cos, sin = Math.sin, PI = Math.
 const unit = 1;
 
 var globalMainObject = new THREE.Object3D();
+var figure1, figure2, figure3;
 
 function animate() {
     update();
@@ -80,7 +81,7 @@ function createBase(h, w, l) {
     //*********************************************************
     //      Figure 1
     //*********************************************************
-    const figure1 = createFigure2(0.3);
+    figure1 = createFigure2(0.3);
     figure1.position.x += w*-0.2;
     figure1.position.y += 3*h/4;
     figure1.position.z += l * 1/4;
@@ -89,7 +90,7 @@ function createBase(h, w, l) {
     //*********************************************************
     //      Figure 2
     //*********************************************************
-    const figure2 = createFigure3(0.3);
+    figure2 = createFigure3(0.3);
     figure2.position.y += 3*h/4;
     figure2.position.z += l * 1/4;
     base.add(figure2);
@@ -97,7 +98,7 @@ function createBase(h, w, l) {
     //*********************************************************
     //      Figure 3
     //*********************************************************
-    const figure3 = createFigure4(0.3);
+    figure3 = createFigure4(0.3);
     figure3.position.x += w*0.2;
     figure3.position.y += 3*h/4;
     figure3.position.z += l * 1/3;
@@ -515,22 +516,22 @@ function removeKey(code) {
 function handleKey(code, delta) {
     switch (code) {
         case "KeyQ":
-            //TODO
+            figure1.rotateY(+step * delta);
             break;
         case "KeyW":
-            //TODO
+            figure1.rotateY(-step * delta);
             break;
         case "KeyE":
-            //TODO
+            figure2.rotateY(+step * delta);
             break;
         case "KeyR":
-            //TODO
+            figure2.rotateY(-step * delta);
             break;
         case "KeyT":
-            //TODO
+            figure3.rotateY(+step * delta);
             break;
         case "KeyY":
-            //TODO
+            figure3.rotateY(-step * delta);
             break;
     }
 }
