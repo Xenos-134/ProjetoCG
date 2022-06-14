@@ -8,11 +8,26 @@
             background-color: #004080;
             overflow: hidden;
         }
+
+        #pauseView {
+            background-color: chocolate;
+            position: fixed;
+            width: 100vw;
+            height: 100vh;
+        }
+        #text {
+            margin-top: 50vh;
+            margin-left: 35vw;
+            color: aliceblue;
+        }
     </style>
     <script src="js/three.js"></script>
     <script src="js/code.js"></script>
 </head>
 <body>
+<div id="pauseView">
+    <h1 id="text" >PAUSE: press SPACEBAR to continue</h1>
+</div>
 <script>
     init();
     animate();

@@ -13,6 +13,7 @@ var figure1, figure2, figure3;
 var directionalLight, light1, light2, light3;
 
 var isLambert = true;
+var isPaused = false;
 
 //*********************************************************
 //      Default Values for Reset
@@ -33,8 +34,9 @@ var figure3DefaultValues = {
 
 function animate() {
     update();
-    display();
+    if(!isPaused) display();
     requestAnimationFrame(animate);
+    displayPauseView();
 }
 
 
@@ -560,7 +562,7 @@ function onKeyDown(e) {
             break;
         case "Space":
             if (addKey(e.code)) {
-                //TODO
+                isPaused = !isPaused;
             }
             break;
         case "KeyQ":
@@ -613,4 +615,14 @@ function onResize() {
 
     camera2.aspect = aspect;
     camera2.updateProjectionMatrix();
+}
+
+
+function displayPauseView() {
+    const pauseView = document.getElementById("pauseView");
+    if(isPaused) {
+        pauseView.style.display = "block"
+    } else {
+        pauseView.style.display = "none";
+    }
 }
