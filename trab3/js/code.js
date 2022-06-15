@@ -113,7 +113,7 @@ function createBase(h, w, l) {
     //*********************************************************
     //      Figure 1
     //*********************************************************
-    figure1 = createFigure2(0.5);
+    figure1 = createfigure1(0.5);
     figure1.position.x += w*-0.3;
     figure1.position.y += 3*h/4;
     figure1.position.z += l * 1/4;
@@ -123,7 +123,7 @@ function createBase(h, w, l) {
     //*********************************************************
     //      Figure 2
     //*********************************************************
-    figure2 = createFigure3(0.3);
+    figure2 = createfigure2(0.3);
     figure2.position.y += 3*h/4;
     figure2.position.z += l * 1/4;
     figure2DefaultValues.angle = figure2.rotation.y;
@@ -132,7 +132,7 @@ function createBase(h, w, l) {
     //*********************************************************
     //      Figure 3
     //*********************************************************
-    figure3 = createFigure4(0.3);
+    figure3 = createfigure3(0.3);
     figure3.position.x += w*0.2;
     figure3.position.y += 3*h/4;
     figure3.position.z += l * 1/3;
@@ -185,80 +185,79 @@ function createSpotlightObject(x, y, z) {
 
 
 
-//Figura 3 RENOMEAR DEPOIS
-function createFigure4(u) {
+function createfigure3(u) {
     const vertices = [
 
         //R PART ====================================================
         //BODY
             //B1 top (V)
-        { pos: [  0,  0,  0], norm: [ 0,  0,  1], uv: [0, 1], },
-        { pos: [  100*u, -35*u,  10*u], norm: [ 0,  0,  1], uv: [0.5, 0], },
-        { pos: [120*u,   0,  0], norm: [ 0,  0,  1], uv: [1, 1], },
+        { pos: [  0,  0,  0], uv: [0, 1], },
+        { pos: [  100*u, -35*u,  10*u], uv: [0.5, 0], },
+        { pos: [120*u,   0,  0], uv: [1, 1], },
             //B1 bot (V)
-        { pos: [  0,  0,  0], norm: [ 0,  0,  1], uv: [0, 0], },
-        { pos: [  100*u,  -35*u,  10*u], norm: [ 0,  0,  1], uv: [0, 0], },
-        { pos: [  20*u,  -30*u,  10*u], norm: [ 0,  0,  1], uv: [0, 0], },
+        { pos: [  0,  0,  0], uv: [0, 0], },
+        { pos: [  100*u,  -35*u,  10*u], uv: [0, 0], },
+        { pos: [  20*u,  -30*u,  10*u], uv: [0, 0], },
 
         //B2 top
-        { pos: [  0,  0,  0], norm: [ 0,  0,  1], uv: [0, 1], },
-        { pos: [  20*u,  -30*u,  10*u], norm: [ 0,  0,  1], uv: [0, 0], },
-        { pos: [  70*u,  0,  10*u], norm: [ 0,  0,  1], uv: [1, 1], },
+        { pos: [  0,  0,  0], uv: [0, 1], },
+        { pos: [  20*u,  -30*u,  10*u], uv: [0, 0], },
+        { pos: [  70*u,  0,  10*u], uv: [1, 1], },
 
         //B2 bot
-        { pos: [  70*u,  0*u,  10*u], norm: [ 0,  0,  1], uv: [0.5, 1], },
-        { pos: [  20*u,  -30*u,  10*u], norm: [ 0,  0,  1], uv: [0, 0], },
-        { pos: [  100*u,  -35*u,  10*u], norm: [ 0,  0,  1], uv: [1, 0], },
+        { pos: [  70*u,  0*u,  10*u], uv: [0.5, 1], },
+        { pos: [  20*u,  -30*u,  10*u], uv: [0, 0], },
+        { pos: [  100*u,  -35*u,  10*u], uv: [1, 0], },
 
         //NECK
             //N back
-        { pos: [  20*u,  -30*u,  10*u], norm: [ 0,  0,  1], uv: [1, 0], },
-        { pos: [  20*u,  80*u,  10*u], norm: [ 0,  0,  1], uv: [1, 1], },
-        { pos: [  0,  0,  0], norm: [ 0,  0,  1], uv: [0, 0.25], },
+        { pos: [  20*u,  -30*u,  10*u], uv: [1, 0], },
+        { pos: [  20*u,  80*u,  10*u], uv: [1, 1], },
+        { pos: [  0,  0,  0], uv: [0, 0.25], },
             //N front
-        { pos: [  0,  0,  0], norm: [ 0,  0,  1], uv: [0, 0], },
-        { pos: [  20*u,  80*u,  10*u], norm: [ 0,  0,  1], uv: [1, 0.5], },
-        { pos: [  15*u,  85*u,  0], norm: [ 0,  0,  1], uv: [0.5, 1], },
+        { pos: [  0,  0,  0], uv: [0, 0], },
+        { pos: [  20*u,  80*u,  10*u], uv: [1, 0.5], },
+        { pos: [  15*u,  85*u,  0], uv: [0.5, 1], },
 
         //HEAD
-        { pos: [  20*u,  80*u,  10*u], norm: [ 0,  0,  1], uv: [1, 1], },
-        { pos: [  15*u,  85*u,  0], norm: [ 0,  0,  1], uv: [0.5, 1], },
-        { pos: [  -10*u,  60*u,  0], norm: [ 0,  0,  1], uv: [0, 0], },
+        { pos: [  20*u,  80*u,  10*u], uv: [1, 1], },
+        { pos: [  15*u,  85*u,  0], uv: [0.5, 1], },
+        { pos: [  -10*u,  60*u,  0], uv: [0, 0], },
 
         //L PART ====================================================
         //BODY
         //B1 top
-        { pos: [  0,  0,  0], norm: [ 0,  0,  1], uv: [1, 1], },
-        { pos: [  100*u, -35*u,  -10*u], norm: [ 0,  0,  1], uv: [0.5, 0], },
-        { pos: [120*u,   0,  0], norm: [ 0,  0,  1], uv: [0, 1], },
+        { pos: [  0,  0,  0], uv: [1, 1], },
+        { pos: [  100*u, -35*u,  -10*u], uv: [0.5, 0], },
+        { pos: [120*u,   0,  0], uv: [0, 1], },
         //B1 bot
-        { pos: [  0,  0,  0], norm: [ 0,  0,  1], uv: [1, 1], },
-        { pos: [  100*u,  -35*u,  -10*u], norm: [ 0,  0,  1], uv: [0, 0], },
-        { pos: [  20*u,  -30*u,  -10*u], norm: [ 0,  0,  1], uv: [0.5, 0], },
+        { pos: [  0,  0,  0], uv: [1, 1], },
+        { pos: [  100*u,  -35*u,  -10*u], uv: [0, 0], },
+        { pos: [  20*u,  -30*u,  -10*u], uv: [0.5, 0], },
 
         //B2 top
-        { pos: [  0,  0,  0], norm: [ 0,  0,  1], uv: [1, 1], },
-        { pos: [  20*u,  -30*u,  -10*u], norm: [ 0,  0,  1], uv: [0.7, 0], },
-        { pos: [  70*u,  0,  -10*u], norm: [ 0,  0,  1], uv: [0, 1], },
+        { pos: [  0,  0,  0], uv: [1, 1], },
+        { pos: [  20*u,  -30*u,  -10*u], uv: [0.7, 0], },
+        { pos: [  70*u,  0,  -10*u], uv: [0, 1], },
         //B2 bot
-        { pos: [  70*u,  0,  -10*u], norm: [ 0,  0,  1], uv: [0.5, 1], },
-        { pos: [  20*u,  -30*u, -10*u], norm: [ 0,  0,  1], uv: [1, 0], },
-        { pos: [  100*u,  -35*u,  -10*u], norm: [ 0,  0,  1], uv: [0, 0], },
+        { pos: [  70*u,  0,  -10*u], uv: [0.5, 1], },
+        { pos: [  20*u,  -30*u, -10*u], uv: [1, 0], },
+        { pos: [  100*u,  -35*u,  -10*u], uv: [0, 0], },
 
         //NECK
             //N back
-        { pos: [  20*u,  -30*u,  -10*u], norm: [ 0,  0,  1], uv: [0, 0], },
-        { pos: [  20*u,  80*u,  -10*u], norm: [ 0,  0,  1], uv: [0, 1], },
-        { pos: [  0,  0,  0], norm: [ 0,  0,  1], uv: [1, 0.2], },
+        { pos: [  20*u,  -30*u,  -10*u], uv: [0, 0], },
+        { pos: [  20*u,  80*u,  -10*u], uv: [0, 1], },
+        { pos: [  0,  0,  0], uv: [1, 0.2], },
             //N front
-        { pos: [  0,  0,  0], norm: [ 0,  0,  1], uv: [1, 0], },
-        { pos: [  20*u,  80*u,  -10*u], norm: [ 0,  0,  1], uv: [0.5, 1], },
-        { pos: [  15*u,  85*u,  0], norm: [ 0,  0,  1], uv: [0, 1], },
+        { pos: [  0,  0,  0], uv: [1, 0], },
+        { pos: [  20*u,  80*u,  -10*u], uv: [0.5, 1], },
+        { pos: [  15*u,  85*u,  0], uv: [0, 1], },
 
         //HEAD
-        { pos: [  20*u,  80*u,  -10*u], norm: [ 0,  0,  1], uv: [1, 1], },
-        { pos: [  15*u,  85*u,  0*u], norm: [ 0,  0,  1], uv: [0.5, 1], },
-        { pos: [  -10*u,  60*u,  0], norm: [ 0,  0,  1], uv: [0, 0], },
+        { pos: [  20*u,  80*u,  -10*u], uv: [1, 1], },
+        { pos: [  15*u,  85*u,  0*u], uv: [0.5, 1], },
+        { pos: [  -10*u,  60*u,  0], uv: [0, 0], },
     ];
 
     const geometry = getGeometry(vertices);
@@ -305,69 +304,65 @@ function getUvs(vertices) {
 
 function getGeometry(vertices) {
     const positions = getPositions(vertices);
-    const normals = getNormals(vertices);
     const uvs = getUvs(vertices);
 
     const geometry = new THREE.BufferGeometry();
     const positionNumComponents = 3;
-    const normalNumComponents = 3;
     const uvNumComponents = 2;
     geometry.setAttribute(
         'position',
         new THREE.BufferAttribute(new Float32Array(positions), positionNumComponents));
     geometry.setAttribute(
-        'normal',
-        new THREE.BufferAttribute(new Float32Array(normals), normalNumComponents));
-    geometry.setAttribute(
         'uv',
         new THREE.BufferAttribute(new Float32Array(uvs), uvNumComponents));
 
+    geometry.computeVertexNormals();
     return geometry;
 }
 
 
-function createFigure3(u) {
+function createfigure2(u) {
     const vertices = [
         //Back L
             //Up T
-        { pos: [  0,  20*u,  -5*u], norm: [ 0,  0,  1], uv: [0, 0], },
-        { pos: [-20*u,   0,  0], norm: [ 0,  0,  1], uv: [1, 0], },
-        { pos: [  0, -10*u,  -5*u], norm: [ 0,  0,  1], uv: [0, 1], },
+        { pos: [  0,  20*u,  -5*u], uv: [0, 0], },
+        { pos: [-20*u,   0,  0], uv: [1, 0], },
+        { pos: [  0, -10*u,  -5*u], uv: [0, 1], },
             //Bot T
-        { pos: [  0,   -10*u,  -5*u], norm: [ 0,  0,  1], uv: [0.5, 1], },
-        { pos: [  -20*u, 0,  0], norm: [ 0,  0,  1], uv: [0, 1], },
-        { pos: [  0,   -70*u,  -5*u], norm: [ 0,  0,  1], uv: [1, 0], },
+        { pos: [  0,   -10*u,  -5*u], uv: [0.5, 1], },
+        { pos: [  -20*u, 0,  0], uv: [0, 1], },
+        { pos: [  0,   -70*u,  -5*u], uv: [1, 0], },
 
         //Back R
             //Up T
-        { pos: [  0,  20*u,  -5*u], norm: [ 0,  0,  1], uv: [0, 0], },
-        { pos: [20*u,   0,  0], norm: [ 0,  0,  1], uv: [1, 0], },
-        { pos: [  0, -10*u,  -5*u], norm: [ 0,  0,  1], uv: [0, 1], },
+        { pos: [  0,  20*u,  -5*u], uv: [0, 0], },
+        { pos: [20*u,   0,  0], uv: [1, 0], },
+        { pos: [  0, -10*u,  -5*u], uv: [0, 1], },
             //Bot T
-        { pos: [  0,   -10*u,  -5*u], norm: [ 0,  0,  1], uv: [0.5, 1], },
-        { pos: [  20*u, 0,  0], norm: [ 0,  0,  1], uv: [0, 1], },
-        { pos: [  0,   -70*u,  -5*u], norm: [ 0,  0,  1], uv: [0.5, 0], },
+        { pos: [  0,   -10*u,  -5*u], uv: [0.5, 1], },
+        { pos: [  20*u, 0,  0], uv: [0, 1], },
+        { pos: [  0,   -70*u,  -5*u], uv: [0.5, 0], },
 
 
         //Front 1 L
-        { pos: [  -20*u,  0,  0], norm: [ 0,  0,  1], uv: [0, 1], },
-        { pos: [   0,  -70*u,  -5*u], norm: [ 0,  0,  1], uv: [0.5, 0], },
-        { pos: [    -3*u,  -10*u,  -10*u], norm: [ 0,  0,  1], uv: [0.5, 1], },
+        { pos: [  -20*u,  0,  0], uv: [0, 1], },
+        { pos: [   0,  -70*u,  -5*u], uv: [0.5, 0], },
+        { pos: [    -3*u,  -10*u,  -10*u], uv: [0.5, 1], },
 
         //Front 2 L
-        { pos: [  -3*u,  -10*u,  -10*u], norm: [ 0,  0,  1], uv: [0.5, 1], },
-        { pos: [  -15*u,  -15*u,  -2*u], norm: [ 0,  0,  1], uv: [0, 1], },
-        { pos: [  0,  -70*u,  -5*u], norm: [ 0,  0,  1], uv: [0.5, 0], },
+        { pos: [  -3*u,  -10*u,  -10*u], uv: [0.5, 1], },
+        { pos: [  -15*u,  -15*u,  -2*u], uv: [0, 1], },
+        { pos: [  0,  -70*u,  -5*u], uv: [0.5, 0], },
 
         //Front 1 R
-        { pos: [  20*u,  0,  0], norm: [ 0,  0,  1], uv: [1, 1], },
-        { pos: [   0,  -70*u,  -5*u], norm: [ 0,  0,  1], uv: [0.5, 0], },
-        { pos: [    3*u,  -10*u,  -10*u], norm: [ 0,  0,  1], uv: [0.5, 1], },
+        { pos: [  20*u,  0,  0], uv: [1, 1], },
+        { pos: [   0,  -70*u,  -5*u], uv: [0.5, 0], },
+        { pos: [    3*u,  -10*u,  -10*u], uv: [0.5, 1], },
 
         //Front 2 R
-        { pos: [  3*u,  -10*u,  -10*u], norm: [ 0,  0,  1], uv: [0.5, 1], },
-        { pos: [  15*u,  -15*u,  -2*u], norm: [ 0,  0,  1], uv: [0, 1], },
-        { pos: [  0,  -70*u,  -5*u], norm: [ 0,  0,  1], uv: [0.5, 0], },
+        { pos: [  3*u,  -10*u,  -10*u], uv: [0.5, 1], },
+        { pos: [  15*u,  -15*u,  -2*u], uv: [0, 1], },
+        { pos: [  0,  -70*u,  -5*u], uv: [0.5, 0], },
     ];
 
     const geometry = getGeometry(vertices);
@@ -385,15 +380,15 @@ function createFigure3(u) {
 
 
 
-function createFigure2(u) {
+function createfigure1(u) {
     const vertices = [
-        { pos: [  0,  20*u,  -5*u], norm: [ 0,  0,  1], uv: [0, 0], },
-        { pos: [-20*u,   0,  1*u], norm: [ 0,  0,  1], uv: [1, 0], },
-        { pos: [  0, -20*u,  -5*u], norm: [ 0,  0,  1], uv: [0, 1], },
+        { pos: [  0,  20*u,  -5*u], uv: [0, 0], },
+        { pos: [-20*u,   0,  1*u], uv: [1, 0], },
+        { pos: [  0, -20*u,  -5*u], uv: [0, 1], },
 
-        { pos: [ 0,  20*u,  -5*u], norm: [ 0,  0,  1], uv: [0, 1], },
-        { pos: [ 0, -20*u,  -5*u], norm: [ 0,  0,  1], uv: [1, 0], },
-        { pos: [ 20*u,  0,  1*u], norm: [ 0,  0,  1], uv: [1, 1], },
+        { pos: [ 0,  20*u,  -5*u], uv: [0, 1], },
+        { pos: [ 0, -20*u,  -5*u], uv: [1, 0], },
+        { pos: [ 20*u,  0,  1*u], uv: [1, 1], },
 
     ];
 
