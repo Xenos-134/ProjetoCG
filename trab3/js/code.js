@@ -353,7 +353,7 @@ function createfigure2(u) {
     var object = new THREE.Mesh( geometry, material );
 
     globalMainObject = object;
-    object.translateY(50*u).rotateX(degToRad(-20));
+    object.translateY(50*u);
     scene.add(object);
     return object;
 }
@@ -379,7 +379,7 @@ function createfigure1(u) {
     var object = new THREE.Mesh( geometry, material );
 
     globalMainObject = object;
-    object.translateY(10*u).rotateX(degToRad(-20));
+    object.translateY(10*u);
     scene.add(object);
     return object;
 }
