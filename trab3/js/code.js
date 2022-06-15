@@ -71,7 +71,7 @@ function init() {
     //base.rotateX(degToRad(-10));
     //base.rotateY(degToRad(-10));
 
-    directionalLight = new THREE.DirectionalLight( 0xffffff, 0.7 ).translateX(0)
+        directionalLight = new THREE.DirectionalLight( 0xffffff, 0.7 ).translateX(0)
                                                                   .translateY(50)
                                                                   .translateZ(150);
     scene.add( directionalLight );
@@ -494,17 +494,15 @@ function onKeyDown(e) {
 
         case "KeyA":
             if (addKey(e.code) && !isPaused) {
-                //globalMainObject.rotateX(degToRad(10));
+                isLambert = !isLambert;
+                changeMaterial();
 
             }
             break;
 
         case "KeyS":
             if (addKey(e.code) && !isPaused) {
-                isLambert = !isLambert;
-                changeMaterial();
-                //globalMainObject.rotateX(degToRad(-10));
-
+                setMaterialBasic();
             }
             break;
 
@@ -568,6 +566,14 @@ function changeMaterial() {
         figure2.material = new THREE.MeshPhongMaterial( { side: THREE.DoubleSide, wireframe: false, map: figure2.material.map , flatShading: THREE.FlatShading});
         localFigure3.material = new THREE.MeshPhongMaterial( { side: THREE.DoubleSide, wireframe: false, map: localFigure3.material.map , flatShading: THREE.FlatShading});
     }
+}
+
+
+function setMaterialBasic() {
+    figure1.material = new THREE.MeshBasicMaterial( { side: THREE.DoubleSide, wireframe: false, map: figure1.material.map , flatShading: THREE.FlatShading});
+    figure2.material = new THREE.MeshBasicMaterial( { side: THREE.DoubleSide, wireframe: false, map: figure2.material.map , flatShading: THREE.FlatShading});
+    const localFigure3 = figure3.children[0];
+    localFigure3.material = new THREE.MeshBasicMaterial({ side: THREE.DoubleSide, wireframe: false, map: localFigure3.material.map , flatShading: THREE.FlatShading});
 }
 
 
