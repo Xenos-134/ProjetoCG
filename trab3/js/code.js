@@ -72,8 +72,8 @@ function init() {
     //base.rotateY(degToRad(-10));
 
     directionalLight = new THREE.DirectionalLight( 0xffffff, 0.7 ).translateX(0)
-                                                                        .translateY(50)
-                                                                        .translateZ(150);
+                                                                  .translateY(50)
+                                                                  .translateZ(150);
     scene.add( directionalLight );
 
     clock = new THREE.Clock();
@@ -84,7 +84,7 @@ function createSpotlight(x, y, z, target) {
     const spotlight = new THREE.Object3D();
     spotlight.position.set(x, y, z);
 
-    const light = new THREE.SpotLight(0xffffff, 1, 0, degToRad(20), 0.5, 1);
+    const light = new THREE.SpotLight(0xffffff, 1, 0, degToRad(20), 1, 1);
     light.target = target;
     // const spotLightHelper = new THREE.SpotLightHelper(light);
     // spotLightHelper.update();
@@ -285,15 +285,6 @@ function getPositions(vertices) {
     return positions;
 }
 
-
-function getNormals(vertices) {
-    const normals = [];
-    for (const vertex of vertices) {
-        normals.push(...vertex.norm);
-    }
-    return normals;
-}
-
 function getUvs(vertices) {
     const uvs = [];
     for (const vertex of vertices) {
@@ -373,7 +364,7 @@ function createfigure2(u) {
     var object = new THREE.Mesh( geometry, material );
 
     globalMainObject = object;
-    object.translateY(50*u);
+    object.translateY(50*u).rotateX(degToRad(-20));
     scene.add(object);
     return object;
 }
@@ -384,11 +375,11 @@ function createfigure1(u) {
     const vertices = [
         { pos: [  0,  20*u,  -5*u], uv: [0, 0], },
         { pos: [-20*u,   0,  1*u], uv: [1, 0], },
-        { pos: [  0, -20*u,  -5*u], uv: [0, 1], },
+        { pos: [  0, -20*u,  -5*u], uv: [1, 1], },
 
-        { pos: [ 0,  20*u,  -5*u], uv: [0, 1], },
-        { pos: [ 0, -20*u,  -5*u], uv: [1, 0], },
-        { pos: [ 20*u,  0,  1*u], uv: [1, 1], },
+        { pos: [ 0, -20*u,  -5*u], uv: [1, 1], },
+        { pos: [ 20*u,  0,  1*u], uv: [0, 1], },
+        { pos: [ 0,  20*u,  -5*u], uv: [0, 0], },
 
     ];
 
@@ -399,7 +390,7 @@ function createfigure1(u) {
     var object = new THREE.Mesh( geometry, material );
 
     globalMainObject = object;
-    object.translateY(10*u);
+    object.translateY(10*u).rotateX(degToRad(-20));
     scene.add(object);
     return object;
 }
@@ -423,28 +414,6 @@ function createFigure1Test() {
     const object = new THREE.Mesh( geometry, default_material);
     globalMainObject = object;
     scene.add(object);
-}
-
-
-function createFigure1Buffer() {
-    const geometry = new THREE.BufferGeometry()
-    const vertices = new Float32Array( [
-          0,           -20,  0,
-         20*cos(PI/6),   0, 20*sin(PI/6),
-          0,            20,  0,
-
-          0,            20,  0,
-        -20*cos(PI/6),   0, 20*sin(PI/6),
-          0,           -20,  0
-    ] );
-    geometry.setAttribute( 'position', new THREE.BufferAttribute( vertices, 3 ) );
-
-    const material = new THREE.MeshBasicMaterial( { color: 0xffffff, side: THREE.DoubleSide } );
-
-    const figure = new THREE.Mesh( geometry, material );
-
-    globalMainObject = figure;
-    scene.add(figure);
 }
 
 
