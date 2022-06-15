@@ -1,7 +1,7 @@
 //*********************************************************
 //      Global Variables
 //*********************************************************
-var camera, camera1, camera2, scene, renderer;
+var camera, camera1, camera2, cameraPause, scene, renderer;
 var pressedKeys = []
 var clock;
 
@@ -31,27 +31,27 @@ var figure3DefaultValues = {
 }
 
 
-
 function animate() {
-
-    if(!isPaused) {
-        update();
-        display();
-    }
+    update();
+    display();
     requestAnimationFrame(animate);
-    displayPauseView();
 }
 
 
 function update() {
-    console.log("UPDATE");
     delta = clock.getDelta();
-    pressedKeys.forEach(code => handleKey(code, delta));
+    if(!isPaused) {
+        console.log("UPDATE");
+        pressedKeys.forEach(code => handleKey(code, delta));
+    }
 }
 
 
 function display() {
-    renderer.render( scene, camera );
+    if (isPaused)
+        renderer.render( scene, cameraPause );
+    else
+        renderer.render( scene, camera );
 }
 
 
@@ -162,6 +162,7 @@ function resetWindow() {
     figure3.rotation.y = figure3DefaultValues.angle;
     camera = camera1;
     directionalLight.visible = true;
+    isPaused = false;
 }
 
 
@@ -424,6 +425,9 @@ function createCameras() {
     camera2 = new THREE.PerspectiveCamera( 45, aspect , 1, 1000 );
     camera2.translateY(100).translateZ(200).lookAt(scene.position);
 
+    cameraPause = new THREE.OrthographicCamera( width / - 2, width / 2, height / 2, height / - 2, 1, 1000 );
+    cameraPause.translateX(200).translateY(100).translateZ(200).lookAt(scene.position);
+
     camera = camera1;
     return camera;
 }
@@ -468,61 +472,74 @@ function handleKey(code, delta) {
 
 
 function onKeyDown(e) {
-    if(e.code != "Space" && isPaused) return;
     switch (e.code) {
         case "Digit1":
-            camera = camera1;
+            if (!isPaused) {
+                camera = camera1;
+            }
             break;
+
         case "Digit2":
-            camera = camera2;
+            if (!isPaused) {
+                camera = camera2;
+            }
             break;
+
         case "Digit3":
-            if (addKey(e.code)) {
+            if (addKey(e.code) && isPaused) {
                 resetWindow();
                 //TODO
             }
             break;
+
         case "KeyA":
-            if (addKey(e.code)) {
+            if (addKey(e.code) && !isPaused) {
                 //globalMainObject.rotateX(degToRad(10));
 
             }
             break;
+
         case "KeyS":
-            if (addKey(e.code)) {
+            if (addKey(e.code) && !isPaused) {
                 isLambert = !isLambert;
                 changeMaterial();
                 //globalMainObject.rotateX(degToRad(-10));
 
             }
             break;
+
         case "KeyD":
-            if (addKey(e.code)) {
+            if (addKey(e.code) && !isPaused) {
                 directionalLight.visible = !directionalLight.visible;
             }
             break;
+
         case "KeyZ":
-            if (addKey(e.code)) {
+            if (addKey(e.code) && !isPaused) {
                 //globalMainObject.rotateY(degToRad(10));
                 light1.visible = !light1.visible;
             }
             break;
+
         case "KeyX":
-            if (addKey(e.code)) {
+            if (addKey(e.code) && !isPaused) {
                 //globalMainObject.rotateY(degToRad(-10));
                 light2.visible = !light2.visible;
             }
             break;
+
         case "KeyC":
-            if (addKey(e.code)) {
+            if (addKey(e.code) && !isPaused) {
                 light3.visible = !light3.visible;
             }
             break;
+
         case "Space":
             if (addKey(e.code)) {
                 isPaused = !isPaused;
             }
             break;
+            
         case "KeyQ":
         case "KeyW":
         case "KeyE":
@@ -573,14 +590,7 @@ function onResize() {
 
     camera2.aspect = aspect;
     camera2.updateProjectionMatrix();
-}
 
-
-function displayPauseView() {
-    const pauseView = document.getElementById("pauseView");
-    if(isPaused) {
-        pauseView.style.display = "block"
-    } else {
-        pauseView.style.display = "none";
-    }
+    cameraPause.left = width / - 2, cameraPause.right = width / 2, cameraPause.top = height / 2, cameraPause.bottom = height / - 2;
+    cameraPause.updateProjectionMatrix();
 }
