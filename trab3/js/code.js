@@ -14,6 +14,7 @@ var directionalLight, light1, light2, light3;
 
 var isLambert = true;
 var isPaused = false;
+var isBasic = false;
 
 //*********************************************************
 //      Default Values for Reset
@@ -502,6 +503,7 @@ function onKeyDown(e) {
 
         case "KeyS":
             if (addKey(e.code) && !isPaused) {
+                isBasic = !isBasic;
                 setMaterialBasic();
             }
             break;
@@ -570,6 +572,12 @@ function changeMaterial() {
 
 
 function setMaterialBasic() {
+    if(!isBasic) {
+        isLambert = true;
+        changeMaterial();
+        return;
+    }
+
     figure1.material = new THREE.MeshBasicMaterial( { side: THREE.DoubleSide, wireframe: false, map: figure1.material.map , flatShading: THREE.FlatShading});
     figure2.material = new THREE.MeshBasicMaterial( { side: THREE.DoubleSide, wireframe: false, map: figure2.material.map , flatShading: THREE.FlatShading});
     const localFigure3 = figure3.children[0];
