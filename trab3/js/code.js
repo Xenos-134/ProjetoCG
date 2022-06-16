@@ -475,61 +475,53 @@ function handleKey(code, delta) {
 function onKeyDown(e) {
     switch (e.code) {
         case "Digit1":
-            if (!isPaused) {
-                camera = camera1;
-            }
+            camera = camera1;
             break;
 
         case "Digit2":
-            if (!isPaused) {
-                camera = camera2;
-            }
+            camera = camera2;
             break;
 
         case "Digit3":
             if (addKey(e.code) && isPaused) {
                 resetWindow();
-                //TODO
             }
             break;
 
         case "KeyA":
-            if (addKey(e.code) && !isPaused) {
+            if (addKey(e.code)) {
                 isLambert = !isLambert;
                 changeMaterial();
-
             }
             break;
 
         case "KeyS":
-            if (addKey(e.code) && !isPaused) {
+            if (addKey(e.code)) {
                 isBasic = !isBasic;
                 setMaterialBasic();
             }
             break;
 
         case "KeyD":
-            if (addKey(e.code) && !isPaused) {
+            if (addKey(e.code)) {
                 directionalLight.visible = !directionalLight.visible;
             }
             break;
 
         case "KeyZ":
-            if (addKey(e.code) && !isPaused) {
-                //globalMainObject.rotateY(degToRad(10));
+            if (addKey(e.code)) {
                 light1.visible = !light1.visible;
             }
             break;
 
         case "KeyX":
-            if (addKey(e.code) && !isPaused) {
-                //globalMainObject.rotateY(degToRad(-10));
+            if (addKey(e.code)) {
                 light2.visible = !light2.visible;
             }
             break;
 
         case "KeyC":
-            if (addKey(e.code) && !isPaused) {
+            if (addKey(e.code)) {
                 light3.visible = !light3.visible;
             }
             break;
