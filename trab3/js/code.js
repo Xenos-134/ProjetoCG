@@ -1,34 +1,34 @@
 //*********************************************************
 //      Global Variables
 //*********************************************************
-var camera, camera1, camera2, cameraPause, scene, renderer;
-var pressedKeys = []
-var clock;
+let camera, camera1, camera2, cameraPause, scene, renderer;
+let pressedKeys = []
+let clock;
 
 const step = 5;
 const degToRad = THREE.Math.degToRad, cos = Math.cos, sin = Math.sin, PI = Math.PI;
 
-var globalMainObject = new THREE.Object3D();
-var figure1, figure2, figure3;
-var directionalLight, light1, light2, light3;
-var pauseObj;
+let globalMainObject = new THREE.Object3D();
+let figure1, figure2, figure3, steps = [], bulbs = [], cones = [];
+let directionalLight, light1, light2, light3;
+let pauseObj;
 
-var isLambert = true;
-var isPaused = false;
-var isBasic = false;
+let isLambert = true;
+let isPaused = false;
+let isBasic = false;
 
 //*********************************************************
 //      Default Values for Reset
 //*********************************************************
-var figure1DefaultValues = {
+let figure1DefaultValues = {
     angle: 0,
 }
 
-var figure2DefaultValues = {
+let figure2DefaultValues = {
     angle: 0,
 }
 
-var figure3DefaultValues = {
+let figure3DefaultValues = {
     angle: 0,
 }
 
@@ -104,8 +104,8 @@ function createSpotlight(x, y, z, target) {
 function createPause() {
     const geometry = new THREE.PlaneGeometry(125, 75, 1);
     let sprite = new THREE.TextureLoader().load("https://images.twinkl.co.uk/tr/image/upload/t_illustration/illustation/Pause-Button---Sign-Icon-Controls-Activities-KS1-black-and-white-RGB.png");
-    var material = new THREE.MeshBasicMaterial( { map:sprite, transparent: true, alphaTest: 0.5  });
-    var object = new THREE.Mesh( geometry, material);
+    let material = new THREE.MeshBasicMaterial( { map:sprite, transparent: true, alphaTest: 0.5  });
+    let object = new THREE.Mesh( geometry, material);
 
     object.translateX(150).translateY(100).translateZ(150).lookAt(cameraPause.position);
 
@@ -118,17 +118,18 @@ function createBase(h, w, l) {
     //      Base
     //*********************************************************
     const stepMaterial = new THREE.MeshPhongMaterial({color: 0xffe6cc} );
-    const stepGeometry1 = new THREE.BoxGeometry(w, h/2, l/2);
-    const stepGeometry2 = new THREE.BoxGeometry(w, h  , l/2);
+    const stepGeometry1 = new THREE.BoxGeometry(w, h/2, l/2, 60, 10, 40);
+    const stepGeometry2 = new THREE.BoxGeometry(w, h  , l/2, 60, 10, 40);
     const step1 = new THREE.Mesh(stepGeometry1, stepMaterial).translateY(+h/4).translateZ(+l/4);
     const step2 = new THREE.Mesh(stepGeometry2, stepMaterial).translateY(+h/2).translateZ(-l/4);
+    steps.push(step1), steps.push(step2);
     const base = new THREE.Object3D().add(step1).add(step2);
 
 
     //*********************************************************
     //      Figure 1
     //*********************************************************
-    figure1 = createfigure1(0.5);
+    figure1 = createfigure1(0.5).translateY(5);
     figure1.position.x += w*-0.3;
     figure1.position.y += 3*h/4;
     figure1.position.z += l * 1/4;
@@ -138,7 +139,7 @@ function createBase(h, w, l) {
     //*********************************************************
     //      Figure 2
     //*********************************************************
-    figure2 = createfigure2(0.3);
+    figure2 = createfigure2(0.3).translateY(5);
     figure2.position.y += 3*h/4;
     figure2.position.z += l * 1/4;
     figure2DefaultValues.angle = figure2.rotation.y;
@@ -147,7 +148,7 @@ function createBase(h, w, l) {
     //*********************************************************
     //      Figure 3
     //*********************************************************
-    figure3 = createfigure3(0.3);
+    figure3 = createfigure3(0.3).translateY(5);
     figure3.position.x += w*0.2;
     figure3.position.y += 3*h/4;
     figure3.position.z += l * 1/3;
@@ -184,21 +185,20 @@ function resetWindow() {
 
 
 function createSpotlightObject(x, y, z) {
-    const geometry = new THREE.CylinderGeometry( 0, 15, 15, 32 );
-    const material = new THREE.MeshPhongMaterial( {color: 0x33ccff, } );
-    const cylinder = new THREE.Mesh( geometry, material );
+    const coneMaterial = new THREE.MeshPhongMaterial( {color: 0x33ccff, } );
+    const coneGeometry = new THREE.ConeGeometry( 15, 15, 32 );
+    const cone = new THREE.Mesh( coneGeometry, coneMaterial );
+    cone.translateX(x).translateY(y).translateZ(z);
+    cones.push(cone);
 
-    const sphereMaterial = new THREE.MeshPhongMaterial( {color: 0xffff00, } );
+    const sphereMaterial = new THREE.MeshPhongMaterial( {color: 0xffffff, emissive: 0xffff00, emissiveIntensity: 0.5 } );
     const sphereGeometry = new THREE.SphereGeometry( 5, 32, 16 );
     const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
     sphere.translateY(-8);
+    bulbs.push(sphere);
 
-
-    cylinder.add(sphere);
-    cylinder.translateX(x);
-    cylinder.translateY(y);
-    cylinder.translateZ(z);
-    scene.add( cylinder );
+    cone.add(sphere)
+    scene.add(cone);
 }
 
 
@@ -210,35 +210,35 @@ function createfigure3(u) {
         //BODY
             //B1 top (V)
         { pos: [  0,  0,  0], uv: [0, 1], },
-        { pos: [  100*u, -35*u,  10*u], uv: [0.5, 0], },
-        { pos: [120*u,   0,  0], uv: [1, 1], },
+        { pos: [  100*u, -30*u,  15*u], uv: [0.5, 0], },
+        { pos: [  130*u,   20*u,  0], uv: [1, 1], },
             //B1 bot (V)
         { pos: [  0,  0,  0], uv: [0, 0], },
-        { pos: [  100*u,  -35*u,  10*u], uv: [0, 0], },
-        { pos: [  20*u,  -30*u,  10*u], uv: [0, 0], },
+        { pos: [  100*u,  -30*u,  15*u], uv: [0, 0], },
+        { pos: [  20*u,  -30*u,  15*u], uv: [0, 0], },
 
         //B2 top
         { pos: [  0,  0,  0], uv: [0, 1], },
-        { pos: [  20*u,  -30*u,  10*u], uv: [0, 0], },
-        { pos: [  70*u,  0,  10*u], uv: [1, 1], },
+        { pos: [  20*u,  -30*u,  15*u], uv: [0, 0], },
+        { pos: [  70*u,  10*u,  10*u], uv: [1, 1], },
 
         //B2 bot
-        { pos: [  70*u,  0*u,  10*u], uv: [0.5, 1], },
-        { pos: [  20*u,  -30*u,  10*u], uv: [0, 0], },
-        { pos: [  100*u,  -35*u,  10*u], uv: [1, 0], },
+        { pos: [  70*u,  10*u,  10*u], uv: [0.5, 1], },
+        { pos: [  20*u,  -30*u,  15*u], uv: [0, 0], },
+        { pos: [  100*u,  -30*u,  15*u], uv: [1, 0], },
 
         //NECK
             //N back
-        { pos: [  20*u,  -30*u,  10*u], uv: [1, 0], },
-        { pos: [  20*u,  80*u,  10*u], uv: [1, 1], },
+        { pos: [  20*u,  -30*u,  15*u], uv: [1, 0], },
+        { pos: [  20*u,  80*u,  5*u], uv: [1, 1], },
         { pos: [  0,  0,  0], uv: [0, 0.25], },
             //N front
         { pos: [  0,  0,  0], uv: [0, 0], },
-        { pos: [  20*u,  80*u,  10*u], uv: [1, 0.5], },
+        { pos: [  20*u,  80*u,  5*u], uv: [1, 0.5], },
         { pos: [  15*u,  85*u,  0], uv: [0.5, 1], },
 
         //HEAD
-        { pos: [  20*u,  80*u,  10*u], uv: [1, 1], },
+        { pos: [  20*u,  80*u,  5*u], uv: [1, 1], },
         { pos: [  15*u,  85*u,  0], uv: [0.5, 1], },
         { pos: [  -10*u,  60*u,  0], uv: [0, 0], },
 
@@ -246,43 +246,43 @@ function createfigure3(u) {
         //BODY
         //B1 top
         { pos: [  0,  0,  0], uv: [1, 1], },
-        { pos: [  100*u, -35*u,  -10*u], uv: [0.5, 0], },
-        { pos: [120*u,   0,  0], uv: [0, 1], },
+        { pos: [  100*u, -30*u,  -15*u], uv: [0.5, 0], },
+        { pos: [130*u,   20*u,  0], uv: [0, 1], },
         //B1 bot
         { pos: [  0,  0,  0], uv: [1, 1], },
-        { pos: [  100*u,  -35*u,  -10*u], uv: [0, 0], },
-        { pos: [  20*u,  -30*u,  -10*u], uv: [0.5, 0], },
+        { pos: [  100*u,  -30*u,  -15*u], uv: [0, 0], },
+        { pos: [  20*u,  -30*u,  -15*u], uv: [0.5, 0], },
 
         //B2 top
         { pos: [  0,  0,  0], uv: [1, 1], },
-        { pos: [  20*u,  -30*u,  -10*u], uv: [0.7, 0], },
-        { pos: [  70*u,  0,  -10*u], uv: [0, 1], },
+        { pos: [  20*u,  -30*u,  -15*u], uv: [0.7, 0], },
+        { pos: [  70*u,  10*u,  -10*u], uv: [0, 1], },
         //B2 bot
-        { pos: [  70*u,  0,  -10*u], uv: [0.5, 1], },
-        { pos: [  20*u,  -30*u, -10*u], uv: [1, 0], },
-        { pos: [  100*u,  -35*u,  -10*u], uv: [0, 0], },
+        { pos: [  70*u,  10*u,  -10*u], uv: [0.5, 1], },
+        { pos: [  20*u,  -30*u, -15*u], uv: [1, 0], },
+        { pos: [  100*u,  -30*u,  -15*u], uv: [0, 0], },        
 
         //NECK
             //N back
-        { pos: [  20*u,  -30*u,  -10*u], uv: [0, 0], },
-        { pos: [  20*u,  80*u,  -10*u], uv: [0, 1], },
+        { pos: [  20*u,  -30*u,  -15*u], uv: [0, 0], },
+        { pos: [  20*u,  80*u,  -5*u], uv: [0, 1], },
         { pos: [  0,  0,  0], uv: [1, 0.2], },
             //N front
         { pos: [  0,  0,  0], uv: [1, 0], },
-        { pos: [  20*u,  80*u,  -10*u], uv: [0.5, 1], },
-        { pos: [  15*u,  85*u,  0], uv: [0, 1], },
+        { pos: [  20*u,  80*u, -5*u], uv: [0.5, 1], },
+        { pos: [  15*u,  85*u,    0], uv: [0, 1], },
 
         //HEAD
-        { pos: [  20*u,  80*u,  -10*u], uv: [1, 1], },
+        { pos: [  20*u,  80*u, -5*u], uv: [1, 1], },
         { pos: [  15*u,  85*u,  0*u], uv: [0.5, 1], },
-        { pos: [  -10*u,  60*u,  0], uv: [0, 0], },
+        { pos: [ -10*u, 60*u,   0], uv: [0, 0], },
     ];
 
     const geometry = getGeometry(vertices);
 
     let sprite = new THREE.TextureLoader().load("https://previews.123rf.com/images/akiyoko/akiyoko1809/akiyoko180900051/108410284-traditional-japanese-pattern-origami-paper-texture-background.jpg");
-    var material = new THREE.MeshPhongMaterial( { side: THREE.DoubleSide, wireframe: false, map: sprite, flatShading: THREE.FlatShading});
-    var object = new THREE.Mesh( geometry, material);
+    let material = new THREE.MeshPhongMaterial( { side: THREE.DoubleSide, wireframe: false, map: sprite, flatShading: THREE.FlatShading});
+    let object = new THREE.Mesh( geometry, material);
 
     const figure = new THREE.Object3D();
 
@@ -296,7 +296,7 @@ function createfigure3(u) {
 }
 
 function getPositions(vertices) {
-    var positions = [];
+    let positions = [];
     for (const vertex of vertices) {
         positions.push(...vertex.pos);
     }
@@ -366,9 +366,9 @@ function createfigure2(u) {
     const geometry = getGeometry(vertices);
 
     let sprite = new THREE.TextureLoader().load("https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/i/86f34523-ed7d-4609-9030-10454cdeb829/d2m48nr-9730f9d7-cbf3-4047-89bd-62b8255fd114.png");
-    //var material = new THREE.MeshBasicMaterial( {map: sprite, side: THREE.DoubleSide });
-    var material = new THREE.MeshPhongMaterial( { side: THREE.DoubleSide, wireframe: false, map: sprite, flatShading: THREE.FlatShading});
-    var object = new THREE.Mesh( geometry, material );
+    //let material = new THREE.MeshBasicMaterial( {map: sprite, side: THREE.DoubleSide });
+    let material = new THREE.MeshPhongMaterial( { side: THREE.DoubleSide, wireframe: false, map: sprite, flatShading: THREE.FlatShading});
+    let object = new THREE.Mesh( geometry, material );
 
     globalMainObject = object;
     object.translateY(50*u);
@@ -380,24 +380,24 @@ function createfigure2(u) {
 
 function createfigure1(u) {
     const vertices = [
-        { pos: [  0,  20*u,  -5*u], uv: [0, 0], },
-        { pos: [-20*u,   0,  1*u], uv: [1, 0], },
-        { pos: [  0, -20*u,  -5*u], uv: [1, 1], },
+        { pos: [  0,  25*u,  5*u], uv: [0, 0], },
+        { pos: [-25*u,   0,  4*u], uv: [1, 0], },
+        { pos: [  0, -25*u,  -5*u], uv: [1, 1], },
 
-        { pos: [ 0, -20*u,  -5*u], uv: [1, 1], },
-        { pos: [ 20*u,  0,  1*u], uv: [0, 1], },
-        { pos: [ 0,  20*u,  -5*u], uv: [0, 0], },
+        { pos: [ 0, -25*u,  -5*u], uv: [1, 1], },
+        { pos: [ 25*u,  0,   4*u], uv: [0, 1], },
+        { pos: [ 0,  25*u,   5*u], uv: [0, 0], },
 
     ];
 
     const geometry = getGeometry(vertices);
     let sprite = new THREE.TextureLoader().load("https://previews.123rf.com/images/akiyoko/akiyoko1809/akiyoko180900074/108428809-traditional-japanese-pattern-origami-paper-texture-background.jpg");
-    //var material = new THREE.MeshBasicMaterial( {map: sprite, side: THREE.DoubleSide });
-    var material = new THREE.MeshPhongMaterial( { side: THREE.DoubleSide, wireframe: false, map: sprite, flatShading: THREE.FlatShading});
-    var object = new THREE.Mesh( geometry, material );
+    //let material = new THREE.MeshBasicMaterial( {map: sprite, side: THREE.DoubleSide });
+    let material = new THREE.MeshPhongMaterial( { side: THREE.DoubleSide, wireframe: false, map: sprite, flatShading: THREE.FlatShading});
+    let object = new THREE.Mesh( geometry, material );
 
     globalMainObject = object;
-    object.translateY(10*u);
+    object.translateY(20*u);
     scene.add(object);
     return object;
 }
@@ -571,22 +571,40 @@ function onKeyUp(e) {
 
 
 function changeMaterial() {
-   const localFigure3 = figure3.children[0];
-    if(isLambert) {
-        figure1.material = new THREE.MeshLambertMaterial( { side: THREE.DoubleSide, wireframe: false, map: figure1.material.map , flatShading: THREE.FlatShading});
-        figure2.material = new THREE.MeshLambertMaterial( { side: THREE.DoubleSide, wireframe: false, map: figure2.material.map , flatShading: THREE.FlatShading});
-        localFigure3.material = new THREE.MeshLambertMaterial( { side: THREE.DoubleSide, wireframe: false, map: localFigure3.material.map , flatShading: THREE.FlatShading});
-    } else {
-        figure1.material = new THREE.MeshPhongMaterial( { side: THREE.DoubleSide, wireframe: false, map: figure1.material.map , flatShading: THREE.FlatShading});
-        figure2.material = new THREE.MeshPhongMaterial( { side: THREE.DoubleSide, wireframe: false, map: figure2.material.map , flatShading: THREE.FlatShading});
-        localFigure3.material = new THREE.MeshPhongMaterial( { side: THREE.DoubleSide, wireframe: false, map: localFigure3.material.map , flatShading: THREE.FlatShading});
-    }
+    const localFigure3 = figure3.children[0];
+    if (!isBasic)
+        if(isLambert) {
+            figure1.material = new THREE.MeshLambertMaterial( { side: THREE.DoubleSide, wireframe: false, map: figure1.material.map , flatShading: THREE.FlatShading});
+            figure2.material = new THREE.MeshLambertMaterial( { side: THREE.DoubleSide, wireframe: false, map: figure2.material.map , flatShading: THREE.FlatShading});
+            localFigure3.material = new THREE.MeshLambertMaterial( { side: THREE.DoubleSide, wireframe: false, map: localFigure3.material.map , flatShading: THREE.FlatShading});
+            steps.forEach(s => {
+                s.material = new THREE.MeshLambertMaterial({color: 0xffe6cc} );
+            })
+            cones.forEach(c => {
+                c.material = new THREE.MeshLambertMaterial( {color: 0x33ccff, } );
+            })
+            bulbs.forEach(b => {
+                b.material = new THREE.MeshLambertMaterial( {color: 0xffffff, emissive: 0xffff00, emissiveIntensity: 0.5 } );
+            })
+        } else {
+            figure1.material = new THREE.MeshPhongMaterial( { side: THREE.DoubleSide, wireframe: false, map: figure1.material.map , flatShading: THREE.FlatShading});
+            figure2.material = new THREE.MeshPhongMaterial( { side: THREE.DoubleSide, wireframe: false, map: figure2.material.map , flatShading: THREE.FlatShading});
+            localFigure3.material = new THREE.MeshPhongMaterial( { side: THREE.DoubleSide, wireframe: false, map: localFigure3.material.map , flatShading: THREE.FlatShading});
+            steps.forEach(s => {
+                s.material = new THREE.MeshPhongMaterial({color: 0xffe6cc} );
+            })
+            cones.forEach(c => {
+                c.material = new THREE.MeshPhongMaterial( {color: 0x33ccff, } );
+            })
+            bulbs.forEach(b => {
+                b.material = new THREE.MeshPhongMaterial( {color: 0xffffff, emissive: 0xffff00, emissiveIntensity: 0.5 } );
+            })
+        }
 }
 
 
 function setMaterialBasic() {
     if(!isBasic) {
-        isLambert = true;
         changeMaterial();
         return;
     }
@@ -595,6 +613,15 @@ function setMaterialBasic() {
     figure2.material = new THREE.MeshBasicMaterial( { side: THREE.DoubleSide, wireframe: false, map: figure2.material.map , flatShading: THREE.FlatShading});
     const localFigure3 = figure3.children[0];
     localFigure3.material = new THREE.MeshBasicMaterial({ side: THREE.DoubleSide, wireframe: false, map: localFigure3.material.map , flatShading: THREE.FlatShading});
+    steps.forEach(s => {
+        s.material = new THREE.MeshBasicMaterial({color: 0xffe6cc} );
+    })
+    cones.forEach(c => {
+        c.material = new THREE.MeshBasicMaterial( {color: 0x33ccff} );
+    })
+    bulbs.forEach(b => {
+        b.material = new THREE.MeshBasicMaterial( {color: 0xffff00} );
+    })
 }
 
 
