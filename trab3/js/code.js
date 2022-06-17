@@ -11,6 +11,7 @@ const degToRad = THREE.Math.degToRad, cos = Math.cos, sin = Math.sin, PI = Math.
 var globalMainObject = new THREE.Object3D();
 var figure1, figure2, figure3;
 var directionalLight, light1, light2, light3;
+var pauseObj;
 
 var isLambert = true;
 var isPaused = false;
@@ -77,6 +78,8 @@ function init() {
                                                                   .translateZ(150);
     scene.add( directionalLight );
 
+    createPause();
+
     clock = new THREE.Clock();
 }
 
@@ -96,6 +99,17 @@ function createSpotlight(x, y, z, target) {
     spotlight.light = light;
     spotlight.add(light);
     return spotlight;
+}
+
+function createPause() {
+    const geometry = new THREE.PlaneGeometry(125, 75, 1);
+    let sprite = new THREE.TextureLoader().load("https://images.twinkl.co.uk/tr/image/upload/t_illustration/illustation/Pause-Button---Sign-Icon-Controls-Activities-KS1-black-and-white-RGB.png");
+    var material = new THREE.MeshPhongMaterial( { map:sprite, transparent: true, alphaTest: 0.5  });
+    var object = new THREE.Mesh( geometry, material);
+
+    object.translateX(150).translateY(100).translateZ(150).lookAt(cameraPause.position);
+
+    pauseObj = object;
 }
 
 
@@ -162,6 +176,8 @@ function resetWindow() {
     figure2.rotation.y = figure2DefaultValues.angle;
     figure3.rotation.y = figure3DefaultValues.angle;
     camera = camera1;
+    if(isPaused)
+        scene.remove(pauseObj);
     directionalLight.visible = true;
     isPaused = false;
 }
@@ -475,15 +491,11 @@ function handleKey(code, delta) {
 function onKeyDown(e) {
     switch (e.code) {
         case "Digit1":
-            if (!isPaused) {
-                camera = camera1;
-            }
+            camera = camera1;
             break;
 
         case "Digit2":
-            if (!isPaused) {
-                camera = camera2;
-            }
+            camera = camera2;
             break;
 
         case "Digit3":
@@ -494,7 +506,7 @@ function onKeyDown(e) {
             break;
 
         case "KeyA":
-            if (addKey(e.code) && !isPaused) {
+            if (addKey(e.code)) {
                 isLambert = !isLambert;
                 changeMaterial();
 
@@ -502,34 +514,34 @@ function onKeyDown(e) {
             break;
 
         case "KeyS":
-            if (addKey(e.code) && !isPaused) {
+            if (addKey(e.code)) {
                 isBasic = !isBasic;
                 setMaterialBasic();
             }
             break;
 
         case "KeyD":
-            if (addKey(e.code) && !isPaused) {
+            if (addKey(e.code)) {
                 directionalLight.visible = !directionalLight.visible;
             }
             break;
 
         case "KeyZ":
-            if (addKey(e.code) && !isPaused) {
+            if (addKey(e.code)) {
                 //globalMainObject.rotateY(degToRad(10));
                 light1.visible = !light1.visible;
             }
             break;
 
         case "KeyX":
-            if (addKey(e.code) && !isPaused) {
+            if (addKey(e.code)) {
                 //globalMainObject.rotateY(degToRad(-10));
                 light2.visible = !light2.visible;
             }
             break;
 
         case "KeyC":
-            if (addKey(e.code) && !isPaused) {
+            if (addKey(e.code)) {
                 light3.visible = !light3.visible;
             }
             break;
@@ -537,6 +549,11 @@ function onKeyDown(e) {
         case "Space":
             if (addKey(e.code)) {
                 isPaused = !isPaused;
+
+                if (isPaused)
+                    scene.add(pauseObj)
+                else
+                    scene.remove(pauseObj)
             }
             break;
             
