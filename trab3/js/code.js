@@ -526,20 +526,12 @@ function onKeyDown(e) {
 
         case "KeyZ":
             if (addKey(e.code)) {
-<<<<<<< HEAD
-                //globalMainObject.rotateY(degToRad(10));
-=======
->>>>>>> 5368cc6ba5a68819d28731b610e954eade092598
                 light1.visible = !light1.visible;
             }
             break;
 
         case "KeyX":
             if (addKey(e.code)) {
-<<<<<<< HEAD
-                //globalMainObject.rotateY(degToRad(-10));
-=======
->>>>>>> 5368cc6ba5a68819d28731b610e954eade092598
                 light2.visible = !light2.visible;
             }
             break;
