@@ -129,7 +129,7 @@ function createBase(h, w, l) {
     //*********************************************************
     //      Figure 1
     //*********************************************************
-    figure1 = createfigure1(0.5).translateY(5);
+    figure1 = createfigure1(0.5).translateY(0.5);
     figure1.position.x += w*-0.3;
     figure1.position.y += 3*h/4;
     figure1.position.z += l * 1/4;
@@ -139,7 +139,7 @@ function createBase(h, w, l) {
     //*********************************************************
     //      Figure 2
     //*********************************************************
-    figure2 = createfigure2(0.3).translateY(5);
+    figure2 = createfigure2(0.3).translateY(0.5);
     figure2.position.y += 3*h/4;
     figure2.position.z += l * 1/4;
     figure2DefaultValues.angle = figure2.rotation.y;
@@ -148,10 +148,10 @@ function createBase(h, w, l) {
     //*********************************************************
     //      Figure 3
     //*********************************************************
-    figure3 = createfigure3(0.3).translateY(5);
+    figure3 = createfigure3(0.3).translateY(0.5);
     figure3.position.x += w*0.2;
     figure3.position.y += 3*h/4;
-    figure3.position.z += l * 1/3;
+    figure3.position.z += l * 1/4;
     figure3.translateX(w*0.1);
     //figure3.rotateY(degToRad(-45))
     figure3DefaultValues.angle = figure3.rotation.y;
@@ -287,7 +287,7 @@ function createfigure3(u) {
     const figure = new THREE.Object3D();
 
     globalMainObject = object;
-    object.translateY(15*u);
+    object.translateY(30*u);
     object.translateX(-60 * u);
 
     figure.add(object);
@@ -371,7 +371,7 @@ function createfigure2(u) {
     let object = new THREE.Mesh( geometry, material );
 
     globalMainObject = object;
-    object.translateY(50*u);
+    object.translateY(70*u);
     scene.add(object);
     return object;
 }
@@ -397,7 +397,7 @@ function createfigure1(u) {
     let object = new THREE.Mesh( geometry, material );
 
     globalMainObject = object;
-    object.translateY(20*u);
+    object.translateY(25*u);
     scene.add(object);
     return object;
 }
