@@ -104,7 +104,7 @@ function createSpotlight(x, y, z, target) {
 function createPause() {
     const geometry = new THREE.PlaneGeometry(125, 75, 1);
     let sprite = new THREE.TextureLoader().load("https://images.twinkl.co.uk/tr/image/upload/t_illustration/illustation/Pause-Button---Sign-Icon-Controls-Activities-KS1-black-and-white-RGB.png");
-    var material = new THREE.MeshPhongMaterial( { map:sprite, transparent: true, alphaTest: 0.5  });
+    var material = new THREE.MeshBasicMaterial( { map:sprite, transparent: true, alphaTest: 0.5  });
     var object = new THREE.Mesh( geometry, material);
 
     object.translateX(150).translateY(100).translateZ(150).lookAt(cameraPause.position);
